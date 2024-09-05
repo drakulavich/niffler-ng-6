@@ -11,25 +11,23 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class AuthAuthorityDaoJdbc implements AuthAuthorityDao {
-  private final Connection connection;
+import static guru.qa.niffler.data.tpl.Connections.holder;
 
-  public AuthAuthorityDaoJdbc(Connection connection) {
-    this.connection = connection;
-  }
+public class AuthAuthorityDaoJdbc implements AuthAuthorityDao {
+
+  private static final Config CFG = Config.getInstance();
 
   @Override
   public void create(AuthorityEntity... authority) {
-    try (PreparedStatement ps = connection.prepareStatement(
-        "INSERT INTO authority (user_id, authority) VALUES (?, ?)"
-    )) {
-      for (AuthorityEntity auth : authority) {
-        ps.setObject(1, auth.getUserId());
-        ps.setString(2, auth.getAuthority().name());
+    try (PreparedStatement ps = holder(CFG.authJdbcUrl()).connection().prepareStatement(
+        "INSERT INTO \"authority\" (user_id, authority) VALUES (?, ?)",
+        PreparedStatement.RETURN_GENERATED_KEYS)) {
+      for (AuthorityEntity a : authority) {
+        ps.setObject(1, a.getUserId());
+        ps.setString(2, a.getAuthority().name());
         ps.addBatch();
         ps.clearParameters();
       }
-
       ps.executeBatch();
     } catch (SQLException e) {
       throw new RuntimeException(e);

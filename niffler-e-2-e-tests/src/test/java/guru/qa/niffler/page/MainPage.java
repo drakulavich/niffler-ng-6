@@ -12,6 +12,7 @@ public class MainPage {
 
   private final SelenideElement stat = $("#stat");
   private final SelenideElement spendingsHistory = $("#spendings");
+  private final SelenideElement menuButton = $("button[aria-label='Menu']");
 
   public EditSpendingPage editSpending(String spendingDescription) {
     tableRows.find(text(spendingDescription)).$$("td").get(5).click();
@@ -30,5 +31,11 @@ public class MainPage {
   public MainPage checkSpendingsVisible() {
     spendingsHistory.should(visible);
     return this;
+  }
+
+  public ProfilePage openProfile() {
+    menuButton.click();
+    $("a[href='/profile']").click();
+    return new ProfilePage();
   }
 }

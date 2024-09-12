@@ -25,7 +25,9 @@ public class ProfileWebTest {
             .openProfile();
 
         new ProfilePage()
-            .showArchivedCategories()
+            .showArchivedCategories(true)
+            .unarchiveCategory(category.name())
+            .showArchivedCategories(false)
             .checkCategoryPresent(category.name());
     }
 
@@ -40,6 +42,8 @@ public class ProfileWebTest {
             .openProfile();
 
         new ProfilePage()
-            .checkCategoryPresent(category.name());
+            .checkCategoryPresent(category.name())
+            .archiveCategory(category.name())
+            .checkCategoryNotPresent(category.name());
     }
 }

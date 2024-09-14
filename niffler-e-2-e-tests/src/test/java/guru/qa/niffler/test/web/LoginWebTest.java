@@ -15,7 +15,7 @@ public class LoginWebTest {
     private static final Config CFG = Config.getInstance();
 
     @Test
-    void mainPageShouldBeDisplayedAfterSuccessLogin(@UserType(empty = false) StaticUser user) {
+    void mainPageShouldBeDisplayedAfterSuccessLogin(@UserType(UserType.Type.WITH_FRIEND) StaticUser user) {
         Selenide.open(CFG.frontUrl(), LoginPage.class)
                 .login(user.username(), user.password())
                 .checkSpendingsVisible()
@@ -24,7 +24,7 @@ public class LoginWebTest {
 
     @Test
     void userShouldStayOnLoginPageAfterLoginWithBadCredentials(
-            @UserType(empty = false) StaticUser user,
+            @UserType(UserType.Type.WITH_INCOME_REQUEST) StaticUser user,
             @UserType StaticUser emptyUser
     ) {
         Selenide.open(CFG.frontUrl(), LoginPage.class)

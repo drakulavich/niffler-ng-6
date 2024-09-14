@@ -45,7 +45,10 @@ public class UsersQueueExtension implements
   @Target(ElementType.PARAMETER)
   @Retention(RetentionPolicy.RUNTIME)
   public @interface UserType {
-    boolean empty() default true;
+    Type value() default Type.EMPTY;
+    enum Type {
+        EMPTY, WITH_FRIEND, WITH_INCOME_REQUEST, WITH_OUTCOME_REQUEST
+    }
   }
 
   @Override
@@ -57,9 +60,12 @@ public class UsersQueueExtension implements
           Optional<StaticUser> user = Optional.empty();
           StopWatch sw = StopWatch.createStarted();
           while (user.isEmpty() && sw.getTime(TimeUnit.SECONDS) < 30) {
-            user = ut.empty()
-                ? Optional.ofNullable(EMPTY_USERS.poll())
-                : Optional.ofNullable(NOT_EMPTY_USERS.poll());
+              user = switch (ut.value()) {
+                  case EMPTY -> Optional.ofNullable(EMPTY_USERS.poll());
+                  case WITH_FRIEND -> Optional.ofNullable(NOT_EMPTY_USERS.poll());
+                  case WITH_INCOME_REQUEST -> Optional.ofNullable(NOT_EMPTY_USERS.poll());
+                  case WITH_OUTCOME_REQUEST -> Optional.ofNullable(NOT_EMPTY_USERS.poll());
+              };
           }
           Allure.getLifecycle().updateTestCase(testCase ->
               testCase.setStart(new Date().getTime())

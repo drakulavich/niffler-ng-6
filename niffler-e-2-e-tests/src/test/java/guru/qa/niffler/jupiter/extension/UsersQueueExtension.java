@@ -16,6 +16,8 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
@@ -50,9 +52,8 @@ public class UsersQueueExtension implements
   public void beforeTestExecution(ExtensionContext context) {
     Arrays.stream(context.getRequiredTestMethod().getParameters())
         .filter(p -> AnnotationSupport.isAnnotated(p, UserType.class))
-        .findFirst()
         .map(p -> p.getAnnotation(UserType.class))
-        .ifPresent(ut -> {
+        .forEach (ut -> {
           Optional<StaticUser> user = Optional.empty();
           StopWatch sw = StopWatch.createStarted();
           while (user.isEmpty() && sw.getTime(TimeUnit.SECONDS) < 30) {
@@ -65,10 +66,11 @@ public class UsersQueueExtension implements
           );
           user.ifPresentOrElse(
               u ->
-                  context.getStore(NAMESPACE).put(
+                ((Map<UserType, StaticUser>) context.getStore(NAMESPACE)
+                  .getOrComputeIfAbsent(
                       context.getUniqueId(),
-                      u
-                  ),
+                      val -> new HashMap<>()
+                  )).put(ut, u),
               () -> {
                 throw new IllegalStateException("Can`t obtain user after 30s.");
               }
@@ -78,14 +80,18 @@ public class UsersQueueExtension implements
 
   @Override
   public void afterTestExecution(ExtensionContext context) {
-    StaticUser user = context.getStore(NAMESPACE).get(
+    Map<UserType, StaticUser> map = context.getStore(NAMESPACE).get(
         context.getUniqueId(),
-        StaticUser.class
+        Map.class
     );
-    if (user.empty()) {
-      EMPTY_USERS.add(user);
-    } else {
-      NOT_EMPTY_USERS.add(user);
+    for (Map.Entry<UserType, StaticUser> e : map.entrySet()) {
+        StaticUser user = e.getValue();
+        System.out.println("Returning back to queue: " + user);
+        if (user.empty()) {
+            EMPTY_USERS.add(user);
+        } else {
+            NOT_EMPTY_USERS.add(user);
+        }
     }
   }
 
@@ -97,6 +103,8 @@ public class UsersQueueExtension implements
 
   @Override
   public StaticUser resolveParameter(ParameterContext parameterContext, ExtensionContext extensionContext) throws ParameterResolutionException {
-    return extensionContext.getStore(NAMESPACE).get(extensionContext.getUniqueId(), StaticUser.class);
+      Map<UserType, StaticUser> map = extensionContext.getStore(NAMESPACE).get(extensionContext.getUniqueId(), Map.class);
+      return map.get(parameterContext.getParameter().getAnnotation(UserType.class));
+//    return extensionContext.getStore(NAMESPACE).get(extensionContext.getUniqueId(), StaticUser.class);
   }
 }

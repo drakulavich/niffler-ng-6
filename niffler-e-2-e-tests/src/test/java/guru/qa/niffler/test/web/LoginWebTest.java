@@ -15,18 +15,27 @@ public class LoginWebTest {
     private static final Config CFG = Config.getInstance();
 
     @Test
-    void mainPageShouldBeDisplayedAfterSuccessLogin() {
+    void mainPageShouldBeDisplayedAfterSuccessLogin(@UserType(empty = false) StaticUser user) {
         Selenide.open(CFG.frontUrl(), LoginPage.class)
-                .login("duck", "12345")
+                .login(user.username(), user.password())
                 .checkSpendingsVisible()
                 .checkStatisticsVisible();
     }
 
     @Test
-    void userShouldStayOnLoginPageAfterLoginWithBadCredentials() {
+    void userShouldStayOnLoginPageAfterLoginWithBadCredentials(
+            @UserType(empty = false) StaticUser user,
+            @UserType StaticUser emptyUser
+    ) {
         Selenide.open(CFG.frontUrl(), LoginPage.class)
-                .setUsername("duck")
-                .setPassword("123") // bad password
+                .setUsername(user.username())
+                .setPassword(user.password() + "_bad") // bad password
+                .submit()
+                .verifyIsLoaded();
+        Selenide.sleep(1000);
+        new LoginPage()
+                .setUsername(emptyUser.username())
+                .setPassword(emptyUser.password() + "_bad") // bad password
                 .submit()
                 .verifyIsLoaded();
     }

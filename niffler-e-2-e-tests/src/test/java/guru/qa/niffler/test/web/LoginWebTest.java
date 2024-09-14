@@ -23,10 +23,19 @@ public class LoginWebTest {
     }
 
     @Test
-    void userShouldStayOnLoginPageAfterLoginWithBadCredentials(@UserType(empty = false) StaticUser user) {
+    void userShouldStayOnLoginPageAfterLoginWithBadCredentials(
+            @UserType(empty = false) StaticUser user,
+            @UserType StaticUser emptyUser
+    ) {
         Selenide.open(CFG.frontUrl(), LoginPage.class)
                 .setUsername(user.username())
                 .setPassword(user.password() + "_bad") // bad password
+                .submit()
+                .inputsAreVisible();
+        Selenide.sleep(1000);
+        new LoginPage()
+                .setUsername(emptyUser.username())
+                .setPassword(emptyUser.password() + "_bad") // bad password
                 .submit()
                 .inputsAreVisible();
     }

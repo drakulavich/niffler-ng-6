@@ -2,28 +2,31 @@ package guru.qa.niffler.test.web;
 
 import com.codeborne.selenide.Selenide;
 import guru.qa.niffler.config.Config;
-import guru.qa.niffler.jupiter.BrowserExtension;
+import guru.qa.niffler.jupiter.extension.BrowserExtension;
+import guru.qa.niffler.jupiter.extension.UsersQueueExtension;
+import guru.qa.niffler.jupiter.extension.UsersQueueExtension.StaticUser;
+import guru.qa.niffler.jupiter.extension.UsersQueueExtension.UserType;
 import guru.qa.niffler.page.LoginPage;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
-@ExtendWith(BrowserExtension.class)
+@ExtendWith({BrowserExtension.class, UsersQueueExtension.class})
 public class LoginWebTest {
     private static final Config CFG = Config.getInstance();
 
     @Test
-    void mainPageShouldBeDisplayedAfterSuccessLogin() {
+    void mainPageShouldBeDisplayedAfterSuccessLogin(@UserType(empty = false) StaticUser user) {
         Selenide.open(CFG.frontUrl(), LoginPage.class)
-                .login("duck", "12345")
+                .login(user.username(), user.password())
                 .checkSpendingsVisible()
                 .checkStatisticsVisible();
     }
 
     @Test
-    void userShouldStayOnLoginPageAfterLoginWithBadCredentials() {
+    void userShouldStayOnLoginPageAfterLoginWithBadCredentials(@UserType(empty = false) StaticUser user) {
         Selenide.open(CFG.frontUrl(), LoginPage.class)
-                .setUsername("duck")
-                .setPassword("123") // bad password
+                .setUsername(user.username())
+                .setPassword(user.password() + "_bad") // bad password
                 .submit()
                 .inputsAreVisible();
     }

@@ -1,10 +1,19 @@
 package guru.qa.niffler.test.web;
 
 import com.codeborne.selenide.Selenide;
+import guru.qa.niffler.config.Config;
+import guru.qa.niffler.jupiter.extension.BrowserExtension;
+import guru.qa.niffler.jupiter.extension.UsersQueueExtension;
+import guru.qa.niffler.jupiter.extension.UsersQueueExtension.StaticUser;
+import guru.qa.niffler.jupiter.extension.UsersQueueExtension.UserType;
 import guru.qa.niffler.page.LoginPage;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
-public class LoginWebTest extends BaseWebTest {
+@ExtendWith({BrowserExtension.class, UsersQueueExtension.class})
+public class LoginWebTest {
+    private static final Config CFG = Config.getInstance();
+
     @Test
     void mainPageShouldBeDisplayedAfterSuccessLogin() {
         Selenide.open(CFG.frontUrl(), LoginPage.class)

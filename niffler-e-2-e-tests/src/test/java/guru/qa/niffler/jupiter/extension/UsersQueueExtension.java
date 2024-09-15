@@ -30,16 +30,24 @@ public class UsersQueueExtension implements
 
   public static final ExtensionContext.Namespace NAMESPACE = ExtensionContext.Namespace.create(UsersQueueExtension.class);
 
-  public record StaticUser(String username, String password, boolean empty) {
+  public record StaticUser(
+    String username,
+    String password,
+    String friend,
+    String income,
+    String outcome) {
   }
 
   private static final Queue<StaticUser> EMPTY_USERS = new ConcurrentLinkedQueue<>();
-  private static final Queue<StaticUser> NOT_EMPTY_USERS = new ConcurrentLinkedQueue<>();
+  private static final Queue<StaticUser> WITH_FRIEND_USERS = new ConcurrentLinkedQueue<>();
+  private static final Queue<StaticUser> WITH_INCOME_REQUEST_USERS = new ConcurrentLinkedQueue<>();
+  private static final Queue<StaticUser> WITH_OUTCOME_REQUEST_USERS = new ConcurrentLinkedQueue<>();
 
   static {
-    EMPTY_USERS.add(new StaticUser("bee", "12345", true));
-    NOT_EMPTY_USERS.add(new StaticUser("duck", "12345", false));
-    NOT_EMPTY_USERS.add(new StaticUser("dima", "12345", false));
+    EMPTY_USERS.add(new StaticUser("bee", "12345", null, null, null));
+    WITH_FRIEND_USERS.add(new StaticUser("duck", "12345", "dima", null, null));
+    WITH_INCOME_REQUEST_USERS.add(new StaticUser("dima", "12345", null, "barsik", null));
+    WITH_OUTCOME_REQUEST_USERS.add(new StaticUser("barsik", "12345", null, null, "dima"));
   }
 
   @Target(ElementType.PARAMETER)
@@ -62,9 +70,9 @@ public class UsersQueueExtension implements
           while (user.isEmpty() && sw.getTime(TimeUnit.SECONDS) < 30) {
               user = switch (ut.value()) {
                   case EMPTY -> Optional.ofNullable(EMPTY_USERS.poll());
-                  case WITH_FRIEND -> Optional.ofNullable(NOT_EMPTY_USERS.poll());
-                  case WITH_INCOME_REQUEST -> Optional.ofNullable(NOT_EMPTY_USERS.poll());
-                  case WITH_OUTCOME_REQUEST -> Optional.ofNullable(NOT_EMPTY_USERS.poll());
+                  case WITH_FRIEND -> Optional.ofNullable(WITH_FRIEND_USERS.poll());
+                  case WITH_INCOME_REQUEST -> Optional.ofNullable(WITH_INCOME_REQUEST_USERS.poll());
+                  case WITH_OUTCOME_REQUEST -> Optional.ofNullable(WITH_OUTCOME_REQUEST_USERS.poll());
               };
           }
           Allure.getLifecycle().updateTestCase(testCase ->
@@ -93,10 +101,12 @@ public class UsersQueueExtension implements
     for (Map.Entry<UserType, StaticUser> e : map.entrySet()) {
         StaticUser user = e.getValue();
         System.out.println("Returning back to queue: " + user);
-        if (user.empty()) {
-            EMPTY_USERS.add(user);
-        } else {
-            NOT_EMPTY_USERS.add(user);
+        UserType userType = e.getKey();
+        switch (userType.value()) {
+            case EMPTY -> EMPTY_USERS.add(user);
+            case WITH_FRIEND -> WITH_FRIEND_USERS.add(user);
+            case WITH_INCOME_REQUEST -> WITH_INCOME_REQUEST_USERS.add(user);
+            case WITH_OUTCOME_REQUEST -> WITH_OUTCOME_REQUEST_USERS.add(user);
         }
     }
   }

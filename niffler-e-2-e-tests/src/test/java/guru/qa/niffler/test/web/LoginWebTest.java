@@ -10,12 +10,16 @@ import guru.qa.niffler.page.LoginPage;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
+import static guru.qa.niffler.jupiter.extension.UsersQueueExtension.UserType.Type.EMPTY;
+import static guru.qa.niffler.jupiter.extension.UsersQueueExtension.UserType.Type.WITH_FRIEND;
+import static guru.qa.niffler.jupiter.extension.UsersQueueExtension.UserType.Type.WITH_INCOME_REQUEST;
+
 @ExtendWith({BrowserExtension.class, UsersQueueExtension.class})
 public class LoginWebTest {
     private static final Config CFG = Config.getInstance();
 
     @Test
-    void mainPageShouldBeDisplayedAfterSuccessLogin(@UserType(UserType.Type.WITH_FRIEND) StaticUser user) {
+    void mainPageShouldBeDisplayedAfterSuccessLogin(@UserType(WITH_FRIEND) StaticUser user) {
         Selenide.open(CFG.frontUrl(), LoginPage.class)
                 .login(user.username(), user.password())
                 .checkSpendingsVisible()
@@ -24,8 +28,8 @@ public class LoginWebTest {
 
     @Test
     void userShouldStayOnLoginPageAfterLoginWithBadCredentials(
-            @UserType(UserType.Type.WITH_INCOME_REQUEST) StaticUser user,
-            @UserType StaticUser emptyUser
+            @UserType(WITH_INCOME_REQUEST) StaticUser user,
+            @UserType(EMPTY) StaticUser emptyUser
     ) {
         Selenide.open(CFG.frontUrl(), LoginPage.class)
                 .setUsername(user.username())

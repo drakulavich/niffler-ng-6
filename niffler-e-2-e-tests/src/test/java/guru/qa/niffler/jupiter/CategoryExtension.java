@@ -11,6 +11,8 @@ import org.junit.jupiter.api.extension.ParameterResolutionException;
 import org.junit.jupiter.api.extension.ParameterResolver;
 import org.junit.platform.commons.support.AnnotationSupport;
 
+import static guru.qa.niffler.utils.RandomDataUtils.randomCategoryName;
+
 public class CategoryExtension implements BeforeEachCallback, ParameterResolver, AfterTestExecutionCallback {
     public static final ExtensionContext.Namespace NAMESPACE = ExtensionContext.Namespace.create(CategoryExtension.class);
 
@@ -22,7 +24,7 @@ public class CategoryExtension implements BeforeEachCallback, ParameterResolver,
         AnnotationSupport.findAnnotation(context.getRequiredTestMethod(), Category.class)
                 .ifPresent(anno -> {
                     String categoryTitle = "".equals(anno.title())
-                            ? faker.address().streetName() + " " + faker.address().buildingNumber()
+                            ? randomCategoryName()
                             : anno.title();
                     CategoryJson category = new CategoryJson(
                             null,

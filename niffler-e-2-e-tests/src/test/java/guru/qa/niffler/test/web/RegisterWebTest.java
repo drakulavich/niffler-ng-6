@@ -5,13 +5,15 @@ import guru.qa.niffler.page.LoginPage;
 import guru.qa.niffler.page.RegisterPage;
 import org.junit.jupiter.api.Test;
 
+import static guru.qa.niffler.utils.RandomDataUtils.randomUsername;
+
 public class RegisterWebTest extends BaseWebTest {
     private final LoginPage loginPage = new LoginPage();
     private final RegisterPage registerPage = new RegisterPage();
 
     @Test
     void shouldRegisterNewUser() {
-        String newUsername = "u" + System.currentTimeMillis();
+        String newUsername = randomUsername();
         String newPassword = "pa$$w0rd";
 
         Selenide.open(CFG.frontUrl(), LoginPage.class)
@@ -39,7 +41,7 @@ public class RegisterWebTest extends BaseWebTest {
 
     @Test
     void shouldShowErrorIfPasswordAndConfirmPasswordAreNotEqual() {
-        String newUsername = "u" + System.currentTimeMillis();
+        String newUsername = randomUsername();
         String newPassword = "pa$$w0rd";
 
         Selenide.open(CFG.frontUrl(), LoginPage.class)

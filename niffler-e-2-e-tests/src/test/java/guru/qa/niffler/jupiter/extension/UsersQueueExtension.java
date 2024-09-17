@@ -59,10 +59,11 @@ public class UsersQueueExtension implements
     }
   }
 
+  @SuppressWarnings("unchecked")
   @Override
   public void beforeTestExecution(ExtensionContext context) {
     Arrays.stream(context.getRequiredTestMethod().getParameters())
-        .filter(p -> AnnotationSupport.isAnnotated(p, UserType.class))
+        .filter(p -> AnnotationSupport.isAnnotated(p, UserType.class) && p.getType().equals(StaticUser.class))
         .map(p -> p.getAnnotation(UserType.class))
         .forEach (ut -> {
           Optional<StaticUser> user = Optional.empty();
@@ -92,12 +93,17 @@ public class UsersQueueExtension implements
         });
   }
 
+  @SuppressWarnings("unchecked")
   @Override
   public void afterTestExecution(ExtensionContext context) {
     Map<UserType, StaticUser> map = context.getStore(NAMESPACE).get(
         context.getUniqueId(),
         Map.class
     );
+    if (map == null) {
+      return;
+    }
+
     for (Map.Entry<UserType, StaticUser> e : map.entrySet()) {
         StaticUser user = e.getValue();
         System.out.println("Returning back to queue: " + user);
@@ -117,10 +123,10 @@ public class UsersQueueExtension implements
         && AnnotationSupport.isAnnotated(parameterContext.getParameter(), UserType.class);
   }
 
+  @SuppressWarnings("unchecked")
   @Override
   public StaticUser resolveParameter(ParameterContext parameterContext, ExtensionContext extensionContext) throws ParameterResolutionException {
       Map<UserType, StaticUser> map = extensionContext.getStore(NAMESPACE).get(extensionContext.getUniqueId(), Map.class);
       return map.get(parameterContext.getParameter().getAnnotation(UserType.class));
-//    return extensionContext.getStore(NAMESPACE).get(extensionContext.getUniqueId(), StaticUser.class);
   }
 }

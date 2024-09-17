@@ -1,7 +1,8 @@
-package guru.qa.niffler.jupiter;
+package guru.qa.niffler.jupiter.extension;
 
-import com.github.javafaker.Faker;
 import guru.qa.niffler.api.SpendApiClient;
+import guru.qa.niffler.jupiter.annotation.Category;
+import guru.qa.niffler.jupiter.annotation.User;
 import guru.qa.niffler.model.CategoryJson;
 import org.junit.jupiter.api.extension.AfterTestExecutionCallback;
 import org.junit.jupiter.api.extension.BeforeEachCallback;
@@ -17,23 +18,26 @@ public class CategoryExtension implements BeforeEachCallback, ParameterResolver,
     public static final ExtensionContext.Namespace NAMESPACE = ExtensionContext.Namespace.create(CategoryExtension.class);
 
     private final SpendApiClient spendApiClient = new SpendApiClient();
-    private final Faker faker = new Faker();
 
     @Override
     public void beforeEach(ExtensionContext context) throws Exception {
-        AnnotationSupport.findAnnotation(context.getRequiredTestMethod(), Category.class)
+        AnnotationSupport.findAnnotation(context.getRequiredTestMethod(), User.class)
                 .ifPresent(anno -> {
-                    String categoryTitle = "".equals(anno.title())
+                    if (anno.categories().length == 0) {
+                        return;
+                    }
+                    Category category = anno.categories()[0];
+                    String categoryTitle = "".equals(category.title())
                             ? randomCategoryName()
-                            : anno.title();
-                    CategoryJson category = new CategoryJson(
+                            : category.title();
+                    CategoryJson categoryJson = new CategoryJson(
                             null,
                             categoryTitle,
-                            anno.username(),
+                            category.username(),
                             false
                     );
-                    CategoryJson createdCategory = spendApiClient.createCategory(category);
-                    if (anno.archived()) {
+                    CategoryJson createdCategory = spendApiClient.createCategory(categoryJson);
+                    if (category.archived()) {
                         CategoryJson archivedCategory = new CategoryJson(
                                 createdCategory.id(),
                                 createdCategory.name(),
@@ -50,19 +54,13 @@ public class CategoryExtension implements BeforeEachCallback, ParameterResolver,
     }
 
     @Override
-    public boolean supportsParameter(ParameterContext parameterContext, ExtensionContext extensionContext) throws ParameterResolutionException {
-        return parameterContext.getParameter().getType().isAssignableFrom(CategoryJson.class);
-    }
-
-    @Override
-    public Object resolveParameter(ParameterContext parameterContext, ExtensionContext extensionContext) throws ParameterResolutionException {
-        return extensionContext.getStore(NAMESPACE).get(extensionContext.getUniqueId(), CategoryJson.class);
-    }
-
-    @Override
     public void afterTestExecution(ExtensionContext context) {
         // archive all categories after test
         CategoryJson category = context.getStore(NAMESPACE).get(context.getUniqueId(), CategoryJson.class);
+        if (category == null) {
+            return;
+        }
+
         CategoryJson archivedCategory = new CategoryJson(
                 category.id(),
                 category.name(),
@@ -70,5 +68,15 @@ public class CategoryExtension implements BeforeEachCallback, ParameterResolver,
                 true
         );
         spendApiClient.updateCategory(archivedCategory);
+    }
+
+    @Override
+    public boolean supportsParameter(ParameterContext parameterContext, ExtensionContext extensionContext) throws ParameterResolutionException {
+        return parameterContext.getParameter().getType().isAssignableFrom(CategoryJson.class);
+    }
+
+    @Override
+    public Object resolveParameter(ParameterContext parameterContext, ExtensionContext extensionContext) throws ParameterResolutionException {
+        return extensionContext.getStore(NAMESPACE).get(extensionContext.getUniqueId(), CategoryJson.class);
     }
 }

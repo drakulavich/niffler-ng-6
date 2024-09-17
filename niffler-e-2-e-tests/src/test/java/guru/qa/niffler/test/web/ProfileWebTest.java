@@ -1,47 +1,46 @@
 package guru.qa.niffler.test.web;
 
 import com.codeborne.selenide.Selenide;
-import guru.qa.niffler.config.Config;
 import guru.qa.niffler.jupiter.Category;
-import guru.qa.niffler.jupiter.extension.BrowserExtension;
 import guru.qa.niffler.model.CategoryJson;
 import guru.qa.niffler.page.LoginPage;
 import guru.qa.niffler.page.ProfilePage;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 
-@ExtendWith(BrowserExtension.class)
-public class ProfileWebTest {
-    private static final Config CFG = Config.getInstance();
+public class ProfileWebTest extends BaseWebTest {
+    private static final String USERNAME = "bee";
+    private static final String PASSWORD = "12345";
+
+    private final ProfilePage profilePage = new ProfilePage();
 
     @Category(
-        username = "duck",
+        username = USERNAME,
         archived = true
     )
     @Test
     void archivedCategoryShouldPresentInCategoriesList(CategoryJson category) {
         Selenide.open(CFG.frontUrl(), LoginPage.class)
-            .login("duck", "12345")
+            .login(USERNAME, PASSWORD)
             .openProfile();
 
-        new ProfilePage()
-            .showArchivedCategories(true)
+        profilePage
+            .showArchivedCategories()
             .unarchiveCategory(category.name())
-            .showArchivedCategories(false)
+            .showArchivedCategories()
             .checkCategoryPresent(category.name());
     }
 
     @Category(
-        username = "duck",
+        username = USERNAME,
         archived = false
     )
     @Test
     void activeCategoryShouldPresentInCategoriesList(CategoryJson category) {
         Selenide.open(CFG.frontUrl(), LoginPage.class)
-            .login("duck", "12345")
+            .login(USERNAME, PASSWORD)
             .openProfile();
 
-        new ProfilePage()
+        profilePage
             .checkCategoryPresent(category.name())
             .archiveCategory(category.name())
             .checkCategoryNotPresent(category.name());

@@ -37,7 +37,16 @@ public class RegisterPage {
         return this;
     }
 
+    public LoginPage register(String username, String password) {
+        setUsername(username);
+        setPassword(password);
+        setPasswordSubmit(password);
+        signUpButton.click();
+
+        return new LoginPage();
+    }
+
     public void errorIsShown() {
-        errorMessage.should(visible);
+        errorMessage.shouldBe(visible);
     }
 }

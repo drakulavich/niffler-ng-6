@@ -20,16 +20,16 @@ public class MainPage {
   }
 
   public void checkThatTableContainsSpending(String spendingDescription) {
-    tableRows.find(text(spendingDescription)).should(visible);
+    tableRows.find(text(spendingDescription)).shouldBe(visible);
   }
 
   public MainPage checkStatisticsVisible() {
-    stat.should(visible);
+    stat.shouldBe(visible);
     return this;
   }
 
   public MainPage checkSpendingsVisible() {
-    spendingsHistory.should(visible);
+    spendingsHistory.shouldBe(visible);
     return this;
   }
 

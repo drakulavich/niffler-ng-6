@@ -34,7 +34,7 @@ public class LoginPage {
     return this;
   }
 
-  public void inputsAreVisible() {
+  public void verifyIsLoaded() {
     usernameInput.shouldBe(visible);
     passwordInput.shouldBe(visible);
     submitButton.shouldBe(visible);

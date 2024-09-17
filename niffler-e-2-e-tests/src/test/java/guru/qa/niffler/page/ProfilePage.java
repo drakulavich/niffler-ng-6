@@ -22,13 +22,11 @@ public class ProfilePage {
         return this;
     }
 
-    public ProfilePage showArchivedCategories(boolean archived) {
-        var currentArchived = showArchivedToggle.isSelected();
-        if (currentArchived != archived) {
-            // scroll to the top of the page to make the toggle visible
-            Selenide.executeJavaScript("window.scrollTo(0, 0);");
-            showArchivedToggle.click();
-        }
+    public ProfilePage showArchivedCategories() {
+        // scroll to the top of the page to make the toggle visible
+        Selenide.executeJavaScript("window.scrollTo(0, 0);");
+        showArchivedToggle.click();
+
         return this;
     }
 

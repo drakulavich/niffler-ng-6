@@ -15,8 +15,8 @@ public class ProfileWebTest extends BaseWebTest {
     private final ProfilePage profilePage = new ProfilePage();
 
     @User(
+        username = USERNAME,
         categories = {@Category(
-            username = USERNAME,
             archived = true
         )}
     )
@@ -34,8 +34,8 @@ public class ProfileWebTest extends BaseWebTest {
     }
 
     @User(
+        username = USERNAME,
         categories = {@Category(
-            username = USERNAME,
             archived = false
         )}
     )

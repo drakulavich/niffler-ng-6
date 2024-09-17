@@ -8,8 +8,6 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)
 public @interface Spending {
-  String username();
-
   String category();
 
   String description();

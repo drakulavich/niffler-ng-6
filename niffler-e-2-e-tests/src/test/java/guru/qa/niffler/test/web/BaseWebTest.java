@@ -1,11 +1,9 @@
 package guru.qa.niffler.test.web;
 
 import guru.qa.niffler.config.Config;
-import guru.qa.niffler.jupiter.extension.BrowserExtension;
-import guru.qa.niffler.jupiter.extension.UsersQueueExtension;
-import org.junit.jupiter.api.extension.ExtendWith;
+import guru.qa.niffler.jupiter.annotation.meta.WebTest;
 
-@ExtendWith({BrowserExtension.class, UsersQueueExtension.class})
+@WebTest
 public class BaseWebTest {
     protected static final Config CFG = Config.getInstance();
 }

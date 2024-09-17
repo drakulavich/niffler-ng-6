@@ -13,18 +13,16 @@ public class SpendingWebTest extends BaseWebTest {
   private final MainPage mainPage = new MainPage();
 
   @User(
+      username = "duck",
       categories = {@Category(
-          username = "duck",
           archived = true
       )},
-      spendings = {
-      @Spending(
-          username = "duck",
+      spendings = {@Spending(
           category = "Обучение",
           description = "Обучение Advanced 2.0",
           amount = 79990
-      )
-  })
+      )}
+  )
   @Test
   void categoryDescriptionShouldBeChangedFromTable(SpendJson spend) {
     final String newDescription = "Обучение Niffler Next Generation";

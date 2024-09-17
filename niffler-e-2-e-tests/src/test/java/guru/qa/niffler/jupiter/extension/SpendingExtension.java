@@ -35,13 +35,13 @@ public class SpendingExtension implements BeforeEachCallback, ParameterResolver 
               new CategoryJson(
                   null,
                   spending.category(),
-                  spending.username(),
+                  anno.username(),
                   false
               ),
               CurrencyValues.RUB,
               spending.amount(),
               spending.description(),
-              spending.username()
+              anno.username()
           );
           context.getStore(NAMESPACE).put(
               context.getUniqueId(),

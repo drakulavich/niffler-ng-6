@@ -33,7 +33,7 @@ public class CategoryExtension implements BeforeEachCallback, ParameterResolver,
                     CategoryJson categoryJson = new CategoryJson(
                             null,
                             categoryTitle,
-                            category.username(),
+                            anno.username(),
                             false
                     );
                     CategoryJson createdCategory = spendApiClient.createCategory(categoryJson);

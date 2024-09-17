@@ -1,6 +1,4 @@
-package guru.qa.niffler.jupiter;
-
-import org.junit.jupiter.api.extension.ExtendWith;
+package guru.qa.niffler.jupiter.annotation;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -9,7 +7,6 @@ import java.lang.annotation.Target;
 
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)
-@ExtendWith({CategoryExtension.class})
 public @interface Category {
     String username();
 

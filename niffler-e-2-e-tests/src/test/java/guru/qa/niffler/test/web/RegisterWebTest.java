@@ -1,15 +1,13 @@
 package guru.qa.niffler.test.web;
 
 import com.codeborne.selenide.Selenide;
-import guru.qa.niffler.config.Config;
-import guru.qa.niffler.jupiter.extension.BrowserExtension;
 import guru.qa.niffler.page.LoginPage;
+import guru.qa.niffler.page.RegisterPage;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 
-@ExtendWith(BrowserExtension.class)
-public class RegisterWebTest {
-    private static final Config CFG = Config.getInstance();
+public class RegisterWebTest extends BaseWebTest {
+    private final LoginPage loginPage = new LoginPage();
+    private final RegisterPage registerPage = new RegisterPage();
 
     @Test
     void shouldRegisterNewUser() {
@@ -18,13 +16,10 @@ public class RegisterWebTest {
 
         Selenide.open(CFG.frontUrl(), LoginPage.class)
                 .openRegisterPage()
-                .setUsername(newUsername)
-                .setPassword(newPassword)
-                .setPasswordSubmit(newPassword)
-                .submitRegistration()
+                .register(newUsername, newPassword)
                 .clickSignInButton();
 
-        new LoginPage()
+        loginPage
                 .login(newUsername, newPassword)
                 .checkStatisticsVisible()
                 .checkSpendingsVisible();
@@ -37,11 +32,9 @@ public class RegisterWebTest {
 
         Selenide.open(CFG.frontUrl(), LoginPage.class)
                 .openRegisterPage()
-                .setUsername(oldUsername)
-                .setPassword(newPassword)
-                .setPasswordSubmit(newPassword)
-                .clickSignUpButton()
-                .errorIsShown();
+                .register(oldUsername, newPassword);
+
+        registerPage.errorIsShown();
     }
 
     @Test

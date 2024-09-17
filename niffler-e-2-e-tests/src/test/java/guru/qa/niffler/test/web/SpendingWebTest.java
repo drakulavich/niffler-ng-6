@@ -1,19 +1,14 @@
 package guru.qa.niffler.test.web;
 
 import com.codeborne.selenide.Selenide;
-import guru.qa.niffler.config.Config;
-import guru.qa.niffler.jupiter.extension.BrowserExtension;
 import guru.qa.niffler.jupiter.annotation.Spending;
 import guru.qa.niffler.model.SpendJson;
 import guru.qa.niffler.page.LoginPage;
 import guru.qa.niffler.page.MainPage;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 
-@ExtendWith(BrowserExtension.class)
-public class SpendingWebTest {
-
-  private static final Config CFG = Config.getInstance();
+public class SpendingWebTest extends BaseWebTest {
+  private final MainPage mainPage = new MainPage();
 
   @Spending(
       username = "duck",
@@ -31,7 +26,6 @@ public class SpendingWebTest {
         .setNewSpendingDescription(newDescription)
         .save();
 
-    new MainPage().checkThatTableContainsSpending(newDescription);
+    mainPage.checkThatTableContainsSpending(newDescription);
   }
 }
-

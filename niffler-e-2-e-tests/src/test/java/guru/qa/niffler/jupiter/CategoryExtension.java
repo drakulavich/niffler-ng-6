@@ -1,5 +1,6 @@
 package guru.qa.niffler.jupiter;
 
+import com.github.javafaker.Faker;
 import guru.qa.niffler.api.SpendApiClient;
 import guru.qa.niffler.model.CategoryJson;
 import org.junit.jupiter.api.extension.AfterTestExecutionCallback;
@@ -14,15 +15,18 @@ public class CategoryExtension implements BeforeEachCallback, ParameterResolver,
     public static final ExtensionContext.Namespace NAMESPACE = ExtensionContext.Namespace.create(CategoryExtension.class);
 
     private final SpendApiClient spendApiClient = new SpendApiClient();
+    private final Faker faker = new Faker();
 
     @Override
     public void beforeEach(ExtensionContext context) throws Exception {
-        String randomCategory = "Cat_" + java.util.UUID.randomUUID();
         AnnotationSupport.findAnnotation(context.getRequiredTestMethod(), Category.class)
                 .ifPresent(anno -> {
+                    String categoryTitle = "".equals(anno.title())
+                            ? faker.address().streetName() + " " + faker.address().buildingNumber()
+                            : anno.title();
                     CategoryJson category = new CategoryJson(
                             null,
-                            randomCategory,
+                            categoryTitle,
                             anno.username(),
                             false
                     );
@@ -30,7 +34,7 @@ public class CategoryExtension implements BeforeEachCallback, ParameterResolver,
                     if (anno.archived()) {
                         CategoryJson archivedCategory = new CategoryJson(
                                 createdCategory.id(),
-                                createdCategory.name() + "_archived",
+                                createdCategory.name(),
                                 createdCategory.username(),
                                 true
                         );
@@ -54,16 +58,15 @@ public class CategoryExtension implements BeforeEachCallback, ParameterResolver,
     }
 
     @Override
-    public void afterTestExecution(ExtensionContext context) throws Exception {
+    public void afterTestExecution(ExtensionContext context) {
+        // archive all categories after test
         CategoryJson category = context.getStore(NAMESPACE).get(context.getUniqueId(), CategoryJson.class);
-        if (category.name().contains("_archived")) {
-            CategoryJson archivedCategory = new CategoryJson(
-                    category.id(),
-                    category.name(),
-                    category.username(),
-                    true
-            );
-            spendApiClient.updateCategory(archivedCategory);
-        }
+        CategoryJson archivedCategory = new CategoryJson(
+                category.id(),
+                category.name(),
+                category.username(),
+                true
+        );
+        spendApiClient.updateCategory(archivedCategory);
     }
 }

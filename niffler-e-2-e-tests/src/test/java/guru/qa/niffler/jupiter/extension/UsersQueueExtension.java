@@ -59,6 +59,16 @@ public class UsersQueueExtension implements
     }
   }
 
+  private static Queue<StaticUser> getQueueByUserType(UserType.Type type) {
+    switch (type) {
+      case EMPTY -> { return EMPTY_USERS; }
+      case WITH_FRIEND -> { return WITH_FRIEND_USERS; }
+      case WITH_INCOME_REQUEST -> { return WITH_INCOME_REQUEST_USERS; }
+      case WITH_OUTCOME_REQUEST -> { return WITH_OUTCOME_REQUEST_USERS; }
+      default -> { throw new IllegalArgumentException("Unknown user type: " + type); }
+    }
+  }
+
   @SuppressWarnings("unchecked")
   @Override
   public void beforeTestExecution(ExtensionContext context) {
@@ -69,12 +79,8 @@ public class UsersQueueExtension implements
           Optional<StaticUser> user = Optional.empty();
           StopWatch sw = StopWatch.createStarted();
           while (user.isEmpty() && sw.getTime(TimeUnit.SECONDS) < 30) {
-              user = switch (ut.value()) {
-                  case EMPTY -> Optional.ofNullable(EMPTY_USERS.poll());
-                  case WITH_FRIEND -> Optional.ofNullable(WITH_FRIEND_USERS.poll());
-                  case WITH_INCOME_REQUEST -> Optional.ofNullable(WITH_INCOME_REQUEST_USERS.poll());
-                  case WITH_OUTCOME_REQUEST -> Optional.ofNullable(WITH_OUTCOME_REQUEST_USERS.poll());
-              };
+              var queue = getQueueByUserType(ut.value());
+              user = Optional.ofNullable(queue.poll());
           }
           Allure.getLifecycle().updateTestCase(testCase ->
               testCase.setStart(new Date().getTime())
@@ -106,14 +112,10 @@ public class UsersQueueExtension implements
 
     for (Map.Entry<UserType, StaticUser> e : map.entrySet()) {
         StaticUser user = e.getValue();
-        System.out.println("Returning back to queue: " + user);
         UserType userType = e.getKey();
-        switch (userType.value()) {
-            case EMPTY -> EMPTY_USERS.add(user);
-            case WITH_FRIEND -> WITH_FRIEND_USERS.add(user);
-            case WITH_INCOME_REQUEST -> WITH_INCOME_REQUEST_USERS.add(user);
-            case WITH_OUTCOME_REQUEST -> WITH_OUTCOME_REQUEST_USERS.add(user);
-        }
+        System.out.println("Returning back to queue: " + user);
+        var queue = getQueueByUserType(userType.value());
+        queue.add(user);
     }
   }
 

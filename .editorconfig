@@ -1,0 +1,31 @@
+# EditorConfig is awesome: https://EditorConfig.org
+
+# Top-most EditorConfig file
+root = true
+
+# Unix-style newlines with a newline ending every file
+[*]
+charset = utf-8
+end_of_line = lf
+insert_final_newline = true
+trim_trailing_whitespace = true
+
+# Match all files
+[*.java]
+indent_style = space
+indent_size = 2
+max_line_length = 120
+
+# Java specific formatting
+[*.{xml,properties}]
+indent_style = space
+indent_size = 2
+
+# Set specific settings for Markdown and other documentation files
+[*.md]
+max_line_length = off
+
+# Special settings for YAML
+[*.yml]
+indent_style = space
+indent_size = 2

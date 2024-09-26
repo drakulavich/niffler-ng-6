@@ -58,29 +58,27 @@ public class SpendDaoJdbc implements SpendDao {
 
   @Override
   public Optional<SpendEntity> findSpendById(UUID id) {
-    try (Connection connection = Databases.connection(CFG.spendJdbcUrl())) {
-      try (PreparedStatement ps = connection.prepareStatement(
-          "SELECT * FROM spend WHERE id = ?"
-      )) {
-        ps.setObject(1, id);
-        ps.execute();
+    try (PreparedStatement ps = connection.prepareStatement(
+      "SELECT * FROM spend WHERE id = ?"
+    )) {
+      ps.setObject(1, id);
+      ps.execute();
 
-        try (ResultSet rs = ps.getResultSet()) {
-          if (rs.next()) {
-            SpendEntity se = new SpendEntity();
-            se.setId(rs.getObject("id", UUID.class));
-            se.setUsername(rs.getString("username"));
-            se.setSpendDate(rs.getDate("spend_date"));
-            se.setCurrency(CurrencyValues.valueOf(rs.getString("currency")));
-            se.setAmount(rs.getDouble("amount"));
-            se.setDescription(rs.getString("description"));
-            se.setCategory(
-                new CategoryDaoJdbc().findCategoryById(rs.getObject("category_id", UUID.class)).orElseThrow()
-            );
-            return Optional.of(se);
-          } else {
-            return Optional.empty();
-          }
+      try (ResultSet rs = ps.getResultSet()) {
+        if (rs.next()) {
+          SpendEntity se = new SpendEntity();
+          se.setId(rs.getObject("id", UUID.class));
+          se.setUsername(rs.getString("username"));
+          se.setSpendDate(rs.getDate("spend_date"));
+          se.setCurrency(CurrencyValues.valueOf(rs.getString("currency")));
+          se.setAmount(rs.getDouble("amount"));
+          se.setDescription(rs.getString("description"));
+          se.setCategory(
+            new CategoryDaoJdbc(connection).findCategoryById(rs.getObject("category_id", UUID.class)).orElseThrow()
+          );
+          return Optional.of(se);
+        } else {
+          return Optional.empty();
         }
       }
     } catch (SQLException e) {
@@ -90,30 +88,28 @@ public class SpendDaoJdbc implements SpendDao {
 
   @Override
   public List<SpendEntity> findAllByUsername(String username) {
-    try (Connection connection = Databases.connection(CFG.spendJdbcUrl())) {
-      try (PreparedStatement ps = connection.prepareStatement(
-          "SELECT * FROM spend WHERE username = ?"
-      )) {
-        ps.setString(1, username);
-        ps.execute();
+    try (PreparedStatement ps = connection.prepareStatement(
+      "SELECT * FROM spend WHERE username = ?"
+    )) {
+      ps.setString(1, username);
+      ps.execute();
 
-        try (ResultSet rs = ps.getResultSet()) {
-          List<SpendEntity> spends = new ArrayList<>();
-          while (rs.next()) {
-            SpendEntity se = new SpendEntity();
-            se.setId(rs.getObject("id", UUID.class));
-            se.setUsername(rs.getString("username"));
-            se.setSpendDate(rs.getDate("spend_date"));
-            se.setCurrency(CurrencyValues.valueOf(rs.getString("currency")));
-            se.setAmount(rs.getDouble("amount"));
-            se.setDescription(rs.getString("description"));
-            se.setCategory(
-                new CategoryDaoJdbc().findCategoryById(rs.getObject("category_id", UUID.class)).orElseThrow()
-            );
-            spends.add(se);
-          }
-          return spends;
+      try (ResultSet rs = ps.getResultSet()) {
+        List<SpendEntity> spends = new ArrayList<>();
+        while (rs.next()) {
+          SpendEntity se = new SpendEntity();
+          se.setId(rs.getObject("id", UUID.class));
+          se.setUsername(rs.getString("username"));
+          se.setSpendDate(rs.getDate("spend_date"));
+          se.setCurrency(CurrencyValues.valueOf(rs.getString("currency")));
+          se.setAmount(rs.getDouble("amount"));
+          se.setDescription(rs.getString("description"));
+          se.setCategory(
+            new CategoryDaoJdbc(connection).findCategoryById(rs.getObject("category_id", UUID.class)).orElseThrow()
+          );
+          spends.add(se);
         }
+        return spends;
       }
     } catch (SQLException e) {
       throw new RuntimeException(e);
@@ -122,13 +118,11 @@ public class SpendDaoJdbc implements SpendDao {
 
   @Override
   public void deleteSpend(SpendEntity spend) {
-    try (Connection connection = Databases.connection(CFG.spendJdbcUrl())) {
-      try (PreparedStatement ps = connection.prepareStatement(
-          "DELETE FROM spend WHERE id = ?"
-      )) {
-        ps.setObject(1, spend.getId());
-        ps.execute();
-      }
+    try (PreparedStatement ps = connection.prepareStatement(
+      "DELETE FROM spend WHERE id = ?"
+    )) {
+      ps.setObject(1, spend.getId());
+      ps.execute();
     } catch (SQLException e) {
       throw new RuntimeException(e);
     }

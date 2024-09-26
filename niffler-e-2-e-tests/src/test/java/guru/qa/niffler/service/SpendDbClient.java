@@ -9,6 +9,7 @@ import guru.qa.niffler.model.CategoryJson;
 import guru.qa.niffler.model.SpendJson;
 
 import java.sql.Connection;
+import java.util.Optional;
 import java.util.function.Consumer;
 
 import static guru.qa.niffler.data.Databases.transaction;
@@ -17,21 +18,24 @@ public class SpendDbClient {
 
   private static final Config CFG = Config.getInstance();
 
-  public SpendJson createSpend(SpendJson spend) {
-    return transaction(connection -> {
-          SpendEntity spendEntity = SpendEntity.fromJson(spend);
-          if (spendEntity.getCategory().getId() == null) {
-            CategoryEntity categoryEntity = new CategoryDaoJdbc(connection)
-                .create(spendEntity.getCategory());
-            spendEntity.setCategory(categoryEntity);
-          }
-          return SpendJson.fromEntity(
-              new SpendDaoJdbc(connection).create(spendEntity)
-          );
+    public SpendJson createSpend(SpendJson spend) {
+        return transaction(connection -> {
+            SpendEntity spendEntity = SpendEntity.fromJson(spend);
+
+            Optional<CategoryEntity> categoryEntity = new CategoryDaoJdbc(connection).findCategoryByUsernameAndCategoryName(
+                    spendEntity.getUsername(),
+                    spendEntity.getCategory().getName()
+            );
+            if (categoryEntity.isPresent()) {
+                spendEntity.setCategory(categoryEntity.get());
+            }
+            return SpendJson.fromEntity(
+                    new SpendDaoJdbc(connection).create(spendEntity)
+            );
         },
         CFG.spendJdbcUrl()
-    );
-  }
+        );
+    }
 
   public CategoryJson createCategory(CategoryJson category) {
     return transaction(connection -> {

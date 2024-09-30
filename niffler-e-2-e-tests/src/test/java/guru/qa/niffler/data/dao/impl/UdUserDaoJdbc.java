@@ -1,6 +1,6 @@
 package guru.qa.niffler.data.dao.impl;
 
-import guru.qa.niffler.data.dao.UserdataUserDao;
+import guru.qa.niffler.data.dao.UdUserDao;
 import guru.qa.niffler.data.entity.userdata.UdUserEntity;
 import guru.qa.niffler.model.CurrencyValues;
 
@@ -12,7 +12,7 @@ import java.sql.Statement;
 import java.util.Optional;
 import java.util.UUID;
 
-public class UdUserDaoJdbc implements UserdataUserDao {
+public class UdUserDaoJdbc implements UdUserDao {
   private final Connection connection;
 
   public UdUserDaoJdbc(Connection connection) {
@@ -20,7 +20,7 @@ public class UdUserDaoJdbc implements UserdataUserDao {
   }
 
   @Override
-  public UdUserEntity createUser(UdUserEntity user) {
+  public UdUserEntity create(UdUserEntity user) {
     try (PreparedStatement ps = connection.prepareStatement(
             "INSERT INTO \"user\" (username, currency, firstname, surname, full_name, photo, photo_small) " +
                  "VALUES (?, ?, ?, ?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS)) {

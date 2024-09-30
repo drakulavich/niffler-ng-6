@@ -54,7 +54,7 @@ public class UsersDbClient {
     return UserJson.fromEntity(
         new UdUserDaoSpringJdbc(dataSource(CFG.userdataJdbcUrl()))
             .create(
-                UserEntity.fromJson(user)
+                UdUserEntity.fromJson(user)
             ),
         null
     );
@@ -73,8 +73,8 @@ public class UsersDbClient {
             authUser.setAccountNonExpired(true);
             authUser.setAccountNonLocked(true);
             authUser.setCredentialsNonExpired(true);
-            new AuthUserDaoJdbc(con).createUser(authUser);
-            new AuthAuthorityDaoJdbc(con).createAuthority(
+            new AuthUserDaoJdbc(con).create(authUser);
+            new AuthAuthorityDaoJdbc(con).create(
               Arrays.stream(Authority.values())
                 .map(a -> {
                     AuthorityEntity ae = new AuthorityEntity();
@@ -93,7 +93,7 @@ public class UsersDbClient {
             ue.setUsername(user.username());
             ue.setFullname(user.fullname());
             ue.setCurrency(user.currency());
-            new UdUserDaoJdbc(con).createUser(ue);
+            new UdUserDaoJdbc(con).create(ue);
             return ue;
           },
           CFG.userdataJdbcUrl()

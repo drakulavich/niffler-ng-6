@@ -2,7 +2,9 @@ package guru.qa.niffler.service;
 
 import guru.qa.niffler.config.Config;
 import guru.qa.niffler.data.dao.impl.CategoryDaoJdbc;
+import guru.qa.niffler.data.dao.impl.CategoryDaoSpringJdbc;
 import guru.qa.niffler.data.dao.impl.SpendDaoJdbc;
+import guru.qa.niffler.data.dao.impl.SpendDaoSpringJdbc;
 import guru.qa.niffler.data.entity.spend.CategoryEntity;
 import guru.qa.niffler.data.entity.spend.SpendEntity;
 import guru.qa.niffler.model.CategoryJson;
@@ -12,6 +14,7 @@ import java.sql.Connection;
 import java.util.Optional;
 import java.util.function.Consumer;
 
+import static guru.qa.niffler.data.Databases.dataSource;
 import static guru.qa.niffler.data.Databases.transaction;
 
 public class SpendDbClient {
@@ -55,5 +58,21 @@ public class SpendDbClient {
         ),
         CFG.spendJdbcUrl()
     );
+  }
+
+  public SpendJson createSpendSpringJdbc(SpendJson spend) {
+    SpendEntity spendEntityCreated = new SpendDaoSpringJdbc(
+        dataSource(CFG.spendJdbcUrl())
+    ).create(SpendEntity.fromJson(spend));
+
+    return SpendJson.fromEntity(spendEntityCreated);
+  }
+
+  public CategoryJson createCategorySpringJdbc(CategoryJson category) {
+    CategoryEntity categoryEntityCreated = new CategoryDaoSpringJdbc(
+        dataSource(CFG.spendJdbcUrl())
+    ).create(CategoryEntity.fromJson(category));
+
+    return CategoryJson.fromEntity(categoryEntityCreated);
   }
 }

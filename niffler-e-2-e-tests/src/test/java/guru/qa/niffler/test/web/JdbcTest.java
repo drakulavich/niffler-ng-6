@@ -75,4 +75,31 @@ public class JdbcTest {
     );
     System.out.println(user);
   }
+
+  @Test
+  void createSpendSpringJdbcTest() {
+    SpendDbClient spendDbClient = new SpendDbClient();
+
+    CategoryJson category = spendDbClient.createCategorySpringJdbc(
+        new CategoryJson(
+            null,
+            "cat-name-spring-jdbc-1",
+            "duck",
+            false
+        )
+    );
+    System.out.println(category);
+    SpendJson spend = spendDbClient.createSpendSpringJdbc(
+        new SpendJson(
+            null,
+            new Date(),
+            category,
+            CurrencyValues.RUB,
+            330.0,
+            "spend-name-spring-jdbc-1",
+            "duck"
+        )
+    );
+    System.out.println(spend);
+  }
 }

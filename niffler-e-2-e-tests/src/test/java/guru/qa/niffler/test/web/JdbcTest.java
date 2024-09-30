@@ -83,7 +83,7 @@ public class JdbcTest {
     CategoryJson category = spendDbClient.createCategorySpringJdbc(
         new CategoryJson(
             null,
-            "cat-name-spring-jdbc-1",
+            "cat-name-spring-jdbc-2",
             "duck",
             false
         )
@@ -96,7 +96,7 @@ public class JdbcTest {
             category,
             CurrencyValues.RUB,
             330.0,
-            "spend-name-spring-jdbc-1",
+            "spend-name-spring-jdbc-2",
             "duck"
         )
     );

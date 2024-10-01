@@ -57,7 +57,7 @@ public class AuthUserDaoSpringJdbc implements AuthUserDao {
 
   @Override
   public Optional<AuthUserEntity> findByUsername(String username) {
-    JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
+    JdbcTemplate jdbcTemplate = new JdbcTemplate(DataSources.dataSource(CFG.authJdbcUrl()));
     return Optional.ofNullable(
         jdbcTemplate.queryForObject(
             "SELECT * FROM \"user\" WHERE username = ?",
@@ -69,7 +69,7 @@ public class AuthUserDaoSpringJdbc implements AuthUserDao {
 
   @Override
   public void delete(AuthUserEntity user) {
-    JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
+    JdbcTemplate jdbcTemplate = new JdbcTemplate(DataSources.dataSource(CFG.authJdbcUrl()));
     jdbcTemplate.update(
         "DELETE FROM \"user\" WHERE id = ?",
         user.getId()
@@ -78,7 +78,7 @@ public class AuthUserDaoSpringJdbc implements AuthUserDao {
 
   @Override
   public List<AuthUserEntity> findAll() {
-    JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
+    JdbcTemplate jdbcTemplate = new JdbcTemplate(DataSources.dataSource(CFG.authJdbcUrl()));
     return jdbcTemplate.query(
         "SELECT * FROM \"user\"",
         AuthUserEntityRowMapper.instance

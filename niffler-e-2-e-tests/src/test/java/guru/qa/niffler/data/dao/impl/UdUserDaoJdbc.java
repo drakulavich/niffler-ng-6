@@ -5,15 +5,15 @@ import guru.qa.niffler.data.dao.UdUserDao;
 import guru.qa.niffler.data.entity.userdata.UdUserEntity;
 import guru.qa.niffler.model.CurrencyValues;
 
-import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+
+import static guru.qa.niffler.data.tpl.Connections.holder;
 
 public class UdUserDaoJdbc implements UdUserDao {
 
@@ -71,14 +71,14 @@ public class UdUserDaoJdbc implements UdUserDao {
 
   @Override
   public Optional<UdUserEntity> findByUsername(String username) {
-    try (PreparedStatement ps = connection.prepareStatement(
+    try (PreparedStatement ps = holder(CFG.userdataJdbcUrl()).connection().prepareStatement(
             "SELECT * FROM \"user\" WHERE username = ?")) {
       ps.setString(1, username);
       ps.execute();
       ResultSet rs = ps.getResultSet();
 
       if (rs.next()) {
-        UserEntity result = new UserEntity();
+        UdUserEntity result = new UdUserEntity();
         result.setId(rs.getObject("id", UUID.class));
         result.setUsername(rs.getString("username"));
         result.setCurrency(CurrencyValues.valueOf(rs.getString("currency")));
@@ -97,7 +97,7 @@ public class UdUserDaoJdbc implements UdUserDao {
 
   @Override
   public void delete(UdUserEntity user) {
-    try (PreparedStatement ps = connection.prepareStatement(
+    try (PreparedStatement ps = holder(CFG.userdataJdbcUrl()).connection().prepareStatement(
             "DELETE FROM \"user\" WHERE id = ?")) {
       ps.setObject(1, user.getId());
       ps.execute();
@@ -108,7 +108,7 @@ public class UdUserDaoJdbc implements UdUserDao {
 
   @Override
   public List<UdUserEntity> findAll() {
-    try (PreparedStatement ps = connection.prepareStatement(
+    try (PreparedStatement ps = holder(CFG.userdataJdbcUrl()).connection().prepareStatement(
       "SELECT * FROM \"user\"")) {
       ps.execute();
 

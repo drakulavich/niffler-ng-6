@@ -39,28 +39,9 @@ public class JdbcTest {
   }
 
   @Test
-  void xaTxTest() {
-    UsersDbClient usersDbClient = new UsersDbClient();
-    UserJson user = usersDbClient.createUser(
-      new UserJson(
-        null,
-        "oleg-xa-2",
-        null,
-        null,
-        null,
-        CurrencyValues.RUB,
-        null,
-        null,
-        null
-      )
-    );
-    System.out.println(user);
-  }
-
-  @Test
   void springJdbcTest() {
     UsersDbClient usersDbClient = new UsersDbClient();
-    UserJson user = usersDbClient.createUserSpringJdbc(
+    UserJson user = usersDbClient.createUser(
         new UserJson(
             null,
             "valentin-5",
@@ -74,32 +55,5 @@ public class JdbcTest {
         )
     );
     System.out.println(user);
-  }
-
-  @Test
-  void createSpendSpringJdbcTest() {
-    SpendDbClient spendDbClient = new SpendDbClient();
-
-    CategoryJson category = spendDbClient.createCategorySpringJdbc(
-        new CategoryJson(
-            null,
-            "cat-name-spring-jdbc-2",
-            "duck",
-            false
-        )
-    );
-    System.out.println(category);
-    SpendJson spend = spendDbClient.createSpendSpringJdbc(
-        new SpendJson(
-            null,
-            new Date(),
-            category,
-            CurrencyValues.RUB,
-            330.0,
-            "spend-name-spring-jdbc-2",
-            "duck"
-        )
-    );
-    System.out.println(spend);
   }
 }

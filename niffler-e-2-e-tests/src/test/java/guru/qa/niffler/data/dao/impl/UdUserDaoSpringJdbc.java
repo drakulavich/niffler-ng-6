@@ -9,7 +9,6 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 
-import javax.sql.DataSource;
 import java.sql.PreparedStatement;
 import java.sql.Statement;
 import java.util.List;
@@ -59,7 +58,7 @@ public class UdUserDaoSpringJdbc implements UdUserDao {
 
   @Override
   public Optional<UdUserEntity> findByUsername(String username) {
-    JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
+    JdbcTemplate jdbcTemplate = new JdbcTemplate(DataSources.dataSource(CFG.userdataJdbcUrl()));
     return Optional.ofNullable(
         jdbcTemplate.queryForObject(
             "SELECT * FROM \"user\" WHERE username = ?",
@@ -71,7 +70,7 @@ public class UdUserDaoSpringJdbc implements UdUserDao {
 
   @Override
   public void delete(UdUserEntity user) {
-    JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
+    JdbcTemplate jdbcTemplate = new JdbcTemplate(DataSources.dataSource(CFG.userdataJdbcUrl()));
     jdbcTemplate.update(
         "DELETE FROM \"user\" WHERE id = ?",
         user.getId()
@@ -80,7 +79,7 @@ public class UdUserDaoSpringJdbc implements UdUserDao {
 
   @Override
   public List<UdUserEntity> findAll() {
-    JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
+    JdbcTemplate jdbcTemplate = new JdbcTemplate(DataSources.dataSource(CFG.userdataJdbcUrl()));
     return jdbcTemplate.query(
         "SELECT * FROM \"user\"",
         UdUserEntityRowMapper.instance

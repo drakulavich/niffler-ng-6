@@ -1,10 +1,10 @@
 package guru.qa.niffler.data.dao.impl;
 
+import guru.qa.niffler.config.Config;
 import guru.qa.niffler.data.dao.AuthAuthorityDao;
 import guru.qa.niffler.data.entity.auth.Authority;
 import guru.qa.niffler.data.entity.auth.AuthorityEntity;
 
-import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -36,7 +36,7 @@ public class AuthAuthorityDaoJdbc implements AuthAuthorityDao {
 
   @Override
   public void delete(AuthorityEntity authority) {
-    try (PreparedStatement ps = connection.prepareStatement(
+    try (PreparedStatement ps = holder(CFG.authJdbcUrl()).connection().prepareStatement(
         "DELETE FROM authority WHERE id = ?"
     )) {
       ps.setObject(1, authority.getId());
@@ -48,7 +48,7 @@ public class AuthAuthorityDaoJdbc implements AuthAuthorityDao {
 
   @Override
   public List<AuthorityEntity> findAll() {
-    try (PreparedStatement ps = connection.prepareStatement(
+    try (PreparedStatement ps = holder(CFG.authJdbcUrl()).connection().prepareStatement(
         "SELECT * FROM authority"
     )) {
       ps.execute();

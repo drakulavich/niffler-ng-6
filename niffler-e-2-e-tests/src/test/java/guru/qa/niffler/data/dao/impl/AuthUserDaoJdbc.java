@@ -4,11 +4,9 @@ import guru.qa.niffler.config.Config;
 import guru.qa.niffler.data.dao.AuthUserDao;
 import guru.qa.niffler.data.entity.auth.AuthUserEntity;
 
-import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -78,7 +76,7 @@ public class AuthUserDaoJdbc implements AuthUserDao {
 
   @Override
   public Optional<AuthUserEntity> findByUsername(String username) {
-    try (PreparedStatement ps = connection.prepareStatement(
+    try (PreparedStatement ps = holder(CFG.authJdbcUrl()).connection().prepareStatement(
       "SELECT * FROM \"user\" WHERE username = ?")) {
       ps.setString(1, username);
       ps.execute();
@@ -105,7 +103,7 @@ public class AuthUserDaoJdbc implements AuthUserDao {
 
   @Override
   public void delete(AuthUserEntity user) {
-    try (PreparedStatement ps = connection.prepareStatement(
+    try (PreparedStatement ps = holder(CFG.authJdbcUrl()).connection().prepareStatement(
       "DELETE FROM \"user\" WHERE id = ?"
     )) {
       ps.setObject(1, user.getId());
@@ -117,7 +115,7 @@ public class AuthUserDaoJdbc implements AuthUserDao {
 
   @Override
   public List<AuthUserEntity> findAll() {
-    try (PreparedStatement ps = connection.prepareStatement(
+    try (PreparedStatement ps = holder(CFG.authJdbcUrl()).connection().prepareStatement(
       "SELECT * FROM \"user\"")) {
       ps.execute();
 

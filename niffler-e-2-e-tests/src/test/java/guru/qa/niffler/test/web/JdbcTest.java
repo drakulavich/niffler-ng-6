@@ -11,6 +11,8 @@ import org.junit.jupiter.api.Test;
 
 import java.util.Date;
 
+import static guru.qa.niffler.utils.RandomDataUtils.randomUsername;
+
 @Disabled
 public class JdbcTest {
 
@@ -39,12 +41,77 @@ public class JdbcTest {
   }
 
   @Test
-  void springJdbcTest() {
+  void springJdbcTxTest() {
+    String username = randomUsername();
+    System.out.println("username: " + username);
     UsersDbClient usersDbClient = new UsersDbClient();
     UserJson user = usersDbClient.createUser(
         new UserJson(
             null,
-            "valentin-5",
+          username,
+            null,
+            null,
+            null,
+            CurrencyValues.RUB,
+            null,
+            null,
+            null
+        )
+    );
+    System.out.println(user);
+  }
+
+  @Test
+  void springJdbcWithoutTxTest() {
+    String username = randomUsername();
+    System.out.println("username: " + username);
+    UsersDbClient usersDbClient = new UsersDbClient();
+    UserJson user = usersDbClient.createUserWithoutTx(
+      new UserJson(
+        null,
+        username,
+        null,
+        null,
+        null,
+        CurrencyValues.RUB,
+        null,
+        null,
+        null
+      )
+    );
+    System.out.println(user);
+  }
+
+  @Test
+  void jdbcTxTest() {
+    String username = randomUsername();
+    System.out.println("username: " + username);
+    UsersDbClient usersDbClient = new UsersDbClient();
+    UserJson user = usersDbClient.createUserJdbc(
+        new UserJson(
+            null,
+            username,
+            null,
+            null,
+            null,
+            CurrencyValues.RUB,
+            null,
+            null,
+            null
+        )
+    );
+    System.out.println(user);
+  }
+
+  @Test
+  void jdbcWithoutTxTest() {
+    String username = randomUsername();
+    System.out.println("username: " + username);
+    UsersDbClient usersDbClient = new UsersDbClient();
+    UserJson user = usersDbClient.createUserWithoutTxJdbc(
+        new UserJson(
+            null,
+            username,
             null,
             null,
             null,

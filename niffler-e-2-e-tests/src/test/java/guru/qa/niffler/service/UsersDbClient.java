@@ -9,7 +9,7 @@ import guru.qa.niffler.data.entity.auth.AuthorityEntity;
 import guru.qa.niffler.data.entity.userdata.UdUserEntity;
 import guru.qa.niffler.data.repository.AuthUserRepository;
 import guru.qa.niffler.data.repository.UserdataUserRepository;
-import guru.qa.niffler.data.repository.impl.AuthUserRepositoryJdbc;
+import guru.qa.niffler.data.repository.impl.AuthUserRepositorySpringJdbc;
 import guru.qa.niffler.data.repository.impl.UserdataUserRepositoryJdbc;
 import guru.qa.niffler.data.tpl.DataSources;
 import guru.qa.niffler.data.tpl.XaTransactionTemplate;
@@ -28,7 +28,7 @@ public class UsersDbClient {
   private static final Config CFG = Config.getInstance();
   private static final PasswordEncoder pe = PasswordEncoderFactories.createDelegatingPasswordEncoder();
 
-  private final AuthUserRepository authUserRepository = new AuthUserRepositoryJdbc();
+  private final AuthUserRepository authUserRepository = new AuthUserRepositorySpringJdbc();
   private final UdUserDao udUserDao = new UdUserDaoSpringJdbc();
   private final UserdataUserRepository userdataUserRepository = new UserdataUserRepositoryJdbc();
 
@@ -62,7 +62,7 @@ public class UsersDbClient {
         null,
         null
     );
-    return txTemplate.execute(status -> {
+    return xaTransactionTemplate.execute(() -> {
         AuthUserEntity authUser = new AuthUserEntity();
         authUser.setUsername(username);
         authUser.setPassword(pe.encode(password));

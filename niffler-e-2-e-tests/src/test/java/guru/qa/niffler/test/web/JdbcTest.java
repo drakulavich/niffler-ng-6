@@ -128,22 +128,22 @@ public class JdbcTest {
   void jdbcFriendshipTest() {
     UsersDbClient usersDbClient = new UsersDbClient();
     UserJson myself = usersDbClient.createUser(
-      "myself3",
+      "myself4",
       "12345"
     );
 
     UserJson friend = usersDbClient.createUser(
-      "friend3",
+      "friend4",
       "12345"
     );
 
     UserJson income = usersDbClient.createUser(
-      "income3",
+      "income4",
       "12345"
     );
 
     UserJson outcome = usersDbClient.createUser(
-      "outcome3",
+      "outcome4",
       "12345"
     );
 

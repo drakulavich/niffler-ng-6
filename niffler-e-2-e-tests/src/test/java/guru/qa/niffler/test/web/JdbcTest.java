@@ -123,4 +123,32 @@ public class JdbcTest {
     );
     System.out.println(user);
   }
+
+  @Test
+  void jdbcFriendshipTest() {
+    UsersDbClient usersDbClient = new UsersDbClient();
+    UserJson myself = usersDbClient.createUser(
+      "myself3",
+      "12345"
+    );
+
+    UserJson friend = usersDbClient.createUser(
+      "friend3",
+      "12345"
+    );
+
+    UserJson income = usersDbClient.createUser(
+      "income3",
+      "12345"
+    );
+
+    UserJson outcome = usersDbClient.createUser(
+      "outcome3",
+      "12345"
+    );
+
+    usersDbClient.addInvitation(income, myself);
+    usersDbClient.addInvitation(myself, outcome);
+    usersDbClient.addFriends(myself, friend);
+  }
 }

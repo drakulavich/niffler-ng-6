@@ -1,6 +1,8 @@
 package guru.qa.niffler.data.repository.impl;
 
 import guru.qa.niffler.config.Config;
+import guru.qa.niffler.data.entity.userdata.FriendshipEntity;
+import guru.qa.niffler.data.entity.userdata.FriendshipStatus;
 import guru.qa.niffler.data.entity.userdata.UdUserEntity;
 import guru.qa.niffler.data.mapper.UdUserEntityRowMapper;
 import guru.qa.niffler.data.repository.UserdataUserRepository;
@@ -21,8 +23,10 @@ public class UserdataUserRepositoryJdbc implements UserdataUserRepository {
   public UdUserEntity create(UdUserEntity user) {
     try (PreparedStatement userPs = holder(CFG.userdataJdbcUrl()).connection().prepareStatement(
       "INSERT INTO \"user\" (username, currency) VALUES (?, ?)",
-      PreparedStatement.RETURN_GENERATED_KEYS
-    )) {
+          PreparedStatement.RETURN_GENERATED_KEYS);
+         PreparedStatement friendshipPs = holder(CFG.userdataJdbcUrl()).connection().prepareStatement(
+      "INSERT INTO friendship (requester_id, addressee_id, status, created_date) VALUES (?, ?, ?, ?)")
+    ) {
       userPs.setString(1, user.getUsername());
       userPs.setString(2, user.getCurrency().name());
       userPs.executeUpdate();
@@ -35,6 +39,25 @@ public class UserdataUserRepositoryJdbc implements UserdataUserRepository {
           throw new SQLException("Can`t find id in ResultSet");
         }
       }
+
+      for (FriendshipEntity f : user.getFriendshipRequests()) {
+        friendshipPs.setObject(1, f.getRequester().getId());
+        friendshipPs.setObject(2, f.getAddressee().getId());
+        friendshipPs.setString(3, f.getStatus().name());
+        friendshipPs.setObject(4, f.getCreatedDate());
+        friendshipPs.addBatch();
+        friendshipPs.clearParameters();
+      }
+      for (FriendshipEntity f : user.getFriendshipAddressees()) {
+        friendshipPs.setObject(1, f.getRequester().getId());
+        friendshipPs.setObject(2, f.getAddressee().getId());
+        friendshipPs.setString(3, f.getStatus().name());
+        friendshipPs.setObject(4, f.getCreatedDate());
+        friendshipPs.addBatch();
+        friendshipPs.clearParameters();
+      }
+      friendshipPs.executeBatch();
+
       user.setId(generatedKey);
       return user;
     } catch (Exception e) {
@@ -44,14 +67,29 @@ public class UserdataUserRepositoryJdbc implements UserdataUserRepository {
 
   @Override
   public Optional<UdUserEntity> findById(UUID id) {
-    try (PreparedStatement ps = holder(CFG.userdataJdbcUrl()).connection().prepareStatement("SELECT * FROM \"user\" WHERE id = ? ")) {
+    try (PreparedStatement ps = holder(CFG.userdataJdbcUrl()).connection().prepareStatement("SELECT * FROM \"user\" WHERE id = ? ");
+         PreparedStatement friendPs = holder(CFG.userdataJdbcUrl()).connection().prepareStatement(
+           "SELECT DISTINCT u.id, u.username, u.currency, u.firstname, u.surname, u.full_name, u.photo, u.photo_small, f.status " +
+             "FROM \"user\" u JOIN friendship f ON u.id = f.requester_id " +
+             "WHERE f.status IS NOT NULL AND f.addressee_id = ? " +
+             "ORDER BY f.status DESC"
+         )
+    ) {
       ps.setObject(1, id);
       ps.execute();
 
       try (ResultSet rs = ps.getResultSet()) {
         if (rs.next()) {
-          UdUserEntity ue = UdUserEntityRowMapper.instance.mapRow(rs, 1);
-          return Optional.of(ue);
+          UdUserEntity user = UdUserEntityRowMapper.instance.mapRow(rs, 1);
+          friendPs.setObject(1, id);
+          friendPs.execute();
+          try (ResultSet friendRs = friendPs.getResultSet()) {
+            while (friendRs.next()) {
+              UdUserEntity friend = UdUserEntityRowMapper.instance.mapRow(friendRs, 1);
+              user.addFriends(FriendshipStatus.valueOf(friendRs.getString("status")), friend);
+            }
+          }
+          return Optional.of(user);
         } else {
           return Optional.empty();
         }

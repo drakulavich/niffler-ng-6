@@ -23,6 +23,8 @@ import org.springframework.transaction.support.TransactionTemplate;
 
 import java.util.Arrays;
 
+import static guru.qa.niffler.utils.RandomDataUtils.randomUsername;
+
 public class UsersDbClient {
 
   private static final Config CFG = Config.getInstance();
@@ -112,23 +114,92 @@ public class UsersDbClient {
     );
   }
 
-  public UserJson createUserHibernate(UserJson user) {
+  public UserJson createUserHibernate(String username, String password) {
     return xaTransactionTemplate.execute(() -> {
-      AuthUserEntity authUser = getAuthUserEntity(user);
+      AuthUserEntity authUser = getAuthUserEntity(username, password);
       authUserRepository.create(authUser);
 
         return UserJson.fromEntity(
-          userdataUserRepository.create(UdUserEntity.fromJson(user)),
+          userdataUserRepository.create(userEntity(username)),
           null
         );
       }
     );
   }
 
-  private AuthUserEntity getAuthUserEntity(UserJson user) {
+  public void addIncomeInvitation(UserJson targetUser, int count) {
+    if (count > 0) {
+      UdUserEntity targetEntity = userdataUserRepository.findById(
+        targetUser.id()
+      ).orElseThrow();
+      for (int i = 0; i < count; i++) {
+        xaTransactionTemplate.execute(() -> {
+            String username = randomUsername();
+            AuthUserEntity authUser = authUserEntity(username, "12345");
+            authUserRepository.create(authUser);
+            UdUserEntity adressee = userdataUserRepository.create(userEntity(username));
+            userdataUserRepository.addInvitation(adressee, targetEntity);
+            return null;
+          }
+        );
+      }
+    }
+  }
+
+  public void addOutcomeInvitation(UserJson targetUser, int count) {
+    if (count > 0) {
+      UdUserEntity targetEntity = userdataUserRepository.findById(
+        targetUser.id()
+      ).orElseThrow();
+      for (int i = 0; i < count; i++) {
+        xaTransactionTemplate.execute(() -> {
+            String username = randomUsername();
+            AuthUserEntity authUser = authUserEntity(username, "12345");
+            authUserRepository.create(authUser);
+            UdUserEntity adressee = userdataUserRepository.create(userEntity(username));
+            userdataUserRepository.addInvitation(targetEntity, adressee);
+            return null;
+          }
+        );
+      }
+    }
+  }
+
+  void addFriend(UserJson targetUser, int count) {
+  }
+
+  private UdUserEntity userEntity(String username) {
+    UdUserEntity ue = new UdUserEntity();
+    ue.setUsername(username);
+    ue.setCurrency(CurrencyValues.USD);
+    return ue;
+  }
+
+  private AuthUserEntity authUserEntity(String username, String password) {
     AuthUserEntity authUser = new AuthUserEntity();
-    authUser.setUsername(user.username());
-    authUser.setPassword(pe.encode("12345"));
+    authUser.setUsername(username);
+    authUser.setPassword(pe.encode(password));
+    authUser.setEnabled(true);
+    authUser.setAccountNonExpired(true);
+    authUser.setAccountNonLocked(true);
+    authUser.setCredentialsNonExpired(true);
+    authUser.setAuthorities(
+      Arrays.stream(Authority.values()).map(
+        e -> {
+          AuthorityEntity ae = new AuthorityEntity();
+          ae.setUser(authUser);
+          ae.setAuthority(e);
+          return ae;
+        }
+      ).toList()
+    );
+    return authUser;
+  }
+
+  private AuthUserEntity getAuthUserEntity(String username, String password) {
+    AuthUserEntity authUser = new AuthUserEntity();
+    authUser.setUsername(username);
+    authUser.setPassword(pe.encode(password));
     authUser.setEnabled(true);
     authUser.setAccountNonExpired(true);
     authUser.setAccountNonLocked(true);
@@ -160,7 +231,7 @@ public class UsersDbClient {
 
   private UserJson createUserTemplate(UserJson user, AuthUserRepository authUserRepository, UdUserDao udUserDao) {
     return txTemplate.execute(status -> {
-      AuthUserEntity authUser = getAuthUserEntity(user);
+      AuthUserEntity authUser = getAuthUserEntity(user.username(), "12345");
       authUserRepository.create(authUser);
 
         return UserJson.fromEntity(
@@ -172,7 +243,7 @@ public class UsersDbClient {
   }
 
   private UserJson createUserWithoutTxTemplate(UserJson user, AuthUserRepository authUserRepository, UdUserDao udUserDao) {
-    AuthUserEntity authUser = getAuthUserEntity(user);
+    AuthUserEntity authUser = getAuthUserEntity(user.username(), "12345");
     authUserRepository.create(authUser);
 
     return UserJson.fromEntity(

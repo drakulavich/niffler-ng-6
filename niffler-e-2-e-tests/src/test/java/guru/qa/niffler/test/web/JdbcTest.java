@@ -127,7 +127,7 @@ public class JdbcTest {
   @Test
   void jdbcFriendshipTest() {
     UsersDbClient usersDbClient = new UsersDbClient();
-    String userPrefix = "18";
+    String userPrefix = "23";
     UserJson myself = usersDbClient.createUser(
       "myself" + userPrefix,
       "12345"

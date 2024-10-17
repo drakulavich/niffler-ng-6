@@ -9,8 +9,8 @@ import guru.qa.niffler.data.entity.auth.AuthorityEntity;
 import guru.qa.niffler.data.entity.userdata.UdUserEntity;
 import guru.qa.niffler.data.repository.AuthUserRepository;
 import guru.qa.niffler.data.repository.UserdataUserRepository;
-import guru.qa.niffler.data.repository.impl.AuthUserRepositorySpringJdbc;
-import guru.qa.niffler.data.repository.impl.UserdataUserRepositoryJdbc;
+import guru.qa.niffler.data.repository.impl.AuthUserRepositoryHibernate;
+import guru.qa.niffler.data.repository.impl.UserdataUserRepositoryHibernate;
 import guru.qa.niffler.data.tpl.DataSources;
 import guru.qa.niffler.data.tpl.XaTransactionTemplate;
 import guru.qa.niffler.model.CurrencyValues;
@@ -28,9 +28,9 @@ public class UsersDbClient {
   private static final Config CFG = Config.getInstance();
   private static final PasswordEncoder pe = PasswordEncoderFactories.createDelegatingPasswordEncoder();
 
-  private final AuthUserRepository authUserRepository = new AuthUserRepositorySpringJdbc();
+  private final AuthUserRepository authUserRepository = new AuthUserRepositoryHibernate();
   private final UdUserDao udUserDao = new UdUserDaoSpringJdbc();
-  private final UserdataUserRepository userdataUserRepository = new UserdataUserRepositoryJdbc();
+  private final UserdataUserRepository userdataUserRepository = new UserdataUserRepositoryHibernate();
 
   private final UdUserDao udUserDaoJdbc = new UdUserDaoSpringJdbc();
 
@@ -112,48 +112,20 @@ public class UsersDbClient {
     );
   }
 
-  public UserJson createUserJdbc(UserJson user) {
-    return createUserTemplate(user, authUserRepository, udUserDaoJdbc);
-  }
-
-  public UserJson createUserWithoutTx(UserJson user) {
-    return createUserWithoutTxTemplate(user, authUserRepository, udUserDao);
-  }
-
-  public UserJson createUserWithoutTxJdbc(UserJson user) {
-    return createUserWithoutTxTemplate(user, authUserRepository, udUserDaoJdbc);
-  }
-
-  private UserJson createUserTemplate(UserJson user, AuthUserRepository authUserRepository, UdUserDao udUserDao) {
-    return txTemplate.execute(status -> {
-        AuthUserEntity authUser = new AuthUserEntity();
-        authUser.setUsername(user.username());
-        authUser.setPassword(pe.encode("12345"));
-        authUser.setEnabled(true);
-        authUser.setAccountNonExpired(true);
-        authUser.setAccountNonLocked(true);
-        authUser.setCredentialsNonExpired(true);
-
-        authUser.setAuthorities(
-          Arrays.stream(Authority.values()).map(
-            e -> {
-              AuthorityEntity ae = new AuthorityEntity();
-              ae.setUser(authUser);
-              ae.setAuthority(e);
-              return ae;
-            }
-        ).toList());
-        authUserRepository.create(authUser);
+  public UserJson createUserHibernate(UserJson user) {
+    return xaTransactionTemplate.execute(() -> {
+      AuthUserEntity authUser = getAuthUserEntity(user);
+      authUserRepository.create(authUser);
 
         return UserJson.fromEntity(
-          udUserDao.create(UdUserEntity.fromJson(user)),
+          userdataUserRepository.create(UdUserEntity.fromJson(user)),
           null
         );
       }
     );
   }
 
-  private UserJson createUserWithoutTxTemplate(UserJson user, AuthUserRepository authUserRepository, UdUserDao udUserDao) {
+  private AuthUserEntity getAuthUserEntity(UserJson user) {
     AuthUserEntity authUser = new AuthUserEntity();
     authUser.setUsername(user.username());
     authUser.setPassword(pe.encode("12345"));
@@ -171,6 +143,36 @@ public class UsersDbClient {
           return ae;
         }
       ).toList());
+    return authUser;
+  }
+
+  public UserJson createUserJdbc(UserJson user) {
+    return createUserTemplate(user, authUserRepository, udUserDaoJdbc);
+  }
+
+  public UserJson createUserWithoutTx(UserJson user) {
+    return createUserWithoutTxTemplate(user, authUserRepository, udUserDao);
+  }
+
+  public UserJson createUserWithoutTxJdbc(UserJson user) {
+    return createUserWithoutTxTemplate(user, authUserRepository, udUserDaoJdbc);
+  }
+
+  private UserJson createUserTemplate(UserJson user, AuthUserRepository authUserRepository, UdUserDao udUserDao) {
+    return txTemplate.execute(status -> {
+      AuthUserEntity authUser = getAuthUserEntity(user);
+      authUserRepository.create(authUser);
+
+        return UserJson.fromEntity(
+          udUserDao.create(UdUserEntity.fromJson(user)),
+          null
+        );
+      }
+    );
+  }
+
+  private UserJson createUserWithoutTxTemplate(UserJson user, AuthUserRepository authUserRepository, UdUserDao udUserDao) {
+    AuthUserEntity authUser = getAuthUserEntity(user);
     authUserRepository.create(authUser);
 
     return UserJson.fromEntity(

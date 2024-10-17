@@ -22,6 +22,11 @@ public class AuthUserRepositorySpringJdbc implements AuthUserRepository {
   private static final Config CFG = Config.getInstance();
 
   @Override
+  public Optional<AuthUserEntity> findByUsername(String username) {
+    return Optional.empty();
+  }
+
+  @Override
   public AuthUserEntity create(AuthUserEntity user) {
     JdbcTemplate jdbcTemplate = new JdbcTemplate(DataSources.dataSource(CFG.authJdbcUrl()));
     KeyHolder kh = new GeneratedKeyHolder();

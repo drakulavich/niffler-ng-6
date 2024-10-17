@@ -87,7 +87,7 @@ public class JdbcTest {
     String username = randomUsername();
     System.out.println("username: " + username);
     UsersDbClient usersDbClient = new UsersDbClient();
-    UserJson user = usersDbClient.createUserJdbc(
+    UserJson user = usersDbClient.createUserHibernate(
         new UserJson(
             null,
             username,

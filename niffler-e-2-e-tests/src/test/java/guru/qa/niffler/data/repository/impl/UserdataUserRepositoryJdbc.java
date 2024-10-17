@@ -137,4 +137,9 @@ public class UserdataUserRepositoryJdbc implements UserdataUserRepository {
       throw new RuntimeException(e);
     }
   }
+
+  @Override
+  public Optional<UdUserEntity> findByUsername(String username) {
+    return Optional.empty();
+  }
 }

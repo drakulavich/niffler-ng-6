@@ -14,12 +14,14 @@ public class EntityManagers {
   private static final Map<String, EntityManagerFactory> emfs = new ConcurrentHashMap<>();
 
   public static EntityManager em(String jdbcUrl) {
-    return emfs.computeIfAbsent(
+    return new ThreadSafeEntityManager(
+      emfs.computeIfAbsent(
         jdbcUrl,
         key -> {
           DataSources.dataSource(jdbcUrl);
           return Persistence.createEntityManagerFactory(jdbcUrl);
         }
-      ).createEntityManager();
+      ).createEntityManager()
+    );
   }
 }

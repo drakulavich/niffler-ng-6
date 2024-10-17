@@ -8,6 +8,8 @@ import guru.qa.niffler.service.SpendDbClient;
 import guru.qa.niffler.service.UsersDbClient;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 
 import java.util.Date;
 
@@ -82,25 +84,22 @@ public class JdbcTest {
     System.out.println(user);
   }
 
-  @Test
-  void jdbcTxTest() {
-    String username = randomUsername();
+
+  static UsersDbClient usersDbClient = new UsersDbClient();
+
+  @ValueSource(strings = {
+    "val-5"
+  })
+  @ParameterizedTest
+  void jdbcTxTest(String username) {
     System.out.println("username: " + username);
-    UsersDbClient usersDbClient = new UsersDbClient();
     UserJson user = usersDbClient.createUserHibernate(
-        new UserJson(
-            null,
-            username,
-            null,
-            null,
-            null,
-            CurrencyValues.RUB,
-            null,
-            null,
-            null
-        )
+        username,
+        "12345"
     );
-    System.out.println(user);
+
+    usersDbClient.addIncomeInvitation(user, 1);
+    usersDbClient.addOutcomeInvitation(user, 1);
   }
 
   @Test

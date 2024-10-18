@@ -23,6 +23,7 @@ public class UserdataUserRepositoryHibernate implements UserdataUserRepository {
     entityManager.persist(user);
     return user;
   }
+
   @Override
   public Optional<UdUserEntity> findById(UUID id) {
     return Optional.ofNullable(
@@ -43,7 +44,7 @@ public class UserdataUserRepositoryHibernate implements UserdataUserRepository {
   }
 
   @Override
-  public void addInvitation(UdUserEntity requester, UdUserEntity addressee) {
+  public void sendInvitation(UdUserEntity requester, UdUserEntity addressee) {
     entityManager.joinTransaction();
     requester.addFriends(FriendshipStatus.PENDING, addressee);
   }
@@ -53,5 +54,17 @@ public class UserdataUserRepositoryHibernate implements UserdataUserRepository {
     entityManager.joinTransaction();
     requester.addFriends(FriendshipStatus.ACCEPTED, addressee);
     addressee.addFriends(FriendshipStatus.ACCEPTED, requester);
+  }
+
+  @Override
+  public UdUserEntity update(UdUserEntity user) {
+    entityManager.joinTransaction();
+    return entityManager.merge(user);
+  }
+
+  @Override
+  public void remove(UdUserEntity user) {
+    entityManager.joinTransaction();
+    entityManager.remove(user);
   }
 }

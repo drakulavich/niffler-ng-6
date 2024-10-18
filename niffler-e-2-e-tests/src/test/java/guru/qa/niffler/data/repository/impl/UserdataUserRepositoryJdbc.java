@@ -104,7 +104,7 @@ public class UserdataUserRepositoryJdbc implements UserdataUserRepository {
   }
 
   @Override
-  public void addInvitation(UdUserEntity requester, UdUserEntity addressee) {
+  public void sendInvitation(UdUserEntity requester, UdUserEntity addressee) {
     try (PreparedStatement ps = holder(CFG.userdataJdbcUrl()).connection().prepareStatement(
       "INSERT INTO friendship (requester_id, addressee_id, status, created_date) VALUES (?, ?, 'PENDING', now())"
     )) {
@@ -139,7 +139,17 @@ public class UserdataUserRepositoryJdbc implements UserdataUserRepository {
   }
 
   @Override
+  public void remove(UdUserEntity user) {
+
+  }
+
+  @Override
   public Optional<UdUserEntity> findByUsername(String username) {
     return Optional.empty();
+  }
+
+  @Override
+  public UdUserEntity update(UdUserEntity user) {
+    return null;
   }
 }

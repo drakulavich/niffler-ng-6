@@ -13,77 +13,32 @@ import org.junit.jupiter.params.provider.ValueSource;
 
 import java.util.Date;
 
-import static guru.qa.niffler.utils.RandomDataUtils.randomUsername;
-
 @Disabled
 public class JdbcTest {
 
+  static SpendDbClient spendDbClient = new SpendDbClient();
+
   @Test
   void txTest() {
-    SpendDbClient spendDbClient = new SpendDbClient();
-
     SpendJson spend = spendDbClient.createSpend(
         new SpendJson(
             null,
             new Date(),
             new CategoryJson(
                 null,
-                "cat-name-tx-2",
+                "cat-name-tx-3",
                 "duck",
                 false
             ),
             CurrencyValues.RUB,
             1000.0,
-            "spend-name-tx",
-            null
+            "spend-name-tx-3",
+            "duck"
         )
     );
 
     System.out.println(spend);
   }
-
-  @Test
-  void springJdbcTxTest() {
-    String username = randomUsername();
-    System.out.println("username: " + username);
-    UsersDbClient usersDbClient = new UsersDbClient();
-    UserJson user = usersDbClient.createUser(
-        new UserJson(
-            null,
-          username,
-            null,
-            null,
-            null,
-            CurrencyValues.RUB,
-            null,
-            null,
-            null
-        )
-    );
-    System.out.println(user);
-  }
-
-  @Test
-  void springJdbcWithoutTxTest() {
-    String username = randomUsername();
-    System.out.println("username: " + username);
-    UsersDbClient usersDbClient = new UsersDbClient();
-    UserJson user = usersDbClient.createUserWithoutTx(
-      new UserJson(
-        null,
-        username,
-        null,
-        null,
-        null,
-        CurrencyValues.RUB,
-        null,
-        null,
-        null
-      )
-    );
-    System.out.println(user);
-  }
-
 
   static UsersDbClient usersDbClient = new UsersDbClient();
 
@@ -103,30 +58,9 @@ public class JdbcTest {
   }
 
   @Test
-  void jdbcWithoutTxTest() {
-    String username = randomUsername();
-    System.out.println("username: " + username);
-    UsersDbClient usersDbClient = new UsersDbClient();
-    UserJson user = usersDbClient.createUserWithoutTxJdbc(
-        new UserJson(
-            null,
-            username,
-            null,
-            null,
-            null,
-            CurrencyValues.RUB,
-            null,
-            null,
-            null
-        )
-    );
-    System.out.println(user);
-  }
-
-  @Test
   void jdbcFriendshipTest() {
     UsersDbClient usersDbClient = new UsersDbClient();
-    String userPrefix = "23";
+    String userPrefix = "24";
     UserJson myself = usersDbClient.createUser(
       "myself" + userPrefix,
       "12345"

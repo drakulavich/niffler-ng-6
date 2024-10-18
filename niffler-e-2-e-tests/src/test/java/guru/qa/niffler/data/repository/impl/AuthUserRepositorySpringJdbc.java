@@ -27,6 +27,15 @@ public class AuthUserRepositorySpringJdbc implements AuthUserRepository {
   }
 
   @Override
+  public AuthUserEntity update(AuthUserEntity user) {
+    return null;
+  }
+
+  @Override
+  public void remove(AuthUserEntity user) {
+  }
+
+  @Override
   public AuthUserEntity create(AuthUserEntity user) {
     JdbcTemplate jdbcTemplate = new JdbcTemplate(DataSources.dataSource(CFG.authJdbcUrl()));
     KeyHolder kh = new GeneratedKeyHolder();

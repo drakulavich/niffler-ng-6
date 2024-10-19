@@ -7,7 +7,7 @@ import guru.qa.niffler.data.dao.impl.AuthAuthorityDaoSpringJdbc;
 import guru.qa.niffler.data.dao.impl.AuthUserDaoSpringJdbc;
 import guru.qa.niffler.data.entity.auth.AuthUserEntity;
 import guru.qa.niffler.data.entity.auth.AuthorityEntity;
-import guru.qa.niffler.data.mapper.AuthUserEntityRowExtractor;
+import guru.qa.niffler.data.extractor.AuthUserEntityRowExtractor;
 import guru.qa.niffler.data.repository.AuthUserRepository;
 import guru.qa.niffler.data.tpl.DataSources;
 import org.springframework.jdbc.core.JdbcTemplate;

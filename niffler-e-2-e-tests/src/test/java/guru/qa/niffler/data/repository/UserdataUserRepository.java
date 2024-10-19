@@ -8,6 +8,9 @@ import java.util.UUID;
 public interface UserdataUserRepository {
   UdUserEntity create(UdUserEntity user);
   Optional<UdUserEntity> findById(UUID id);
-  void addInvitation(UdUserEntity requester, UdUserEntity addressee);
+  Optional<UdUserEntity> findByUsername(String username);
+  UdUserEntity update(UdUserEntity user);
+  void sendInvitation(UdUserEntity requester, UdUserEntity addressee);
   void addFriend(UdUserEntity requester, UdUserEntity addressee);
+  void remove(UdUserEntity user);
 }

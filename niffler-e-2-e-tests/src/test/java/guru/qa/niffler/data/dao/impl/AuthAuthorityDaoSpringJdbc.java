@@ -11,6 +11,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.List;
+import java.util.UUID;
 
 public class AuthAuthorityDaoSpringJdbc implements AuthAuthorityDao {
 
@@ -51,6 +52,26 @@ public class AuthAuthorityDaoSpringJdbc implements AuthAuthorityDao {
     return jdbcTemplate.query(
         "SELECT * FROM authority",
       AuthorityEntityRowMapper.instance
+    );
+  }
+
+  @Override
+  public void update(AuthorityEntity authority) {
+    JdbcTemplate jdbcTemplate = new JdbcTemplate(DataSources.dataSource(Config.getInstance().authJdbcUrl()));
+    jdbcTemplate.update(
+      "UPDATE authority SET authority = ? WHERE id = ?",
+      authority.getAuthority().name(),
+      authority.getId()
+    );
+  }
+
+  @Override
+  public List<AuthorityEntity> findAllByUserId(UUID userId) {
+    JdbcTemplate jdbcTemplate = new JdbcTemplate(DataSources.dataSource(Config.getInstance().authJdbcUrl()));
+    return jdbcTemplate.query(
+      "SELECT * FROM authority WHERE user_id = ?",
+      AuthorityEntityRowMapper.instance,
+      userId
     );
   }
 }

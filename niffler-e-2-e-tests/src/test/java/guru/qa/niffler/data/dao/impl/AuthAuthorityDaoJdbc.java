@@ -2,14 +2,15 @@ package guru.qa.niffler.data.dao.impl;
 
 import guru.qa.niffler.config.Config;
 import guru.qa.niffler.data.dao.AuthAuthorityDao;
-import guru.qa.niffler.data.entity.auth.Authority;
 import guru.qa.niffler.data.entity.auth.AuthorityEntity;
+import guru.qa.niffler.data.mapper.AuthorityEntityRowMapper;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import static guru.qa.niffler.data.tpl.Connections.holder;
 
@@ -28,6 +29,19 @@ public class AuthAuthorityDaoJdbc implements AuthAuthorityDao {
         ps.clearParameters();
       }
       ps.executeBatch();
+    } catch (SQLException e) {
+      throw new RuntimeException(e);
+    }
+  }
+
+  @Override
+  public void update(AuthorityEntity authority) {
+    try (PreparedStatement ps = holder(CFG.authJdbcUrl()).connection().prepareStatement(
+        "UPDATE authority SET authority = ? WHERE id = ?"
+    )) {
+      ps.setString(1, authority.getAuthority().name());
+      ps.setObject(2, authority.getId());
+      ps.executeUpdate();
     } catch (SQLException e) {
       throw new RuntimeException(e);
     }
@@ -55,10 +69,28 @@ public class AuthAuthorityDaoJdbc implements AuthAuthorityDao {
       try (ResultSet rs = ps.getResultSet()) {
         List<AuthorityEntity> authorities = new ArrayList<>();
         while (rs.next()) {
-          AuthorityEntity authority = new AuthorityEntity();
-          authority.setId(rs.getObject("id", java.util.UUID.class));
-//          authority.setUserId(rs.getObject("user_id", java.util.UUID.class));
-          authority.setAuthority(Authority.valueOf(rs.getString("authority")));
+          AuthorityEntity authority = AuthorityEntityRowMapper.instance.mapRow(rs, rs.getRow());
+          authorities.add(authority);
+        }
+        return authorities;
+      }
+    } catch (SQLException e) {
+      throw new RuntimeException(e);
+    }
+  }
+
+  @Override
+  public List<AuthorityEntity> findAllByUserId(UUID userId) {
+    try (PreparedStatement ps = holder(CFG.authJdbcUrl()).connection().prepareStatement(
+        "SELECT * FROM authority WHERE user_id = ?"
+    )) {
+      ps.setObject(1, userId);
+      ps.execute();
+
+      try (ResultSet rs = ps.getResultSet()) {
+        List<AuthorityEntity> authorities = new ArrayList<>();
+        while (rs.next()) {
+          AuthorityEntity authority = AuthorityEntityRowMapper.instance.mapRow(rs, rs.getRow());
           authorities.add(authority);
         }
         return authorities;

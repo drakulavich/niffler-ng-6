@@ -42,7 +42,7 @@ public class CategoryDaoSpringJdbc implements CategoryDao {
   }
 
   @Override
-  public Optional<CategoryEntity> findCategoryById(UUID id) {
+  public Optional<CategoryEntity> findById(UUID id) {
     JdbcTemplate jdbcTemplate = new JdbcTemplate(DataSources.dataSource(CFG.spendJdbcUrl()));
     return Optional.ofNullable(
       jdbcTemplate.queryForObject(
@@ -92,5 +92,17 @@ public class CategoryDaoSpringJdbc implements CategoryDao {
       "SELECT * FROM category",
       CategoryEntityRowMapper.instance
     );
+  }
+
+  @Override
+  public CategoryEntity update(CategoryEntity category) {
+    JdbcTemplate jdbcTemplate = new JdbcTemplate(DataSources.dataSource(CFG.spendJdbcUrl()));
+    jdbcTemplate.update(
+      "UPDATE category SET name = ?, archived = ? WHERE id = ?",
+      category.getName(),
+      category.isArchived(),
+      category.getId()
+    );
+    return category;
   }
 }

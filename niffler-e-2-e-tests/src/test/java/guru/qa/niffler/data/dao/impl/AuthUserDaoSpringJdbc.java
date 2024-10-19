@@ -84,4 +84,20 @@ public class AuthUserDaoSpringJdbc implements AuthUserDao {
         AuthUserEntityRowMapper.instance
     );
   }
+
+  @Override
+  public AuthUserEntity update(AuthUserEntity user) {
+    JdbcTemplate jdbcTemplate = new JdbcTemplate(DataSources.dataSource(CFG.authJdbcUrl()));
+    jdbcTemplate.update(
+        "UPDATE \"user\" SET username = ?, password = ?, enabled = ?, account_non_expired = ?, account_non_locked = ?, credentials_non_expired = ? WHERE id = ?",
+        user.getUsername(),
+        user.getPassword(),
+        user.getEnabled(),
+        user.getAccountNonExpired(),
+        user.getAccountNonLocked(),
+        user.getCredentialsNonExpired(),
+        user.getId()
+    );
+    return user;
+  }
 }

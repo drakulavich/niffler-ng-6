@@ -3,6 +3,7 @@ package guru.qa.niffler.data.dao.impl;
 import guru.qa.niffler.config.Config;
 import guru.qa.niffler.data.dao.AuthUserDao;
 import guru.qa.niffler.data.entity.auth.AuthUserEntity;
+import guru.qa.niffler.data.mapper.AuthUserEntityRowMapper;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -56,15 +57,7 @@ public class AuthUserDaoJdbc implements AuthUserDao {
 
       try (ResultSet rs = ps.getResultSet()) {
         if (rs.next()) {
-          AuthUserEntity result = new AuthUserEntity();
-          result.setId(rs.getObject("id", UUID.class));
-          result.setUsername(rs.getString("username"));
-          result.setPassword(rs.getString("password"));
-          result.setEnabled(rs.getBoolean("enabled"));
-          result.setAccountNonExpired(rs.getBoolean("account_non_expired"));
-          result.setAccountNonLocked(rs.getBoolean("account_non_locked"));
-          result.setCredentialsNonExpired(rs.getBoolean("credentials_non_expired"));
-          return Optional.of(result);
+          return Optional.ofNullable(AuthUserEntityRowMapper.instance.mapRow(rs, rs.getRow()));
         } else {
           return Optional.empty();
         }
@@ -83,15 +76,7 @@ public class AuthUserDaoJdbc implements AuthUserDao {
 
       try (ResultSet rs = ps.getResultSet()) {
         if (rs.next()) {
-          AuthUserEntity ue = new AuthUserEntity();
-          ue.setId(rs.getObject("id", UUID.class));
-          ue.setUsername(rs.getString("username"));
-          ue.setPassword(rs.getString("password"));
-          ue.setEnabled(rs.getBoolean("enabled"));
-          ue.setAccountNonExpired(rs.getBoolean("account_non_expired"));
-          ue.setAccountNonLocked(rs.getBoolean("account_non_locked"));
-          ue.setCredentialsNonExpired(rs.getBoolean("credentials_non_expired"));
-          return Optional.of(ue);
+          return Optional.ofNullable(AuthUserEntityRowMapper.instance.mapRow(rs, rs.getRow()));
         } else {
           return Optional.empty();
         }
@@ -122,18 +107,29 @@ public class AuthUserDaoJdbc implements AuthUserDao {
       try (ResultSet rs = ps.getResultSet()) {
         List<AuthUserEntity> users = new ArrayList<>();
         while (rs.next()) {
-          AuthUserEntity ue = new AuthUserEntity();
-          ue.setId(rs.getObject("id", UUID.class));
-          ue.setUsername(rs.getString("username"));
-          ue.setPassword(rs.getString("password"));
-          ue.setEnabled(rs.getBoolean("enabled"));
-          ue.setAccountNonExpired(rs.getBoolean("account_non_expired"));
-          ue.setAccountNonLocked(rs.getBoolean("account_non_locked"));
-          ue.setCredentialsNonExpired(rs.getBoolean("credentials_non_expired"));
+          AuthUserEntity ue = AuthUserEntityRowMapper.instance.mapRow(rs, rs.getRow());
           users.add(ue);
         }
         return users;
       }
+    } catch (SQLException e) {
+      throw new RuntimeException(e);
+    }
+  }
+
+  @Override
+  public AuthUserEntity update(AuthUserEntity user) {
+    try (PreparedStatement userPs = holder(CFG.authJdbcUrl()).connection().prepareStatement(
+      "UPDATE \"user\" SET username = ?, password = ?, enabled = ?, account_non_expired = ?, account_non_locked = ?, credentials_non_expired = ? WHERE id = ?")) {
+      userPs.setString(1, user.getUsername());
+      userPs.setString(2, user.getPassword());
+      userPs.setBoolean(3, user.getEnabled());
+      userPs.setBoolean(4, user.getAccountNonExpired());
+      userPs.setBoolean(5, user.getAccountNonLocked());
+      userPs.setBoolean(6, user.getCredentialsNonExpired());
+      userPs.setObject(7, user.getId());
+      userPs.executeUpdate();
+      return user;
     } catch (SQLException e) {
       throw new RuntimeException(e);
     }

@@ -17,6 +17,7 @@ import java.util.Date;
 public class JdbcTest {
 
   static SpendDbClient spendDbClient = new SpendDbClient();
+  static UsersDbClient usersDbClient = new UsersDbClient();
 
   @Test
   void txTest() {
@@ -26,13 +27,13 @@ public class JdbcTest {
             new Date(),
             new CategoryJson(
                 null,
-                "cat-name-tx-3",
+                "cat-name-tx-8",
                 "duck",
                 false
             ),
             CurrencyValues.RUB,
             1000.0,
-            "spend-name-tx-3",
+            "spend-name-tx-8",
             "duck"
         )
     );
@@ -40,27 +41,25 @@ public class JdbcTest {
     System.out.println(spend);
   }
 
-  static UsersDbClient usersDbClient = new UsersDbClient();
-
   @ValueSource(strings = {
-    "val-5"
+    "val-8"
   })
   @ParameterizedTest
   void jdbcTxTest(String username) {
     System.out.println("username: " + username);
-    UserJson user = usersDbClient.createUserHibernate(
+    UserJson user = usersDbClient.createUser(
         username,
         "12345"
     );
 
-    usersDbClient.addIncomeInvitation(user, 1);
-    usersDbClient.addOutcomeInvitation(user, 1);
+    usersDbClient.addIncomeInvitation(user, 2);
+    usersDbClient.addOutcomeInvitation(user, 3);
+    usersDbClient.addFriend(user, 2);
   }
 
   @Test
   void jdbcFriendshipTest() {
-    UsersDbClient usersDbClient = new UsersDbClient();
-    String userPrefix = "24";
+    String userPrefix = "27";
     UserJson myself = usersDbClient.createUser(
       "myself" + userPrefix,
       "12345"

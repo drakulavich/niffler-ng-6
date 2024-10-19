@@ -9,7 +9,7 @@ import guru.qa.niffler.data.tpl.XaTransactionTemplate;
 import guru.qa.niffler.model.CategoryJson;
 import guru.qa.niffler.model.SpendJson;
 
-public class SpendDbClient {
+public class SpendDbClient implements SpendClient {
 
   private static final Config CFG = Config.getInstance();
   private final SpendRepository spendRepository = new SpendRepositoryHibernate();
@@ -18,6 +18,7 @@ public class SpendDbClient {
     CFG.spendJdbcUrl()
   );
 
+  @Override
   public SpendJson createSpend(SpendJson spend) {
     return xaTransactionTemplate.execute(() -> {
           SpendEntity spendEntity = SpendEntity.fromJson(spend);

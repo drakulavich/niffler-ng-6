@@ -1,7 +1,7 @@
 package guru.qa.niffler.data.repository.impl;
 
 import guru.qa.niffler.data.dao.UdUserDao;
-import guru.qa.niffler.data.dao.impl.UdUserDaoJdbc;
+import guru.qa.niffler.data.dao.impl.UdUserDaoSpringJdbc;
 import guru.qa.niffler.data.entity.userdata.FriendshipStatus;
 import guru.qa.niffler.data.entity.userdata.UdUserEntity;
 import guru.qa.niffler.data.repository.UserdataUserRepository;
@@ -9,13 +9,28 @@ import guru.qa.niffler.data.repository.UserdataUserRepository;
 import java.util.Optional;
 import java.util.UUID;
 
-public class UserdataUserRepositoryJdbc implements UserdataUserRepository {
+public class UserdataUserRepositorySpringJdbc implements UserdataUserRepository {
 
-  private final UdUserDao udUserDao = new UdUserDaoJdbc();
+  private final UdUserDao udUserDao = new UdUserDaoSpringJdbc();
 
   @Override
   public UdUserEntity create(UdUserEntity user) {
     return udUserDao.create(user);
+  }
+
+  @Override
+  public Optional<UdUserEntity> findById(UUID id) {
+    return udUserDao.findById(id);
+  }
+
+  @Override
+  public Optional<UdUserEntity> findByUsername(String username) {
+    return udUserDao.findByUsername(username);
+  }
+
+  @Override
+  public UdUserEntity update(UdUserEntity user) {
+    return udUserDao.update(user);
   }
 
   @Override
@@ -35,20 +50,5 @@ public class UserdataUserRepositoryJdbc implements UserdataUserRepository {
   @Override
   public void remove(UdUserEntity user) {
     udUserDao.delete(user);
-  }
-
-  @Override
-  public UdUserEntity update(UdUserEntity user) {
-    return udUserDao.update(user);
-  }
-
-  @Override
-  public Optional<UdUserEntity> findById(UUID id) {
-    return udUserDao.findById(id);
-  }
-
-  @Override
-  public Optional<UdUserEntity> findByUsername(String username) {
-    return udUserDao.findByUsername(username);
   }
 }

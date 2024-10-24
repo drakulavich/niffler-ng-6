@@ -16,6 +16,7 @@ public class MainPage {
 
   private final SelenideElement profileMenuLink = $("a[href='/profile']");
   private final SelenideElement friendsMenuLink = $("a[href='/people/friends']");
+  private final SelenideElement searchInput = $("input[placeholder='Search']");
 
   public EditSpendingPage editSpending(String spendingDescription) {
     tableRows.find(text(spendingDescription)).$$("td").get(5).click();
@@ -23,6 +24,7 @@ public class MainPage {
   }
 
   public void checkThatTableContainsSpending(String spendingDescription) {
+    searchInput.setValue(spendingDescription).pressEnter();
     tableRows.find(text(spendingDescription)).shouldBe(visible);
   }
 

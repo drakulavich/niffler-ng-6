@@ -4,6 +4,7 @@ import guru.qa.niffler.config.Config;
 import guru.qa.niffler.model.CategoryJson;
 import guru.qa.niffler.model.CurrencyValues;
 import guru.qa.niffler.model.SpendJson;
+import guru.qa.niffler.service.SpendClient;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.jackson.JacksonConverterFactory;
@@ -14,7 +15,7 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class SpendApiClient {
+public class SpendApiClient implements SpendClient {
 
   private final Retrofit retrofit = new Retrofit.Builder()
       .baseUrl(Config.getInstance().spendUrl())
@@ -23,6 +24,7 @@ public class SpendApiClient {
 
   private final SpendApi spendApi = retrofit.create(SpendApi.class);
 
+  @Override
   public SpendJson createSpend(SpendJson spend) {
     final Response<SpendJson> response;
     try {
@@ -77,6 +79,7 @@ public class SpendApiClient {
     return Collections.singletonList(response.body());
   }
 
+  @Override
   public CategoryJson createCategory(CategoryJson category) {
     final Response<CategoryJson> response;
     try {
@@ -108,5 +111,10 @@ public class SpendApiClient {
     }
     assertEquals(200, response.code());
     return Collections.singletonList(response.body());
+  }
+
+  @Override
+  public void removeCategory(CategoryJson category) {
+    throw new UnsupportedOperationException("This method is not implemented yet");
   }
 }

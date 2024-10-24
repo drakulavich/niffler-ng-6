@@ -27,7 +27,8 @@ public class SpendDbClient implements SpendClient {
     );
   }
 
-  public void deleteCategory(CategoryJson category) {
+  @Override
+  public void removeCategory(CategoryJson category) {
     xaTransactionTemplate.execute(() -> {
         CategoryEntity categoryEntity = CategoryEntity.fromJson(category);
         spendRepository.removeCategory(categoryEntity);
@@ -36,6 +37,7 @@ public class SpendDbClient implements SpendClient {
     );
   }
 
+  @Override
   public CategoryJson createCategory(CategoryJson category) {
     return xaTransactionTemplate.execute(() -> CategoryJson.fromEntity(
         spendRepository.createCategory(CategoryEntity.fromJson(category))

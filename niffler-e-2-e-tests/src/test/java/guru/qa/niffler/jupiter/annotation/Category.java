@@ -8,7 +8,6 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)
 public @interface Category {
-    boolean archived() default false;
-
-    String title() default "";
+  String name();
+  boolean archived() default false;
 }

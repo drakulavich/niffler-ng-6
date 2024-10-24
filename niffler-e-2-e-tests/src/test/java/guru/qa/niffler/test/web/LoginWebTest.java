@@ -1,22 +1,34 @@
 package guru.qa.niffler.test.web;
 
 import com.codeborne.selenide.Selenide;
+import guru.qa.niffler.jupiter.annotation.Category;
+import guru.qa.niffler.jupiter.annotation.Spending;
+import guru.qa.niffler.jupiter.annotation.User;
 import guru.qa.niffler.jupiter.extension.UsersQueueExtension.StaticUser;
 import guru.qa.niffler.jupiter.extension.UsersQueueExtension.UserType;
+import guru.qa.niffler.model.UserJson;
 import guru.qa.niffler.page.LoginPage;
 import org.junit.jupiter.api.Test;
 
 import static guru.qa.niffler.jupiter.extension.UsersQueueExtension.UserType.Type.EMPTY;
-import static guru.qa.niffler.jupiter.extension.UsersQueueExtension.UserType.Type.WITH_FRIEND;
 import static guru.qa.niffler.jupiter.extension.UsersQueueExtension.UserType.Type.WITH_INCOME_REQUEST;
 
 public class LoginWebTest extends BaseWebTest {
     private final LoginPage loginPage = new LoginPage();
 
+    @User(
+      categories = {
+        @Category(name = "Food", archived = false),
+        @Category(name = "Transport", archived = true)
+      },
+      spendings = {
+        @Spending(category = "Entertainer", description = "Lunch", amount = 100),
+      }
+    )
     @Test
-    void mainPageShouldBeDisplayedAfterSuccessLogin(@UserType(WITH_FRIEND) StaticUser user) {
+    void mainPageShouldBeDisplayedAfterSuccessLogin(UserJson user) {
         Selenide.open(CFG.frontUrl(), LoginPage.class)
-                .login(user.username(), user.password())
+                .login(user.username(), user.testData().password())
                 .checkSpendingsVisible()
                 .checkStatisticsVisible();
     }

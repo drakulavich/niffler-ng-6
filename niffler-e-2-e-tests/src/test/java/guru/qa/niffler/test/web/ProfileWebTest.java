@@ -1,8 +1,6 @@
 package guru.qa.niffler.test.web;
 
 import com.codeborne.selenide.Selenide;
-import guru.qa.niffler.jupiter.annotation.Category;
-import guru.qa.niffler.jupiter.annotation.User;
 import guru.qa.niffler.model.CategoryJson;
 import guru.qa.niffler.page.LoginPage;
 import guru.qa.niffler.page.ProfilePage;
@@ -14,12 +12,12 @@ public class ProfileWebTest extends BaseWebTest {
 
     private final ProfilePage profilePage = new ProfilePage();
 
-    @User(
-        username = USERNAME,
-        categories = {@Category(
-            archived = true
-        )}
-    )
+//    @User(
+//        username = USERNAME,
+//        categories = {@Category(
+//            archived = true
+//        )}
+//    )
     @Test
     void archivedCategoryShouldPresentInCategoriesList(CategoryJson category) {
         Selenide.open(CFG.frontUrl(), LoginPage.class)
@@ -33,12 +31,12 @@ public class ProfileWebTest extends BaseWebTest {
             .checkCategoryPresent(category.name());
     }
 
-    @User(
-        username = USERNAME,
-        categories = {@Category(
-            archived = false
-        )}
-    )
+//    @User(
+//        username = USERNAME,
+//        categories = {@Category(
+//            archived = false
+//        )}
+//    )
     @Test
     void activeCategoryShouldPresentInCategoriesList(CategoryJson category) {
         Selenide.open(CFG.frontUrl(), LoginPage.class)

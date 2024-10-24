@@ -5,6 +5,7 @@ import guru.qa.niffler.data.dao.UdUserDao;
 import guru.qa.niffler.data.entity.userdata.UdUserEntity;
 import guru.qa.niffler.data.mapper.UdUserEntityRowMapper;
 import guru.qa.niffler.data.tpl.DataSources;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.BatchPreparedStatementSetter;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
@@ -100,13 +101,18 @@ public class UdUserDaoSpringJdbc implements UdUserDao {
   @Override
   public Optional<UdUserEntity> findByUsername(String username) {
     JdbcTemplate jdbcTemplate = new JdbcTemplate(DataSources.dataSource(CFG.userdataJdbcUrl()));
-    return Optional.ofNullable(
+    try {
+      return Optional.ofNullable(
         jdbcTemplate.queryForObject(
-            "SELECT * FROM \"user\" WHERE username = ?",
-            UdUserEntityRowMapper.instance,
-            username
+          "SELECT * FROM \"user\" WHERE username = ?",
+          UdUserEntityRowMapper.instance,
+          username
         )
-    );
+      );
+    } catch (
+      EmptyResultDataAccessException e) {
+      return Optional.empty();
+    }
   }
 
   @Override

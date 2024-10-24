@@ -1,7 +1,6 @@
 package guru.qa.niffler.test.web;
 
 import com.codeborne.selenide.Selenide;
-import guru.qa.niffler.jupiter.annotation.Category;
 import guru.qa.niffler.jupiter.annotation.Spending;
 import guru.qa.niffler.jupiter.annotation.User;
 import guru.qa.niffler.model.SpendJson;
@@ -14,9 +13,9 @@ public class SpendingWebTest extends BaseWebTest {
 
   @User(
       username = "duck",
-      categories = {@Category(
-          archived = true
-      )},
+//      categories = {@Category(
+//          archived = true
+//      )},
       spendings = {@Spending(
           category = "Обучение",
           description = "Обучение Advanced 2.0",

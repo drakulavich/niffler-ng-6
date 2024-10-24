@@ -14,11 +14,12 @@ import org.junit.jupiter.api.extension.ParameterResolver;
 import org.junit.platform.commons.support.AnnotationSupport;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class UserExtension implements BeforeEachCallback, ParameterResolver {
 
   public static final ExtensionContext.Namespace NAMESPACE = ExtensionContext.Namespace.create(UserExtension.class);
-  private static final String defaultPassword = "12345 ";
+  private static final String defaultPassword = "12345";
 
   private final UsersClient usersClient = new UsersDbClient();
 
@@ -29,13 +30,20 @@ public class UserExtension implements BeforeEachCallback, ParameterResolver {
           if ("".equals(anno.username())) {
             final String username = RandomDataUtils.randomUsername();
             UserJson testUser = usersClient.createUser(username, defaultPassword);
+            List<UserJson> incomeInvitations = usersClient.addIncomeInvitation(testUser, anno.income());
+            List<UserJson> outcomeInvitations = usersClient.addOutcomeInvitation(testUser, anno.outcome());
+            List<UserJson> friends = usersClient.addFriend(testUser, anno.friends());
+
             context.getStore(NAMESPACE).put(
               context.getUniqueId(),
               testUser.addTestData(
                 new TestData(
                   defaultPassword,
                   new ArrayList<>(),
-                  new ArrayList<>()
+                  new ArrayList<>(),
+                  incomeInvitations.stream().map(UserJson::username).toList(),
+                  outcomeInvitations.stream().map(UserJson::username).toList(),
+                  friends.stream().map(UserJson::username).toList()
                 )
               )
             );

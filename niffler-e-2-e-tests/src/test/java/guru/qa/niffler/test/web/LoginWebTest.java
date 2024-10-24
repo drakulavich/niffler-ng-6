@@ -4,14 +4,9 @@ import com.codeborne.selenide.Selenide;
 import guru.qa.niffler.jupiter.annotation.Category;
 import guru.qa.niffler.jupiter.annotation.Spending;
 import guru.qa.niffler.jupiter.annotation.User;
-import guru.qa.niffler.jupiter.extension.UsersQueueExtension.StaticUser;
-import guru.qa.niffler.jupiter.extension.UsersQueueExtension.UserType;
 import guru.qa.niffler.model.UserJson;
 import guru.qa.niffler.page.LoginPage;
 import org.junit.jupiter.api.Test;
-
-import static guru.qa.niffler.jupiter.extension.UsersQueueExtension.UserType.Type.EMPTY;
-import static guru.qa.niffler.jupiter.extension.UsersQueueExtension.UserType.Type.WITH_INCOME_REQUEST;
 
 public class LoginWebTest extends BaseWebTest {
     private final LoginPage loginPage = new LoginPage();
@@ -33,20 +28,12 @@ public class LoginWebTest extends BaseWebTest {
                 .checkStatisticsVisible();
     }
 
+    @User
     @Test
-    void userShouldStayOnLoginPageAfterLoginWithBadCredentials(
-            @UserType(WITH_INCOME_REQUEST) StaticUser user,
-            @UserType(EMPTY) StaticUser emptyUser
-    ) {
+    void userShouldStayOnLoginPageAfterLoginWithBadCredentials(UserJson user) {
         Selenide.open(CFG.frontUrl(), LoginPage.class)
                 .setUsername(user.username())
-                .setPassword(user.password() + "_bad") // bad password
-                .submit()
-                .verifyIsLoaded();
-
-        loginPage
-                .setUsername(emptyUser.username())
-                .setPassword(emptyUser.password() + "_bad") // bad password
+                .setPassword(user.testData().password() + "_bad") // bad password
                 .submit()
                 .verifyIsLoaded();
     }

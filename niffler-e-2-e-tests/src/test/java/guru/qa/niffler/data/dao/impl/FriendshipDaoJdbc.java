@@ -4,14 +4,19 @@ import guru.qa.niffler.config.Config;
 import guru.qa.niffler.data.dao.FriendshipDao;
 import guru.qa.niffler.data.entity.userdata.FriendshipEntity;
 
+import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
 import java.sql.PreparedStatement;
 
-import static guru.qa.niffler.data.tpl.Connections.holder;
+import static guru.qa.niffler.data.jdbc.Connections.holder;
 
+@ParametersAreNonnullByDefault
 public class FriendshipDaoJdbc implements FriendshipDao {
 
   private static final Config CFG = Config.getInstance();
 
+  @SuppressWarnings("resource")
+  @Nonnull
   @Override
   public FriendshipEntity create(FriendshipEntity friendship) {
     try (PreparedStatement ps = holder(CFG.userdataJdbcUrl()).connection().prepareStatement(

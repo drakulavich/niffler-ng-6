@@ -8,19 +8,23 @@ import guru.qa.niffler.data.dao.impl.AuthUserDaoSpringJdbc;
 import guru.qa.niffler.data.entity.auth.AuthUserEntity;
 import guru.qa.niffler.data.entity.auth.AuthorityEntity;
 import guru.qa.niffler.data.extractor.AuthUserEntityRowExtractor;
+import guru.qa.niffler.data.jdbc.DataSources;
 import guru.qa.niffler.data.repository.AuthUserRepository;
-import guru.qa.niffler.data.tpl.DataSources;
 import org.springframework.jdbc.core.JdbcTemplate;
 
+import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.Optional;
 import java.util.UUID;
 
+@ParametersAreNonnullByDefault
 public class AuthUserRepositorySpringJdbc implements AuthUserRepository {
 
   private static final Config CFG = Config.getInstance();
   private final AuthUserDao authUserDao = new AuthUserDaoSpringJdbc();
   private final AuthAuthorityDao authAuthorityDao = new AuthAuthorityDaoSpringJdbc();
 
+  @Nonnull
   @Override
   public AuthUserEntity update(AuthUserEntity user) {
     user.getAuthorities().forEach(authAuthorityDao::update);
@@ -33,6 +37,7 @@ public class AuthUserRepositorySpringJdbc implements AuthUserRepository {
     authUserDao.delete(user);
   }
 
+  @Nonnull
   @Override
   public AuthUserEntity create(AuthUserEntity user) {
     authUserDao.create(user);
@@ -40,6 +45,7 @@ public class AuthUserRepositorySpringJdbc implements AuthUserRepository {
     return user;
   }
 
+  @Nonnull
   @Override
   public Optional<AuthUserEntity> findById(UUID id) {
     JdbcTemplate jdbcTemplate = new JdbcTemplate(DataSources.dataSource(CFG.authJdbcUrl()));
@@ -60,6 +66,7 @@ public class AuthUserRepositorySpringJdbc implements AuthUserRepository {
     ));
   }
 
+  @Nonnull
   @Override
   public Optional<AuthUserEntity> findByUsername(String username) {
     JdbcTemplate jdbcTemplate = new JdbcTemplate(DataSources.dataSource(CFG.authJdbcUrl()));

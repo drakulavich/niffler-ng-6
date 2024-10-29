@@ -15,12 +15,16 @@ import guru.qa.niffler.model.UserJson;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 import static guru.qa.niffler.utils.RandomDataUtils.randomUsername;
 
+@ParametersAreNonnullByDefault
 public class UsersDbClient implements UsersClient {
 
   private static final Config CFG = Config.getInstance();
@@ -34,11 +38,12 @@ public class UsersDbClient implements UsersClient {
       CFG.userdataJdbcUrl()
   );
 
+  @Nonnull
   public UserJson createUser(String username, String password) {
-    return xaTransactionTemplate.execute(() -> UserJson.fromEntity(
+    return Objects.requireNonNull(xaTransactionTemplate.execute(() -> UserJson.fromEntity(
       createNewUser(username, password),
       null
-    ));
+    )));
   }
 
   public void addInvitation(UserJson requester, UserJson addressee) {
@@ -63,6 +68,7 @@ public class UsersDbClient implements UsersClient {
     );
   }
 
+  @Nonnull
   @Override
   public List<UserJson> addIncomeInvitation(UserJson targetUser, int count) {
     List<UserJson> result = new ArrayList<>();
@@ -84,6 +90,7 @@ public class UsersDbClient implements UsersClient {
     return result;
   }
 
+  @Nonnull
   @Override
   public List<UserJson> addOutcomeInvitation(UserJson targetUser, int count) {
     List<UserJson> result = new ArrayList<>();
@@ -105,6 +112,7 @@ public class UsersDbClient implements UsersClient {
     return result;
   }
 
+  @Nonnull
   @Override
   public List<UserJson> addFriend(UserJson targetUser, int count) {
     List<UserJson> result = new ArrayList<>();
@@ -127,6 +135,7 @@ public class UsersDbClient implements UsersClient {
     return result;
   }
 
+  @Nonnull
   private UdUserEntity userEntity(String username) {
     UdUserEntity ue = new UdUserEntity();
     ue.setUsername(username);
@@ -134,6 +143,7 @@ public class UsersDbClient implements UsersClient {
     return ue;
   }
 
+  @Nonnull
   private AuthUserEntity authUserEntity(String username, String password) {
     AuthUserEntity authUser = new AuthUserEntity();
     authUser.setUsername(username);
@@ -155,6 +165,7 @@ public class UsersDbClient implements UsersClient {
     return authUser;
   }
 
+  @Nonnull
   private UdUserEntity createNewUser(String username, String password) {
     AuthUserEntity authUser = authUserEntity(username, password);
     authUserRepository.create(authUser);

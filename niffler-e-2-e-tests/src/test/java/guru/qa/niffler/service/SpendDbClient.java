@@ -9,6 +9,11 @@ import guru.qa.niffler.data.tpl.XaTransactionTemplate;
 import guru.qa.niffler.model.CategoryJson;
 import guru.qa.niffler.model.SpendJson;
 
+import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
+import java.util.Objects;
+
+@ParametersAreNonnullByDefault
 public class SpendDbClient implements SpendClient {
 
   private static final Config CFG = Config.getInstance();
@@ -18,13 +23,14 @@ public class SpendDbClient implements SpendClient {
     CFG.spendJdbcUrl()
   );
 
+  @Nonnull
   @Override
   public SpendJson createSpend(SpendJson spend) {
-    return xaTransactionTemplate.execute(() -> {
-          SpendEntity spendEntity = SpendEntity.fromJson(spend);
-          return SpendJson.fromEntity(spendRepository.create(spendEntity));
-        }
-    );
+    return Objects.requireNonNull(xaTransactionTemplate.execute(() -> {
+        SpendEntity spendEntity = SpendEntity.fromJson(spend);
+        return SpendJson.fromEntity(spendRepository.create(spendEntity));
+      }
+    ));
   }
 
   @Override
@@ -37,11 +43,12 @@ public class SpendDbClient implements SpendClient {
     );
   }
 
+  @Nonnull
   @Override
   public CategoryJson createCategory(CategoryJson category) {
-    return xaTransactionTemplate.execute(() -> CategoryJson.fromEntity(
+    return Objects.requireNonNull(xaTransactionTemplate.execute(() -> CategoryJson.fromEntity(
         spendRepository.createCategory(CategoryEntity.fromJson(category))
       )
-    );
+    ));
   }
 }

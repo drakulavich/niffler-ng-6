@@ -7,6 +7,8 @@ import guru.qa.niffler.data.entity.userdata.FriendshipStatus;
 import guru.qa.niffler.data.entity.userdata.UdUserEntity;
 import guru.qa.niffler.data.mapper.UdUserEntityRowMapper;
 
+import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -15,12 +17,15 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-import static guru.qa.niffler.data.tpl.Connections.holder;
+import static guru.qa.niffler.data.jdbc.Connections.holder;
 
+@ParametersAreNonnullByDefault
 public class UdUserDaoJdbc implements UdUserDao {
 
   private static final Config CFG = Config.getInstance();
 
+  @SuppressWarnings("resource")
+  @Nonnull
   @Override
   public UdUserEntity create(UdUserEntity user) {
     try (PreparedStatement userPs = holder(CFG.userdataJdbcUrl()).connection().prepareStatement(
@@ -67,16 +72,19 @@ public class UdUserDaoJdbc implements UdUserDao {
     }
   }
 
+  @Nonnull
   @Override
   public Optional<UdUserEntity> findById(UUID id) {
     return findUser("SELECT * FROM \"user\" WHERE id = ?", id);
   }
 
+  @Nonnull
   @Override
   public Optional<UdUserEntity> findByUsername(String username) {
     return findUser("SELECT * FROM \"user\" WHERE username = ?", username);
   }
 
+  @SuppressWarnings("resource")
   @Override
   public void delete(UdUserEntity user) {
     try (PreparedStatement ps = holder(CFG.userdataJdbcUrl()).connection().prepareStatement(
@@ -88,6 +96,8 @@ public class UdUserDaoJdbc implements UdUserDao {
     }
   }
 
+  @SuppressWarnings("resource")
+  @Nonnull
   @Override
   public List<UdUserEntity> findAll() {
     try (PreparedStatement ps = holder(CFG.userdataJdbcUrl()).connection().prepareStatement(
@@ -107,6 +117,8 @@ public class UdUserDaoJdbc implements UdUserDao {
     }
   }
 
+  @SuppressWarnings("resource")
+  @Nonnull
   @Override
   public UdUserEntity update(UdUserEntity user) {
     try (PreparedStatement ps = holder(CFG.userdataJdbcUrl()).connection().prepareStatement(
@@ -140,6 +152,8 @@ public class UdUserDaoJdbc implements UdUserDao {
     return user;
   }
 
+  @SuppressWarnings("resource")
+  @Nonnull
   private Optional<UdUserEntity> findUser(String query, Object param) {
     try (PreparedStatement ps = holder(CFG.userdataJdbcUrl()).connection().prepareStatement(query);
          PreparedStatement friendPs = holder(CFG.userdataJdbcUrl()).connection().prepareStatement(

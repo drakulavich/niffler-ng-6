@@ -22,10 +22,10 @@ public interface SpendApi {
                            @Query("username") String username);
 
   @GET("internal/spends/all")
-  Call<SpendJson> getAllSpends(@Query("username") String username,
-                               @Query("filterCurrency") CurrencyValues cur,
-                               @Query("from") String from,
-                               @Query("to") String to);
+  Call<List<SpendJson>> getAllSpends(@Query("username") String username,
+                                     @Query("filterCurrency") CurrencyValues cur,
+                                     @Query("from") String from,
+                                     @Query("to") String to);
 
   @DELETE("internal/spends/remove")
   Call<SpendJson> removeSpend(@Query("username") String username, @Query("ids") List<String> ids);
@@ -38,6 +38,6 @@ public interface SpendApi {
   Call<CategoryJson> updateCategory(@Body CategoryJson category);
 
   @GET("internal/categories/all")
-  Call<CategoryJson> getAllCategories(@Query("username") String username,
-                                      @Query("excludeArchived") boolean excludeArchived);
+  Call<List<CategoryJson>> getAllCategories(@Query("username") String username,
+                                            @Query("excludeArchived") boolean excludeArchived);
 }

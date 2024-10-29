@@ -3,6 +3,8 @@ package guru.qa.niffler.page;
 import com.codeborne.selenide.ElementsCollection;
 import com.codeborne.selenide.SelenideElement;
 
+import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.List;
 
 import static com.codeborne.selenide.CollectionCondition.empty;
@@ -10,6 +12,7 @@ import static com.codeborne.selenide.Condition.text;
 import static com.codeborne.selenide.Condition.visible;
 import static com.codeborne.selenide.Selenide.$;
 
+@ParametersAreNonnullByDefault
 public class FriendsPage {
     private final ElementsCollection friendsRows = $("#friends").$$("tr");
     private final ElementsCollection friendRequestsRows = $("#requests").$$("tr");
@@ -48,11 +51,13 @@ public class FriendsPage {
         }
     }
 
+    @Nonnull
     public FriendsPage openFriendsTab() {
         friendsTab.click();
         return this;
     }
 
+    @Nonnull
     public FriendsPage openAllPeopleTab() {
         allPeopleTab.click();
         return this;

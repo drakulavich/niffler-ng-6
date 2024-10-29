@@ -20,16 +20,16 @@ public class FriendsPage {
     private final SelenideElement searchInput = $("input[placeholder='Search']");
     private final SelenideElement clearSearchButton = $("button[id='input-clear']");
 
-    public void checkThatFriendsTableContainsFriends(List<String> friendName) {
-        for (String name : friendName) {
+    public void checkThatFriendsTableContainsFriends(List<String> friendNames) {
+        for (String name : friendNames) {
             searchInput.setValue(name).pressEnter();
             friendsRows.find(text(name)).should(visible);
             clearSearchButton.click();
         }
     }
 
-    public void checkThatFriendRequestsTableContainsFriends(List<String> friendName) {
-        for (String name : friendName) {
+    public void checkThatFriendRequestsTableContainsFriends(List<String> friendNames) {
+        for (String name : friendNames) {
             searchInput.setValue(name).pressEnter();
             friendRequestsRows.find(text(name)).should(visible);
             clearSearchButton.click();
@@ -40,8 +40,8 @@ public class FriendsPage {
         friendsRows.shouldBe(empty);
     }
 
-    public void checkThatAllPeopleTableContainsOutcomeRequests(List<String> friendName) {
-        for (String name : friendName) {
+    public void checkThatAllPeopleTableContainsOutcomeRequests(List<String> friendNames) {
+        for (String name : friendNames) {
             searchInput.setValue(name).pressEnter();
             allPeopleRows.find(text(name)).$$("td").get(1).shouldHave(text("Waiting"));
             clearSearchButton.click();

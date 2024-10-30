@@ -1,65 +1,31 @@
 package guru.qa.niffler.page;
 
-import com.codeborne.selenide.ElementsCollection;
-import com.codeborne.selenide.SelenideElement;
+import guru.qa.niffler.page.component.PeopleTable;
+import guru.qa.niffler.page.component.SearchField;
+import lombok.Getter;
 
-import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.List;
 
-import static com.codeborne.selenide.CollectionCondition.empty;
-import static com.codeborne.selenide.Condition.text;
-import static com.codeborne.selenide.Condition.visible;
-import static com.codeborne.selenide.Selenide.$;
-
 @ParametersAreNonnullByDefault
 public class FriendsPage {
-    private final ElementsCollection friendsRows = $("#friends").$$("tr");
-    private final ElementsCollection friendRequestsRows = $("#requests").$$("tr");
-    private final ElementsCollection allPeopleRows = $("#all").$$("tr");
-
-    private final SelenideElement friendsTab = $("a[href='/people/friends']");
-    private final SelenideElement allPeopleTab = $("a[href='/people/all']");
-    private final SelenideElement searchInput = $("input[placeholder='Search']");
-    private final SelenideElement clearSearchButton = $("button[id='input-clear']");
+    private final SearchField searchField = new SearchField();
+    @Getter
+    private final PeopleTable peopleTable = new PeopleTable();
 
     public void checkThatFriendsTableContainsFriends(List<String> friendNames) {
         for (String name : friendNames) {
-            searchInput.setValue(name).pressEnter();
-            friendsRows.find(text(name)).should(visible);
-            clearSearchButton.click();
+            searchField.clearIfNotEmpty();
+            searchField.search(name);
+            peopleTable.checkFriend(name);
         }
     }
 
     public void checkThatFriendRequestsTableContainsFriends(List<String> friendNames) {
         for (String name : friendNames) {
-            searchInput.setValue(name).pressEnter();
-            friendRequestsRows.find(text(name)).should(visible);
-            clearSearchButton.click();
+            searchField.clearIfNotEmpty();
+            searchField.search(name);
+            peopleTable.checkIncomingRequest(name);
         }
-    }
-
-    public void checkThatFriendsTableIsEmpty() {
-        friendsRows.shouldBe(empty);
-    }
-
-    public void checkThatAllPeopleTableContainsOutcomeRequests(List<String> friendNames) {
-        for (String name : friendNames) {
-            searchInput.setValue(name).pressEnter();
-            allPeopleRows.find(text(name)).$$("td").get(1).shouldHave(text("Waiting"));
-            clearSearchButton.click();
-        }
-    }
-
-    @Nonnull
-    public FriendsPage openFriendsTab() {
-        friendsTab.click();
-        return this;
-    }
-
-    @Nonnull
-    public FriendsPage openAllPeopleTab() {
-        allPeopleTab.click();
-        return this;
     }
 }

@@ -27,12 +27,13 @@ public class SpendingWebTest extends BaseWebTest {
   void categoryDescriptionShouldBeChangedFromTable(UserJson user) {
     final String newDescription = "Обучение Niffler Next Generation";
 
+    String oldDescription = user.testData().spendings().getFirst().description();
     Selenide.open(CFG.frontUrl(), LoginPage.class)
         .login(user.username(), user.testData().password())
-        .editSpending(user.testData().spendings().getFirst().description())
+        .getSpendingTable().editSpending(oldDescription)
         .setNewSpendingDescription(newDescription)
         .save();
 
-    mainPage.checkThatTableContainsSpending(newDescription);
+    mainPage.getSpendingTable().checkTableContains(newDescription);
   }
 }

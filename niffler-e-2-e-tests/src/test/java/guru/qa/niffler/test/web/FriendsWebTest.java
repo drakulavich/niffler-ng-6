@@ -13,7 +13,7 @@ public class FriendsWebTest extends BaseWebTest {
     void friendShouldBePresentInFriendsTable(UserJson user) {
         Selenide.open(CFG.frontUrl(), LoginPage.class)
                 .login(user.username(), user.testData().password())
-                .openFriends()
+                .getHeader().toFriendsPage()
                 .checkThatFriendsTableContainsFriends(user.testData().friends());
     }
 
@@ -22,8 +22,8 @@ public class FriendsWebTest extends BaseWebTest {
     void friendsTableShouldBeEmptyForNewUser(UserJson user) {
         Selenide.open(CFG.frontUrl(), LoginPage.class)
                 .login(user.username(), user.testData().password())
-                .openFriends()
-                .checkThatFriendsTableIsEmpty();
+                .getHeader().toFriendsPage()
+                .getPeopleTable().checkEmpty();
     }
 
     @User(income = 2)
@@ -31,7 +31,7 @@ public class FriendsWebTest extends BaseWebTest {
     void incomeInvitationBePresentInFriendsTable(UserJson user) {
         Selenide.open(CFG.frontUrl(), LoginPage.class)
                 .login(user.username(), user.testData().password())
-                .openFriends()
+                .getHeader().toFriendsPage()
                 .checkThatFriendRequestsTableContainsFriends(user.testData().income());
     }
 
@@ -40,8 +40,7 @@ public class FriendsWebTest extends BaseWebTest {
     void outcomeInvitationBePresentInAllPeoplesTable(UserJson user) {
         Selenide.open(CFG.frontUrl(), LoginPage.class)
                 .login(user.username(), user.testData().password())
-                .openFriends()
-                .openAllPeopleTab()
-                .checkThatAllPeopleTableContainsOutcomeRequests(user.testData().outcome());
+                .getHeader().toAllPeoplesPage()
+                .checkOutcomeRequests(user.testData().outcome());
     }
 }

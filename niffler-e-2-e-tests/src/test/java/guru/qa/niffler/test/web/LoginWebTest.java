@@ -24,8 +24,8 @@ public class LoginWebTest extends BaseWebTest {
     void mainPageShouldBeDisplayedAfterSuccessLogin(UserJson user) {
         Selenide.open(CFG.frontUrl(), LoginPage.class)
                 .login(user.username(), user.testData().password())
-                .checkSpendingsVisible()
-                .checkStatisticsVisible();
+                .checkStatisticsVisible()
+                .getSpendingTable().checkTableSize(1);
     }
 
     @User

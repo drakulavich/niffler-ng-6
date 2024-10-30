@@ -24,7 +24,7 @@ public class RegisterWebTest extends BaseWebTest {
         loginPage
                 .login(newUsername, newPassword)
                 .checkStatisticsVisible()
-                .checkSpendingsVisible();
+                .getSpendingTable().checkTableSize(0);
     }
 
     @Test

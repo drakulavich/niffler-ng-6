@@ -36,4 +36,13 @@ public class SpendingWebTest extends BaseWebTest {
 
     mainPage.getSpendingTable().checkTableContains(newDescription);
   }
+
+  @User
+  @Test
+  void userCanCreateSpending(UserJson user) {
+    Selenide.open(CFG.frontUrl(), LoginPage.class)
+        .login(user.username(), user.testData().password())
+        .getHeader().addSpendingPage().createSpend("Museum", "Art", 300)
+        .getSpendingTable().checkTableContains("Museum");
+  }
 }

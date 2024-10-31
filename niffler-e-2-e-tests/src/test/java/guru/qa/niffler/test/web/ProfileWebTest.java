@@ -47,4 +47,15 @@ public class ProfileWebTest extends BaseWebTest {
       .archiveCategory(categoryName)
       .checkCategoryNotPresent(categoryName);
   }
+
+  @User
+  @Test
+  void userCanUpdateProfile(UserJson user) {
+    Selenide.open(CFG.frontUrl(), LoginPage.class)
+      .login(user.username(), user.testData().password())
+      .getHeader().toProfilePage()
+      .updateName("John Snow")
+      .getHeader().toMainPage()
+      .getHeader().toProfilePage().checkName("John Snow");
+  }
 }

@@ -1,6 +1,7 @@
 package guru.qa.niffler.page;
 
 import com.codeborne.selenide.SelenideElement;
+import io.qameta.allure.Step;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -19,36 +20,42 @@ public class RegisterPage {
     private final SelenideElement errorMessage = $(".form__error");
 
     @Nonnull
+    @Step("Set username {username}")
     public RegisterPage setUsername(String username) {
         usernameInput.setValue(username);
         return this;
     }
 
     @Nonnull
+    @Step("Set password")
     public RegisterPage setPassword(String password) {
         passwordInput.setValue(password);
         return this;
     }
 
     @Nonnull
+    @Step("Set submit password")
     public RegisterPage setPasswordSubmit(String password) {
         passwordSubmitInput.setValue(password);
         return this;
     }
 
     @Nonnull
+    @Step("Submit registration")
     public LoginPage submitRegistration() {
         signUpButton.click();
         return new LoginPage();
     }
 
     @Nonnull
+    @Step("Click sign up button")
     public RegisterPage clickSignUpButton() {
         signUpButton.click();
         return this;
     }
 
     @Nonnull
+    @Step("Register with username {username} and password {password}")
     public LoginPage register(String username, String password) {
         setUsername(username);
         setPassword(password);
@@ -58,6 +65,7 @@ public class RegisterPage {
         return new LoginPage();
     }
 
+    @Step("Error is shown")
     public void errorIsShown() {
         errorMessage.shouldBe(visible);
     }

@@ -3,6 +3,7 @@ package guru.qa.niffler.page;
 import com.codeborne.selenide.SelenideElement;
 import guru.qa.niffler.page.component.Header;
 import guru.qa.niffler.page.component.SpendingTable;
+import io.qameta.allure.Step;
 import lombok.Getter;
 
 import javax.annotation.Nonnull;
@@ -20,6 +21,7 @@ public class MainPage {
   private final SpendingTable spendingTable = new SpendingTable();
 
   @Nonnull
+  @Step("Check that statistics is visible")
   public MainPage checkStatisticsVisible() {
     stat.shouldBe(visible);
     return this;

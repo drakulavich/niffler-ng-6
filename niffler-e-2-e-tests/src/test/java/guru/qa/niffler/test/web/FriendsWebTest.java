@@ -43,4 +43,28 @@ public class FriendsWebTest extends BaseWebTest {
                 .getHeader().toAllPeoplesPage()
                 .checkOutcomeRequests(user.testData().outcome());
     }
+
+    @User(income = 2)
+    @Test
+    void userAcceptsIncomeInvitation(UserJson user) {
+        String incomeUser = user.testData().income().getFirst();
+
+        Selenide.open(CFG.frontUrl(), LoginPage.class)
+                .login(user.username(), user.testData().password())
+                .getHeader().toFriendsPage()
+                .getPeopleTable().acceptFriendRequest(incomeUser)
+                .getPeopleTable().checkFriend(incomeUser);
+    }
+
+  @User(income = 2)
+  @Test
+  void userRejectsIncomeInvitation(UserJson user) {
+    String incomeUser = user.testData().income().getFirst();
+
+    Selenide.open(CFG.frontUrl(), LoginPage.class)
+      .login(user.username(), user.testData().password())
+      .getHeader().toFriendsPage()
+      .getPeopleTable().declineFriendRequest(incomeUser)
+      .getAlert().alertContains("Invitation of %s is declined".formatted(incomeUser));
+  }
 }

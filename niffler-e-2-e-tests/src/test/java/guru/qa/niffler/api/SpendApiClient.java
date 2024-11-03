@@ -1,13 +1,11 @@
 package guru.qa.niffler.api;
 
-import guru.qa.niffler.config.Config;
+import guru.qa.niffler.api.core.RestClient;
 import guru.qa.niffler.model.CategoryJson;
 import guru.qa.niffler.model.CurrencyValues;
 import guru.qa.niffler.model.SpendJson;
 import guru.qa.niffler.service.SpendClient;
 import retrofit2.Response;
-import retrofit2.Retrofit;
-import retrofit2.converter.jackson.JacksonConverterFactory;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -19,16 +17,16 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @ParametersAreNonnullByDefault
-public class SpendApiClient implements SpendClient {
+public class SpendApiClient extends RestClient implements SpendClient {
 
-  private final Retrofit retrofit = new Retrofit.Builder()
-      .baseUrl(Config.getInstance().spendUrl())
-      .addConverterFactory(JacksonConverterFactory.create())
-      .build();
+  private final SpendApi spendApi;
 
-  private final SpendApi spendApi = retrofit.create(SpendApi.class);
+  public SpendApiClient() {
+    super(CFG.spendUrl());
+    this.spendApi = retrofit.create(SpendApi.class);
+  }
 
-  @Nullable
+  @Nonnull
   @Override
   public SpendJson createSpend(SpendJson spend) {
     final Response<SpendJson> response;
@@ -41,7 +39,7 @@ public class SpendApiClient implements SpendClient {
     return response.body();
   }
 
-  @Nullable
+  @Nonnull
   public SpendJson updateSpend(SpendJson spend) {
     final Response<SpendJson> response;
     try {
@@ -53,7 +51,7 @@ public class SpendApiClient implements SpendClient {
     return response.body();
   }
 
-  @Nullable
+  @Nonnull
   public SpendJson getSpend(int id, String username) {
     final Response<SpendJson> response;
     try {
@@ -92,7 +90,7 @@ public class SpendApiClient implements SpendClient {
       : Collections.emptyList();
   }
 
-  @Nullable
+  @Nonnull
   @Override
   public CategoryJson createCategory(CategoryJson category) {
     final Response<CategoryJson> response;
@@ -105,7 +103,7 @@ public class SpendApiClient implements SpendClient {
     return response.body();
   }
 
-  @Nullable
+  @Nonnull
   public CategoryJson updateCategory(CategoryJson category) {
     final Response<CategoryJson> response;
     try {

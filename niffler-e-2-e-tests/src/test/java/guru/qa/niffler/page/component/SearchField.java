@@ -7,9 +7,12 @@ import javax.annotation.Nonnull;
 
 import static com.codeborne.selenide.Selenide.$;
 
-public class SearchField {
-  private final SelenideElement self = $("input[placeholder='Search']");
+public class SearchField extends BaseComponent<SearchField> {
   private final SelenideElement clearSearchButton = $("button[id='input-clear']");
+
+  public SearchField() {
+    super($("input[placeholder='Search']"));
+  }
 
   @Nonnull
   @Step("Set search query {query}")

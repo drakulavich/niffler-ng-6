@@ -55,6 +55,7 @@ public class ProfileWebTest extends BaseWebTest {
       .login(user.username(), user.testData().password())
       .getHeader().toProfilePage()
       .updateName("John Snow")
+      .checkAlert("Profile successfully updated")
       .getHeader().toMainPage()
       .getHeader().toProfilePage().checkName("John Snow");
   }

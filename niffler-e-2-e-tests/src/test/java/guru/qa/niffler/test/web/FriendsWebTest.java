@@ -65,6 +65,6 @@ public class FriendsWebTest extends BaseWebTest {
       .login(user.username(), user.testData().password())
       .getHeader().toFriendsPage()
       .getPeopleTable().declineFriendRequest(incomeUser)
-      .getAlert().alertContains("Invitation of %s is declined".formatted(incomeUser));
+      .checkAlert("Invitation of %s is declined".formatted(incomeUser));
   }
 }

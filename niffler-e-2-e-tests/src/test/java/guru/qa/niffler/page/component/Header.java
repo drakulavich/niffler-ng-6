@@ -19,10 +19,13 @@ import static com.codeborne.selenide.Selenide.$;
 import static com.codeborne.selenide.Selenide.$$;
 
 @ParametersAreNonnullByDefault
-public class Header {
-  private final SelenideElement self = $("#root header");
+public class Header extends BaseComponent<Header> {
   private final SelenideElement menuButton = self.$("button[aria-label='Menu']");
   private final ElementsCollection menuItems = $$("#account-menu li");
+
+  public Header() {
+    super($("#root header"));
+  }
 
   @Nonnull
   @Step("Go to friends page")

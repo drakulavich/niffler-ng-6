@@ -6,7 +6,7 @@ import io.qameta.allure.Step;
 
 import java.util.List;
 
-public class PeoplePage {
+public class PeoplePage extends BasePage<PeoplePage> {
   private final SearchField searchField = new SearchField();
   private final PeopleTable peopleTable = new PeopleTable();
 

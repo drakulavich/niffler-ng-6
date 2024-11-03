@@ -1,29 +1,27 @@
 package guru.qa.niffler.api;
 
-import guru.qa.niffler.config.Config;
+import guru.qa.niffler.api.core.RestClient;
 import guru.qa.niffler.model.UserJson;
 import retrofit2.Response;
-import retrofit2.Retrofit;
-import retrofit2.converter.jackson.JacksonConverterFactory;
 
 import java.io.IOException;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class UsersApiClient {
+public class UserDataApiClient extends RestClient {
 
-  private final Retrofit retrofit = new Retrofit.Builder()
-    .baseUrl(Config.getInstance().userdataUrl())
-    .addConverterFactory(JacksonConverterFactory.create())
-    .build();
+  private final UserDataApi userDataApi;
 
-  private final UsersApi usersApi = retrofit.create(UsersApi.class);
+  public UserDataApiClient() {
+    super(CFG.userdataUrl());
+    this.userDataApi = retrofit.create(UserDataApi.class);
+  }
 
   public UserJson currentUser(String username) {
     final Response<UserJson> response;
     try {
-      response = usersApi.currentUser(username).execute();
+      response = userDataApi.currentUser(username).execute();
     } catch (IOException e) {
       throw new AssertionError(e);
     }
@@ -34,7 +32,7 @@ public class UsersApiClient {
   public List<UserJson> allUsers(String username, String searchQuery) {
     final Response<List<UserJson>> response;
     try {
-      response = usersApi.allUsers(username, searchQuery).execute();
+      response = userDataApi.allUsers(username, searchQuery).execute();
     } catch (IOException e) {
       throw new AssertionError(e);
     }
@@ -45,7 +43,7 @@ public class UsersApiClient {
   public UserJson updateUser(UserJson user) {
     final Response<UserJson> response;
     try {
-      response = usersApi.updateUserInfo(user).execute();
+      response = userDataApi.updateUserInfo(user).execute();
     } catch (IOException e) {
       throw new AssertionError(e);
     }
@@ -56,7 +54,7 @@ public class UsersApiClient {
   public UserJson sendInvitation(String username, String targetUsername) {
     final Response<UserJson> response;
     try {
-      response = usersApi.sendInvitation(username, targetUsername).execute();
+      response = userDataApi.sendInvitation(username, targetUsername).execute();
     } catch (IOException e) {
       throw new AssertionError(e);
     }
@@ -67,7 +65,7 @@ public class UsersApiClient {
   public UserJson acceptInvitation(String username, String targetUsername) {
     final Response<UserJson> response;
     try {
-      response = usersApi.acceptInvitation(username, targetUsername).execute();
+      response = userDataApi.acceptInvitation(username, targetUsername).execute();
     } catch (IOException e) {
       throw new AssertionError(e);
     }
@@ -78,7 +76,7 @@ public class UsersApiClient {
   public UserJson declineInvitation(String username, String targetUsername) {
     final Response<UserJson> response;
     try {
-      response = usersApi.declineInvitation(username, targetUsername).execute();
+      response = userDataApi.declineInvitation(username, targetUsername).execute();
     } catch (IOException e) {
       throw new AssertionError(e);
     }
@@ -89,7 +87,7 @@ public class UsersApiClient {
   public List<UserJson> getFriends(String username, String searchQuery) {
     final Response<List<UserJson>> response;
     try {
-      response = usersApi.friends(username, searchQuery).execute();
+      response = userDataApi.friends(username, searchQuery).execute();
     } catch (IOException e) {
       throw new AssertionError(e);
     }
@@ -100,7 +98,7 @@ public class UsersApiClient {
   public void removeFriend(String username, String targetUsername) {
     final Response<Void> response;
     try {
-      response = usersApi.removeFriend(username, targetUsername).execute();
+      response = userDataApi.removeFriend(username, targetUsername).execute();
     } catch (IOException e) {
       throw new AssertionError(e);
     }

@@ -43,6 +43,7 @@ public class SpendingWebTest extends BaseWebTest {
     Selenide.open(CFG.frontUrl(), LoginPage.class)
         .login(user.username(), user.testData().password())
         .getHeader().addSpendingPage().createSpend("Museum", "Art", 300)
+        .checkAlert("New spending is successfully created")
         .getSpendingTable().checkTableContains("Museum");
   }
 }

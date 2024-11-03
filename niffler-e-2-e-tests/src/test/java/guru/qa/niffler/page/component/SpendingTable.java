@@ -1,7 +1,6 @@
 package guru.qa.niffler.page.component;
 
 import com.codeborne.selenide.ElementsCollection;
-import com.codeborne.selenide.SelenideElement;
 import guru.qa.niffler.page.EditSpendingPage;
 import io.qameta.allure.Step;
 
@@ -12,11 +11,13 @@ import static com.codeborne.selenide.Condition.text;
 import static com.codeborne.selenide.Condition.visible;
 import static com.codeborne.selenide.Selenide.$;
 
-public class SpendingTable {
-  private final SelenideElement self = $("#spendings tbody");
+public class SpendingTable extends BaseComponent<SpendingTable> {
   private final ElementsCollection rows = self.$$("tr");
-
   private final SearchField searchField = new SearchField();
+
+  public SpendingTable() {
+    super($("#spendings tbody"));
+  }
 
   @Nonnull
   @Step("Select period {period}")

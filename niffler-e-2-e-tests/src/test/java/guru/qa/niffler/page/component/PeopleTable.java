@@ -1,7 +1,6 @@
 package guru.qa.niffler.page.component;
 
 import com.codeborne.selenide.ElementsCollection;
-import com.codeborne.selenide.SelenideElement;
 import guru.qa.niffler.page.FriendsPage;
 import io.qameta.allure.Step;
 
@@ -12,11 +11,15 @@ import static com.codeborne.selenide.Condition.text;
 import static com.codeborne.selenide.Condition.visible;
 import static com.codeborne.selenide.Selenide.$;
 
-public class PeopleTable {
-  private final SelenideElement self = $("tbody");
-  private final ElementsCollection allPeopleRows = $("#all").$$("tr");
+public class PeopleTable extends BaseComponent<PeopleTable> {
+  private final ElementsCollection allPeopleRows = self.$$("tr");
+
   private final ElementsCollection friendRows = $("#friends").$$("tr");
   private final ElementsCollection friendRequestsRows = $("#requests").$$("tr");
+
+  public PeopleTable() {
+    super($("#all"));
+  }
 
   @Step("Check outcome request to {name}")
   public void checkOutcomeRequest(String name) {

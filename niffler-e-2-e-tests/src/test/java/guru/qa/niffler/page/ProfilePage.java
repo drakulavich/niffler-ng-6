@@ -3,10 +3,7 @@ package guru.qa.niffler.page;
 import com.codeborne.selenide.Condition;
 import com.codeborne.selenide.ElementsCollection;
 import com.codeborne.selenide.SelenideElement;
-import guru.qa.niffler.page.component.Alert;
-import guru.qa.niffler.page.component.Header;
 import io.qameta.allure.Step;
-import lombok.Getter;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -18,16 +15,12 @@ import static com.codeborne.selenide.Selenide.$;
 import static com.codeborne.selenide.Selenide.$$;
 
 @ParametersAreNonnullByDefault
-public class ProfilePage {
+public class ProfilePage extends BasePage<ProfilePage> {
     private final SelenideElement addCategoryInput = $("input[name='category']");
     private final SelenideElement showArchivedToggle = $("input[type='checkbox']");
     private final SelenideElement nameField = $("input[name='name']");
     private final SelenideElement saveButton = $("button[type='submit']");
     private final ElementsCollection categories = $$(".MuiChip-label");
-    @Getter
-    private final Alert alert = new Alert();
-    @Getter
-    private final Header header = new Header();
 
     @Nonnull
     @Step("Add category {categoryName}")

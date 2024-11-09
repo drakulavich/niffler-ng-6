@@ -65,4 +65,9 @@ public class AuthUserRepositoryJdbc implements AuthUserRepository {
       );
     return userEntity;
   }
+
+  @Override
+  public void removeAll() {
+    throw new UnsupportedOperationException("Not implemented yet");
+  }
 }

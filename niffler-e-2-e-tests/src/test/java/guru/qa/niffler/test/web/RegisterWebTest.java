@@ -1,6 +1,8 @@
 package guru.qa.niffler.test.web;
 
 import com.codeborne.selenide.Selenide;
+import guru.qa.niffler.jupiter.annotation.User;
+import guru.qa.niffler.model.UserJson;
 import guru.qa.niffler.page.LoginPage;
 import guru.qa.niffler.page.RegisterPage;
 import org.junit.jupiter.api.Test;
@@ -27,9 +29,10 @@ public class RegisterWebTest extends BaseWebTest {
                 .getSpendingTable().checkTableSize(0);
     }
 
+    @User
     @Test
-    void shouldNotRegisterUserWithExistingUsername() {
-        String oldUsername = "duck";
+    void shouldNotRegisterUserWithExistingUsername(UserJson user) {
+        String oldUsername = user.username();
         String newPassword = "pa$$w0rd";
 
         Selenide.open(CFG.frontUrl(), LoginPage.class)

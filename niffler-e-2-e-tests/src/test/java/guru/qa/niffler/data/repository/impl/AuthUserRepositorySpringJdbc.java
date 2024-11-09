@@ -86,4 +86,9 @@ public class AuthUserRepositorySpringJdbc implements AuthUserRepository {
         username
       ));
   }
+
+  @Override
+  public void removeAll() {
+    throw new UnsupportedOperationException("Not implemented yet");
+  }
 }

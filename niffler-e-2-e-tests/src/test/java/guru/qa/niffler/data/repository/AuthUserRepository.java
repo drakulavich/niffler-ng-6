@@ -18,4 +18,5 @@ public interface AuthUserRepository {
   @Nonnull
   Optional<AuthUserEntity> findByUsername(String username);
   void remove(AuthUserEntity user);
+  void removeAll();
 }

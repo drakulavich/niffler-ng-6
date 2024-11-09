@@ -74,4 +74,11 @@ public class UserdataUserRepositoryHibernate implements UserdataUserRepository {
     entityManager.joinTransaction();
     entityManager.remove(user);
   }
+
+  @Override
+  public void removeAll() {
+    entityManager.joinTransaction();
+    entityManager.createQuery("delete from FriendshipEntity").executeUpdate();
+    entityManager.createQuery("delete from UdUserEntity").executeUpdate();
+  }
 }

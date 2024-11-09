@@ -19,6 +19,7 @@ buildscript {
         atomicosVersion = '6.0.0'
         wiremockVersion = '3.0.1'
         fakerVersion = '1.0.2'
+        assertjVersion = '3.21.0'
         userdataWsdlUrl = System.getProperty("test.env") == "docker"
                 ? "http://userdata.niffler.dc:8089/ws/userdata.wsdl"
                 : "http://127.0.0.1:8089/ws/userdata.wsdl"
@@ -123,6 +124,8 @@ dependencies {
     // Lombok
     testAnnotationProcessor "org.projectlombok:lombok:${project.ext.lombokVersion}"
     testCompileOnly "org.projectlombok:lombok:${project.ext.lombokVersion}"
+    // AssertJ
+    testImplementation "org.assertj:assertj-core:${assertjVersion}"
 }
 
 tasks.withType(JavaCompile).configureEach {

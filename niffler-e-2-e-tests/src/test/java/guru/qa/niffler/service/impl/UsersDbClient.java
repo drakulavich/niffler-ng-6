@@ -172,4 +172,12 @@ public class UsersDbClient implements UsersClient {
     authUserRepository.create(authUser);
     return userdataUserRepository.create(userEntity(username));
   }
+
+  public void removeAllUsers() {
+    xaTransactionTemplate.execute(() -> {
+      userdataUserRepository.removeAll();
+      authUserRepository.removeAll();
+      return null;
+    });
+  }
 }

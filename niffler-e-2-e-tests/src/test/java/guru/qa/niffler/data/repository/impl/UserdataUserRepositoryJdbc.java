@@ -58,4 +58,9 @@ public class UserdataUserRepositoryJdbc implements UserdataUserRepository {
   public Optional<UdUserEntity> findByUsername(String username) {
     return udUserDao.findByUsername(username);
   }
+
+  @Override
+  public void removeAll() {
+    throw new UnsupportedOperationException("Not implemented yet");
+  }
 }

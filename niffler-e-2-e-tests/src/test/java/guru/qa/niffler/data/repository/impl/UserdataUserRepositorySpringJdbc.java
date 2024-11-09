@@ -58,4 +58,9 @@ public class UserdataUserRepositorySpringJdbc implements UserdataUserRepository 
   public void remove(UdUserEntity user) {
     udUserDao.delete(user);
   }
+
+  @Override
+  public void removeAll() {
+    throw new UnsupportedOperationException("Not implemented yet");
+  }
 }

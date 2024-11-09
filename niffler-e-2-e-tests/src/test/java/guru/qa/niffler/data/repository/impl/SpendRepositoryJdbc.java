@@ -79,4 +79,9 @@ public class SpendRepositoryJdbc implements SpendRepository {
   public void removeCategory(CategoryEntity category) {
     categoryDao.deleteCategory(category);
   }
+
+  @Override
+  public void removeAll() {
+    throw new UnsupportedOperationException("Not implemented yet");
+  }
 }

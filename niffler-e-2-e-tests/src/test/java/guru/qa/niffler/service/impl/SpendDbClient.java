@@ -52,4 +52,12 @@ public class SpendDbClient implements SpendClient {
       )
     ));
   }
+
+  public void removeAllSpends() {
+    xaTransactionTemplate.execute(() -> {
+        spendRepository.removeAll();
+        return null;
+      }
+    );
+  }
 }

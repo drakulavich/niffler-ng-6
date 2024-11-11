@@ -12,5 +12,7 @@ public interface SpendClient {
   SpendJson createSpend(SpendJson spend);
   @Nonnull
   CategoryJson createCategory(CategoryJson category);
+  @Nonnull
+  CategoryJson updateCategory(CategoryJson category);
   void removeCategory(CategoryJson category);
 }

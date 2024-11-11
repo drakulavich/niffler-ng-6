@@ -9,6 +9,7 @@ import guru.qa.niffler.data.tpl.XaTransactionTemplate;
 import guru.qa.niffler.model.CategoryJson;
 import guru.qa.niffler.model.SpendJson;
 import guru.qa.niffler.service.SpendClient;
+import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -50,6 +51,16 @@ public class SpendDbClient implements SpendClient {
     return Objects.requireNonNull(xaTransactionTemplate.execute(() -> CategoryJson.fromEntity(
         spendRepository.createCategory(CategoryEntity.fromJson(category))
       )
+    ));
+  }
+
+  @NotNull
+  @Override
+  public CategoryJson updateCategory(CategoryJson category) {
+    return Objects.requireNonNull(xaTransactionTemplate.execute(() -> {
+        CategoryEntity categoryEntity = CategoryEntity.fromJson(category);
+        return CategoryJson.fromEntity(spendRepository.updateCategory(categoryEntity));
+      }
     ));
   }
 

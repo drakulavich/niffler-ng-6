@@ -1,6 +1,6 @@
 package guru.qa.niffler.jupiter.extension;
 
-import guru.qa.niffler.api.GhApiClient;
+import guru.qa.niffler.service.impl.GithubApiClient;
 import guru.qa.niffler.jupiter.annotation.DisabledByIssue;
 import lombok.SneakyThrows;
 import org.junit.jupiter.api.extension.ConditionEvaluationResult;
@@ -12,7 +12,7 @@ import org.junit.platform.commons.support.SearchOption;
 
 public class IssueExtension implements ExecutionCondition {
 
-  private static final GhApiClient ghApiClient = new GhApiClient();
+  private static final GithubApiClient GITHUB_API_CLIENT = new GithubApiClient();
 
   @SneakyThrows
   @Override
@@ -27,7 +27,7 @@ public class IssueExtension implements ExecutionCondition {
             SearchOption.INCLUDE_ENCLOSING_CLASSES
         )
     ).map(
-        byIssue -> "open".equals(ghApiClient.issueState(byIssue.value()))
+        byIssue -> "open".equals(GITHUB_API_CLIENT.issueState(byIssue.value()))
             ? ConditionEvaluationResult.disabled("Disabled by issue #" + byIssue.value())
             : ConditionEvaluationResult.enabled("Issue closed")
     ).orElseGet(

@@ -7,7 +7,7 @@ import guru.qa.niffler.model.CurrencyValues;
 import guru.qa.niffler.model.SpendJson;
 import guru.qa.niffler.model.UserJson;
 import guru.qa.niffler.service.SpendClient;
-import guru.qa.niffler.service.impl.SpendDbClient;
+import guru.qa.niffler.service.impl.SpendApiClient;
 import org.junit.jupiter.api.extension.BeforeEachCallback;
 import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.api.extension.ParameterContext;
@@ -25,7 +25,7 @@ public class SpendingExtension implements
 
   public static final ExtensionContext.Namespace NAMESPACE = ExtensionContext.Namespace.create(SpendingExtension.class);
 
-  private final SpendClient spendClient = new SpendDbClient();
+  private final SpendClient spendClient = new SpendApiClient();
 
   @Override
   public void beforeEach(ExtensionContext context) throws Exception {

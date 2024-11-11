@@ -26,5 +26,7 @@ public interface SpendRepository {
   Optional<SpendEntity> findByUsernameAndSpendDescription(String username, String description);
   void remove(SpendEntity spend);
   void removeCategory(CategoryEntity category);
+  @Nonnull
+  CategoryEntity updateCategory(CategoryEntity category);
   void removeAll();
 }

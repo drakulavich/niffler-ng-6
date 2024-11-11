@@ -7,6 +7,7 @@ import guru.qa.niffler.data.dao.impl.SpendDaoJdbc;
 import guru.qa.niffler.data.entity.spend.CategoryEntity;
 import guru.qa.niffler.data.entity.spend.SpendEntity;
 import guru.qa.niffler.data.repository.SpendRepository;
+import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -78,6 +79,12 @@ public class SpendRepositoryJdbc implements SpendRepository {
   @Override
   public void removeCategory(CategoryEntity category) {
     categoryDao.deleteCategory(category);
+  }
+
+  @NotNull
+  @Override
+  public CategoryEntity updateCategory(CategoryEntity category) {
+    return categoryDao.update(category);
   }
 
   @Override

@@ -69,7 +69,7 @@ public class SpendingWebTest extends BaseWebTest {
       .login(user.username(), user.testData().password());
 
     // sleep to prevent failed test
-    Selenide.sleep(2000);
+    Selenide.sleep(3000);
     BufferedImage actual = ImageIO.read($("canvas[role='img']").screenshot());
     assertFalse(new ScreenDiffResult(
       actual,

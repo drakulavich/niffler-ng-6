@@ -2,11 +2,14 @@ package guru.qa.niffler.test.web;
 
 import com.codeborne.selenide.Selenide;
 import guru.qa.niffler.jupiter.annotation.Category;
+import guru.qa.niffler.jupiter.annotation.ScreenShotTest;
 import guru.qa.niffler.jupiter.annotation.User;
 import guru.qa.niffler.model.UserJson;
 import guru.qa.niffler.page.LoginPage;
 import guru.qa.niffler.page.ProfilePage;
 import org.junit.jupiter.api.Test;
+
+import java.awt.image.BufferedImage;
 
 public class ProfileWebTest extends BaseWebTest {
   private final ProfilePage profilePage = new ProfilePage();
@@ -49,14 +52,21 @@ public class ProfileWebTest extends BaseWebTest {
   }
 
   @User
-  @Test
-  void userCanUpdateProfile(UserJson user) {
+  @ScreenShotTest(value = "img/expected-avatar.png")
+  void shouldUpdateProfileWithAllFieldsSet(UserJson user, BufferedImage expected) throws Exception {
+    final String newName = "John Snow";
+
     Selenide.open(CFG.frontUrl(), LoginPage.class)
       .login(user.username(), user.testData().password())
       .getHeader().toProfilePage()
-      .updateName("John Snow")
-      .checkAlert("Profile successfully updated")
-      .getHeader().toMainPage()
-      .getHeader().toProfilePage().checkName("John Snow");
+      .uploadPhotoFromClasspath("img/cat.jpeg")
+      .updateName(newName)
+      .checkAlert("Profile successfully updated");
+
+    Selenide.refresh();
+
+    profilePage.checkName(newName)
+      .checkPhotoExist()
+      .checkPhotoMatch(expected);
   }
 }

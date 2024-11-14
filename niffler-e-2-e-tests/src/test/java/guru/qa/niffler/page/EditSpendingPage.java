@@ -24,6 +24,14 @@ public class EditSpendingPage extends BasePage<EditSpendingPage> {
   }
 
   @Nonnull
+  @Step("Set new spending amount {amount}")
+  public EditSpendingPage setNewSpendingAmount(int amount) {
+    amountInput.clear();
+    amountInput.setValue(String.valueOf(amount));
+    return this;
+  }
+
+  @Nonnull
   @Step("Create new spending")
   public MainPage createSpend(String description, String category, int amount) {
     descriptionInput.setValue(description);

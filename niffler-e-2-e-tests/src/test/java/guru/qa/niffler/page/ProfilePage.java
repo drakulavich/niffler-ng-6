@@ -3,16 +3,21 @@ package guru.qa.niffler.page;
 import com.codeborne.selenide.Condition;
 import com.codeborne.selenide.ElementsCollection;
 import com.codeborne.selenide.SelenideElement;
+import guru.qa.niffler.utils.ScreenDiffResult;
 import io.qameta.allure.Step;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
 
+import static com.codeborne.selenide.Condition.attributeMatching;
 import static com.codeborne.selenide.Condition.text;
 import static com.codeborne.selenide.Condition.visible;
 import static com.codeborne.selenide.Selectors.byText;
 import static com.codeborne.selenide.Selenide.$;
 import static com.codeborne.selenide.Selenide.$$;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 
 @ParametersAreNonnullByDefault
 public class ProfilePage extends BasePage<ProfilePage> {
@@ -21,6 +26,31 @@ public class ProfilePage extends BasePage<ProfilePage> {
     private final SelenideElement nameField = $("input[name='name']");
     private final SelenideElement saveButton = $("button[type='submit']");
     private final ElementsCollection categories = $$(".MuiChip-label");
+
+    private final SelenideElement photoInput = $("input[type='file']");
+    private final SelenideElement avatar = $("#image__input").parent().$("img");
+
+    @Step("Upload photo from classpath")
+    @Nonnull
+    public ProfilePage uploadPhotoFromClasspath(String path) {
+      photoInput.uploadFromClasspath(path);
+      return this;
+    }
+
+    @Step("Check photo exist")
+    @Nonnull
+    public ProfilePage checkPhotoExist() {
+      avatar.should(attributeMatching("src", "data:image.*"));
+      return this;
+    }
+
+    @Step("Check photo match")
+    @Nonnull
+    public ProfilePage checkPhotoMatch(BufferedImage expected) throws Exception {
+      BufferedImage actual = ImageIO.read(avatar.screenshot());
+      assertFalse(new ScreenDiffResult(actual, expected));
+      return this;
+    }
 
     @Nonnull
     @Step("Add category {categoryName}")

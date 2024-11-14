@@ -2,6 +2,7 @@ package guru.qa.niffler.page;
 
 import com.codeborne.selenide.SelenideElement;
 import guru.qa.niffler.page.component.SpendingTable;
+import guru.qa.niffler.page.component.StatComponent;
 import io.qameta.allure.Step;
 import lombok.Getter;
 
@@ -16,6 +17,8 @@ public class MainPage extends BasePage<MainPage> {
   private final SelenideElement stat = $("#stat");
   @Getter
   private final SpendingTable spendingTable = new SpendingTable();
+  @Getter
+  private final StatComponent statComponent = new StatComponent();
 
   @Nonnull
   @Step("Check that statistics is visible")

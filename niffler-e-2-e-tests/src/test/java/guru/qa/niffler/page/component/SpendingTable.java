@@ -1,22 +1,27 @@
 package guru.qa.niffler.page.component;
 
 import com.codeborne.selenide.ElementsCollection;
+import com.codeborne.selenide.SelenideElement;
 import guru.qa.niffler.page.EditSpendingPage;
 import io.qameta.allure.Step;
 
 import javax.annotation.Nonnull;
 
+import static com.codeborne.selenide.ClickOptions.usingJavaScript;
 import static com.codeborne.selenide.CollectionCondition.size;
 import static com.codeborne.selenide.Condition.text;
 import static com.codeborne.selenide.Condition.visible;
+import static com.codeborne.selenide.Selectors.byText;
 import static com.codeborne.selenide.Selenide.$;
 
 public class SpendingTable extends BaseComponent<SpendingTable> {
-  private final ElementsCollection rows = self.$$("tr");
+  private final ElementsCollection rows = self.$("tbody").$$("tr");
   private final SearchField searchField = new SearchField();
+  private final SelenideElement popup = $("div[role='dialog']");
+  private final SelenideElement deleteBtn = self.$("#delete");
 
   public SpendingTable() {
-    super($("#spendings tbody"));
+    super($("#spendings"));
   }
 
   @Nonnull
@@ -36,8 +41,9 @@ public class SpendingTable extends BaseComponent<SpendingTable> {
   @Nonnull
   @Step("Delete spending {description}")
   public SpendingTable deleteSpending(String description) {
-    rows.find(text(description)).$$("td").get(0).setSelected(true);
-    $("#delete").click();
+    rows.find(text(description)).$$("td").get(0).click();
+    deleteBtn.click();
+    popup.$(byText("Delete")).click(usingJavaScript());
     return this;
   }
 

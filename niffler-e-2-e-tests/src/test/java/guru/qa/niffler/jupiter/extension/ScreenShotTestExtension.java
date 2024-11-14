@@ -16,6 +16,7 @@ import org.springframework.core.io.ClassPathResource;
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.IOException;
 import java.util.Base64;
 
@@ -34,11 +35,34 @@ public class ScreenShotTestExtension implements ParameterResolver, TestExecution
   @SneakyThrows
   @Override
   public BufferedImage resolveParameter(ParameterContext parameterContext, ExtensionContext extensionContext) throws ParameterResolutionException {
-    return ImageIO.read(new ClassPathResource("img/expected-stat.png").getInputStream());
+    String path = AnnotationSupport.findAnnotation(extensionContext.getRequiredTestMethod(), ScreenShotTest.class)
+      .map(ScreenShotTest::value)
+      .orElseThrow(() -> new ParameterResolutionException("Path not found"));
+    BufferedImage image = null;
+    try {
+      image = ImageIO.read(new ClassPathResource(path).getInputStream());
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+    return image;
   }
 
   @Override
   public void handleTestExecutionException(ExtensionContext context, Throwable throwable) throws Throwable {
+    ScreenShotTest anno = context.getRequiredTestMethod().getAnnotation(ScreenShotTest.class);
+    if (anno.rewriteExpected()) {
+      BufferedImage actual = getActual();
+      if (actual != null) {
+        File file = new File("src/test/resources/" + anno.value());
+        ImageIO.write(actual, "png", file);
+      }
+    }
+
+    if (getDiff() == null) {
+      // if we fail before ScreenDiff, do not override the failed reason
+      throw throwable;
+    }
+
     ScreenDif screenDif = new ScreenDif(
       "data:image/png;base64," + encoder.encodeToString(imageToBytes(getExpected())),
       "data:image/png;base64," + encoder.encodeToString(imageToBytes(getActual())),

@@ -66,7 +66,7 @@ public class ProfileWebTest extends BaseWebTest {
     Selenide.refresh();
 
     profilePage.checkName(newName)
-      .checkPhotoExist()
-      .checkPhotoMatch(expected);
+      .checkAvatarExist()
+      .checkAvatarMatch(expected);
   }
 }

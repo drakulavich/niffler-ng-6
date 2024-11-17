@@ -8,15 +8,10 @@ import guru.qa.niffler.jupiter.annotation.User;
 import guru.qa.niffler.model.UserJson;
 import guru.qa.niffler.page.LoginPage;
 import guru.qa.niffler.page.MainPage;
-import guru.qa.niffler.utils.ScreenDiffResult;
 import org.junit.jupiter.api.Test;
 
-import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
-
-import static com.codeborne.selenide.Selenide.$;
-import static org.junit.jupiter.api.Assertions.assertFalse;
 
 public class SpendingWebTest extends BaseWebTest {
   private final MainPage mainPage = new MainPage();
@@ -67,16 +62,12 @@ public class SpendingWebTest extends BaseWebTest {
   @ScreenShotTest("img/expected-stat.png")
   void checkStatComponentTest(UserJson user, BufferedImage expected) throws IOException {
     Selenide.open(CFG.frontUrl(), LoginPage.class)
-      .login(user.username(), user.testData().password())
-      .getStatComponent().checkBubblesContain("Обучение 79990 ₽");
+      .login(user.username(), user.testData().password());
 
-    // sleep to prevent failed test
-    Selenide.sleep(3000);
-    BufferedImage actual = ImageIO.read($("canvas[role='img']").screenshot());
-    assertFalse(new ScreenDiffResult(
-      actual,
-      expected
-    ));
+    waitForStatComponent();
+    mainPage.getStatComponent()
+      .checkBubblesContain("Обучение 79990 ₽")
+      .checkWidgetImage(expected);
   }
 
   @User(
@@ -97,14 +88,10 @@ public class SpendingWebTest extends BaseWebTest {
         .login(user.username(), user.testData().password())
         .getSpendingTable().deleteSpending("Лыжи");
 
-    new MainPage().getStatComponent().checkBubblesContain("Еда 3333 ₽", "Отдых 6000 ₽");
-
-    Selenide.sleep(3000);
-    BufferedImage actual = ImageIO.read($("canvas[role='img']").screenshot());
-    assertFalse(new ScreenDiffResult(
-      actual,
-      expected
-    ));
+    waitForStatComponent();
+    new MainPage().getStatComponent()
+      .checkBubblesContain("Еда 3333 ₽")
+      .checkWidgetImage(expected);
   }
 
   @User(
@@ -127,14 +114,10 @@ public class SpendingWebTest extends BaseWebTest {
         .setNewSpendingAmount(4000)
         .save();
 
-    new MainPage().getStatComponent().checkBubblesContain("Еда 4000 ₽", "Отдых 6000 ₽");
-
-    Selenide.sleep(3000);
-    BufferedImage actual = ImageIO.read($("canvas[role='img']").screenshot());
-    assertFalse(new ScreenDiffResult(
-      actual,
-      expected
-    ));
+    waitForStatComponent();
+    new MainPage().getStatComponent()
+      .checkBubblesContain("Еда 4000 ₽", "Отдых 6000 ₽")
+      .checkWidgetImage(expected);
   }
 
   @User(
@@ -158,14 +141,15 @@ public class SpendingWebTest extends BaseWebTest {
   @ScreenShotTest(value = "img/expected-stat-archived.png")
   void userCanSeeArchivedCategoriesInPieChart(UserJson user, BufferedImage expected) throws IOException {
     Selenide.open(CFG.frontUrl(), LoginPage.class)
-        .login(user.username(), user.testData().password())
-        .getStatComponent().checkBubblesContain("Еда 3333 ₽", "Archived 6000 ₽");
+        .login(user.username(), user.testData().password());
 
+    waitForStatComponent();
+    new MainPage().getStatComponent()
+      .checkBubblesContain("Еда 3333 ₽", "Archived 6000 ₽")
+      .checkWidgetImage(expected);
+  }
+
+  private void waitForStatComponent() {
     Selenide.sleep(3000);
-    BufferedImage actual = ImageIO.read($("canvas[role='img']").screenshot());
-    assertFalse(new ScreenDiffResult(
-      actual,
-      expected
-    ));
   }
 }

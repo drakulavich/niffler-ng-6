@@ -27,7 +27,7 @@ public class UsersApiClient implements UsersClient {
   private final UserDataApi userDataApi = new EmptyClient(CFG.userdataUrl()).create(UserDataApi.class);
   private final AuthApi authApi = new EmptyClient(CFG.authUrl()).create(AuthApi.class);
 
-  @Step("Create user with username: {username}")
+  @Step("[API] Create user with username: {username}")
   @Override
   public @Nonnull UserJson createUser(@Nonnull String username, @Nonnull String password) {
     try {

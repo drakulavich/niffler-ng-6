@@ -89,7 +89,7 @@ public class SpendingWebTest extends BaseWebTest {
         .getSpendingTable().deleteSpending("Лыжи");
 
     waitForStatComponent();
-    new MainPage().getStatComponent()
+    mainPage.getStatComponent()
       .checkBubblesContain("Еда 3333 ₽")
       .checkWidgetImage(expected);
   }
@@ -115,7 +115,7 @@ public class SpendingWebTest extends BaseWebTest {
         .save();
 
     waitForStatComponent();
-    new MainPage().getStatComponent()
+    mainPage.getStatComponent()
       .checkBubblesContain("Еда 4000 ₽", "Отдых 6000 ₽")
       .checkWidgetImage(expected);
   }
@@ -144,7 +144,7 @@ public class SpendingWebTest extends BaseWebTest {
         .login(user.username(), user.testData().password());
 
     waitForStatComponent();
-    new MainPage().getStatComponent()
+    mainPage.getStatComponent()
       .checkBubblesContain("Еда 3333 ₽", "Archived 6000 ₽")
       .checkWidgetImage(expected);
   }

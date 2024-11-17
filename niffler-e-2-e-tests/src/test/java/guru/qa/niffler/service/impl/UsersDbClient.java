@@ -7,12 +7,13 @@ import guru.qa.niffler.data.entity.auth.AuthorityEntity;
 import guru.qa.niffler.data.entity.userdata.UdUserEntity;
 import guru.qa.niffler.data.repository.AuthUserRepository;
 import guru.qa.niffler.data.repository.UserdataUserRepository;
-import guru.qa.niffler.data.repository.impl.AuthUserRepositoryHibernate;
-import guru.qa.niffler.data.repository.impl.UserdataUserRepositoryHibernate;
+import guru.qa.niffler.data.repository.impl.AuthUserRepositorySpringJdbc;
+import guru.qa.niffler.data.repository.impl.UserdataUserRepositorySpringJdbc;
 import guru.qa.niffler.data.tpl.XaTransactionTemplate;
 import guru.qa.niffler.model.CurrencyValues;
 import guru.qa.niffler.model.UserJson;
 import guru.qa.niffler.service.UsersClient;
+import io.qameta.allure.Step;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
@@ -31,8 +32,8 @@ public class UsersDbClient implements UsersClient {
   private static final Config CFG = Config.getInstance();
   private static final PasswordEncoder pe = PasswordEncoderFactories.createDelegatingPasswordEncoder();
 
-  private final AuthUserRepository authUserRepository = new AuthUserRepositoryHibernate();
-  private final UserdataUserRepository userdataUserRepository = new UserdataUserRepositoryHibernate();
+  private final AuthUserRepository authUserRepository = new AuthUserRepositorySpringJdbc();
+  private final UserdataUserRepository userdataUserRepository = new UserdataUserRepositorySpringJdbc();
 
   private final XaTransactionTemplate xaTransactionTemplate = new XaTransactionTemplate(
       CFG.authJdbcUrl(),
@@ -40,6 +41,7 @@ public class UsersDbClient implements UsersClient {
   );
 
   @Nonnull
+  @Step("Crete user using SQL")
   public UserJson createUser(String username, String password) {
     return Objects.requireNonNull(xaTransactionTemplate.execute(() -> UserJson.fromEntity(
       createNewUser(username, password),
@@ -140,7 +142,7 @@ public class UsersDbClient implements UsersClient {
   private UdUserEntity userEntity(String username) {
     UdUserEntity ue = new UdUserEntity();
     ue.setUsername(username);
-    ue.setCurrency(CurrencyValues.USD);
+    ue.setCurrency(CurrencyValues.RUB);
     return ue;
   }
 

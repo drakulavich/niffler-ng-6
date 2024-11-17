@@ -178,4 +178,15 @@ public class SpendDaoJdbc implements SpendDao {
       throw new RuntimeException(e);
     }
   }
+
+  @Override
+  public void deleteAll() {
+    try (PreparedStatement ps = holder(CFG.spendJdbcUrl()).connection().prepareStatement(
+      "DELETE FROM spend"
+    )) {
+      ps.execute();
+    } catch (SQLException e) {
+      throw new RuntimeException(e);
+    }
+  }
 }

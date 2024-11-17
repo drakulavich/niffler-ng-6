@@ -89,6 +89,7 @@ public class SpendRepositoryJdbc implements SpendRepository {
 
   @Override
   public void removeAll() {
-    throw new UnsupportedOperationException("Not implemented yet");
+    spendDao.deleteAll();
+    categoryDao.deleteAll();
   }
 }

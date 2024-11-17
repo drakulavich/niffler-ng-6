@@ -139,4 +139,14 @@ public class UdUserDaoSpringJdbc implements UdUserDao {
         UdUserEntityRowMapper.instance
     );
   }
+
+  @Override
+  public void deleteAll() {
+    JdbcTemplate jdbcTemplate = new JdbcTemplate(DataSources.dataSource(CFG.userdataJdbcUrl()));
+    try {
+      jdbcTemplate.execute("DELETE FROM \"user\"");
+    } catch (Exception e) {
+      throw new RuntimeException(e);
+    }
+  }
 }

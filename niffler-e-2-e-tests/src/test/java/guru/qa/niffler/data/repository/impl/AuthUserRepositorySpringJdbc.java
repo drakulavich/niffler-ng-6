@@ -89,6 +89,7 @@ public class AuthUserRepositorySpringJdbc implements AuthUserRepository {
 
   @Override
   public void removeAll() {
-    throw new UnsupportedOperationException("Not implemented yet");
+    authAuthorityDao.deleteAll();
+    authUserDao.deleteAll();
   }
 }

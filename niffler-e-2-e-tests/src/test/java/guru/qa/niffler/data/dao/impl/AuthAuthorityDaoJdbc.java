@@ -111,4 +111,15 @@ public class AuthAuthorityDaoJdbc implements AuthAuthorityDao {
       throw new RuntimeException(e);
     }
   }
+
+  @Override
+  public void deleteAll() {
+    try (PreparedStatement ps = holder(CFG.authJdbcUrl()).connection().prepareStatement(
+        "DELETE FROM authority"
+    )) {
+      ps.execute();
+    } catch (SQLException e) {
+      throw new RuntimeException(e);
+    }
+  }
 }

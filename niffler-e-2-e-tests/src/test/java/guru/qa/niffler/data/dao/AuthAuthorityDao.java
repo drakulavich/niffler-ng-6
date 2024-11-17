@@ -16,4 +16,5 @@ public interface AuthAuthorityDao {
   List<AuthorityEntity> findAll();
   @Nonnull
   List<AuthorityEntity> findAllByUserId(UUID userId);
+  void deleteAll();
 }

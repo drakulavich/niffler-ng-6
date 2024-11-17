@@ -190,4 +190,14 @@ public class UdUserDaoJdbc implements UdUserDao {
       throw new RuntimeException(e);
     }
   }
+
+  @Override
+  public void deleteAll() {
+    try (PreparedStatement ps = holder(CFG.userdataJdbcUrl()).connection().prepareStatement(
+      "DELETE FROM \"user\"")) {
+      ps.execute();
+    } catch (SQLException e) {
+      throw new RuntimeException(e);
+    }
+  }
 }

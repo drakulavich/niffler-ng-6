@@ -171,4 +171,15 @@ public class CategoryDaoJdbc implements CategoryDao {
       throw new RuntimeException(e);
     }
   }
+
+  @Override
+  public void deleteAll() {
+    try (PreparedStatement ps = holder(CFG.spendJdbcUrl()).connection().prepareStatement(
+      "DELETE FROM category"
+    )) {
+      ps.execute();
+    } catch (SQLException e) {
+      throw new RuntimeException(e);
+    }
+  }
 }

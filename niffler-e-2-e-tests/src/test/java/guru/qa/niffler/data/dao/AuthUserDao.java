@@ -22,4 +22,5 @@ public interface AuthUserDao {
   void delete(AuthUserEntity user);
   @Nonnull
   List<AuthUserEntity> findAll();
+  void deleteAll();
 }

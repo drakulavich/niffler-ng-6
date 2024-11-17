@@ -148,4 +148,15 @@ public class AuthUserDaoJdbc implements AuthUserDao {
       throw new RuntimeException(e);
     }
   }
+
+  @Override
+  public void deleteAll() {
+    try (PreparedStatement ps = holder(CFG.authJdbcUrl()).connection().prepareStatement(
+      "DELETE FROM \"user\""
+    )) {
+      ps.execute();
+    } catch (SQLException e) {
+      throw new RuntimeException(e);
+    }
+  }
 }

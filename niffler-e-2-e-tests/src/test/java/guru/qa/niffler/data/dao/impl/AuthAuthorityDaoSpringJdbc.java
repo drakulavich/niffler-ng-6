@@ -79,4 +79,10 @@ public class AuthAuthorityDaoSpringJdbc implements AuthAuthorityDao {
       userId
     );
   }
+
+  @Override
+  public void deleteAll() {
+    JdbcTemplate jdbcTemplate = new JdbcTemplate(DataSources.dataSource(CFG.authJdbcUrl()));
+    jdbcTemplate.execute("DELETE FROM authority");
+  }
 }

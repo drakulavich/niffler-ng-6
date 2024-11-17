@@ -1,6 +1,8 @@
 package guru.qa.niffler.data.repository.impl;
 
+import guru.qa.niffler.data.dao.FriendshipDao;
 import guru.qa.niffler.data.dao.UdUserDao;
+import guru.qa.niffler.data.dao.impl.FriendshipDaoSpringJdbc;
 import guru.qa.niffler.data.dao.impl.UdUserDaoSpringJdbc;
 import guru.qa.niffler.data.entity.userdata.FriendshipStatus;
 import guru.qa.niffler.data.entity.userdata.UdUserEntity;
@@ -15,6 +17,7 @@ import java.util.UUID;
 public class UserdataUserRepositorySpringJdbc implements UserdataUserRepository {
 
   private final UdUserDao udUserDao = new UdUserDaoSpringJdbc();
+  private final FriendshipDao friendshipDao = new FriendshipDaoSpringJdbc();
 
   @Nonnull
   @Override
@@ -61,6 +64,7 @@ public class UserdataUserRepositorySpringJdbc implements UserdataUserRepository 
 
   @Override
   public void removeAll() {
-    throw new UnsupportedOperationException("Not implemented yet");
+    friendshipDao.deleteAll();
+    udUserDao.deleteAll();
   }
 }

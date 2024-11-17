@@ -119,4 +119,10 @@ public class CategoryDaoSpringJdbc implements CategoryDao {
     );
     return category;
   }
+
+  @Override
+  public void deleteAll() {
+    JdbcTemplate jdbcTemplate = new JdbcTemplate(DataSources.dataSource(CFG.spendJdbcUrl()));
+    jdbcTemplate.execute("DELETE FROM category");
+  }
 }

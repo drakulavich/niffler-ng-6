@@ -32,4 +32,15 @@ public class FriendshipDaoJdbc implements FriendshipDao {
       throw new RuntimeException(e);
     }
   }
+
+  @Override
+  public void deleteAll() {
+    try (PreparedStatement ps = holder(CFG.userdataJdbcUrl()).connection().prepareStatement(
+        "DELETE FROM friendship"
+    )) {
+      ps.execute();
+    } catch (Exception e) {
+      throw new RuntimeException(e);
+    }
+  }
 }

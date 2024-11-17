@@ -9,4 +9,5 @@ import javax.annotation.ParametersAreNonnullByDefault;
 public interface FriendshipDao {
   @Nonnull
   FriendshipEntity create(FriendshipEntity friendship);
+  void deleteAll();
 }

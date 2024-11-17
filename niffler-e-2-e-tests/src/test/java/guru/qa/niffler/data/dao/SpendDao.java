@@ -23,4 +23,5 @@ public interface SpendDao {
   void deleteSpend(SpendEntity spend);
   @Nonnull
   List<SpendEntity> findAll();
+  void deleteAll();
 }

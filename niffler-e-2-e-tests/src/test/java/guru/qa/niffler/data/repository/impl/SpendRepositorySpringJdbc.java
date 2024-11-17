@@ -89,6 +89,7 @@ public class SpendRepositorySpringJdbc implements SpendRepository {
 
   @Override
   public void removeAll() {
-    throw new UnsupportedOperationException("Not implemented");
+    spendDao.deleteAll();
+    categoryDao.deleteAll();
   }
 }

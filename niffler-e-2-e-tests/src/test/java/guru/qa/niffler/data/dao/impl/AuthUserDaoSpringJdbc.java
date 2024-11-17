@@ -119,4 +119,10 @@ public class AuthUserDaoSpringJdbc implements AuthUserDao {
     );
     return user;
   }
+
+  @Override
+  public void deleteAll() {
+    JdbcTemplate jdbcTemplate = new JdbcTemplate(DataSources.dataSource(CFG.authJdbcUrl()));
+    jdbcTemplate.execute("DELETE FROM \"user\"");
+  }
 }

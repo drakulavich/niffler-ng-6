@@ -21,4 +21,5 @@ public interface UdUserDao {
   void delete(UdUserEntity user);
   @Nonnull
   List<UdUserEntity> findAll();
+  void deleteAll();
 }

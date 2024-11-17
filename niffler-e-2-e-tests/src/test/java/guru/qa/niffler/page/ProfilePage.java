@@ -39,14 +39,14 @@ public class ProfilePage extends BasePage<ProfilePage> {
 
     @Step("Check photo exist")
     @Nonnull
-    public ProfilePage checkPhotoExist() {
+    public ProfilePage checkAvatarExist() {
       avatar.should(attributeMatching("src", "data:image.*"));
       return this;
     }
 
     @Step("Check photo match")
     @Nonnull
-    public ProfilePage checkPhotoMatch(BufferedImage expected) throws Exception {
+    public ProfilePage checkAvatarMatch(BufferedImage expected) throws Exception {
       BufferedImage actual = ImageIO.read(avatar.screenshot());
       assertFalse(new ScreenDiffResult(actual, expected));
       return this;

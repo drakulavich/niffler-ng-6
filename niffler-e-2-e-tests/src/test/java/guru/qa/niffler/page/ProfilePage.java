@@ -30,21 +30,21 @@ public class ProfilePage extends BasePage<ProfilePage> {
     private final SelenideElement photoInput = $("input[type='file']");
     private final SelenideElement avatar = $("#image__input").parent().$("img");
 
-    @Step("Upload photo from classpath")
+    @Step("Upload avatar from classpath")
     @Nonnull
     public ProfilePage uploadPhotoFromClasspath(String path) {
       photoInput.uploadFromClasspath(path);
       return this;
     }
 
-    @Step("Check photo exist")
+    @Step("Check avatar exist")
     @Nonnull
     public ProfilePage checkAvatarExist() {
       avatar.should(attributeMatching("src", "data:image.*"));
       return this;
     }
 
-    @Step("Check photo match")
+    @Step("Check avatar match")
     @Nonnull
     public ProfilePage checkAvatarMatch(BufferedImage expected) throws Exception {
       BufferedImage actual = ImageIO.read(avatar.screenshot());

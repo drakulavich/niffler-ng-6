@@ -4,14 +4,15 @@ import guru.qa.niffler.config.Config;
 import guru.qa.niffler.data.dao.FriendshipDao;
 import guru.qa.niffler.data.entity.userdata.FriendshipEntity;
 import guru.qa.niffler.data.jdbc.DataSources;
-import org.jetbrains.annotations.NotNull;
 import org.springframework.jdbc.core.JdbcTemplate;
+
+import javax.annotation.Nonnull;
 
 public class FriendshipDaoSpringJdbc implements FriendshipDao {
 
   private static final Config CFG = Config.getInstance();
 
-  @NotNull
+  @Nonnull
   @Override
   public FriendshipEntity create(FriendshipEntity friendship) {
     JdbcTemplate jdbcTemplate = new JdbcTemplate(DataSources.dataSource(CFG.userdataJdbcUrl()));

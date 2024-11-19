@@ -5,7 +5,6 @@ import com.codeborne.selenide.Driver;
 import com.codeborne.selenide.WebElementsCondition;
 import guru.qa.niffler.model.SpendJson;
 import org.apache.commons.lang3.ArrayUtils;
-import org.jetbrains.annotations.NotNull;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 
@@ -43,7 +42,7 @@ public class SpendConditions {
         ))
         .toList();
 
-      @NotNull
+      @Nonnull
       @Override
       public CheckResult check(Driver driver, List<WebElement> elements) {
         if (ArrayUtils.isEmpty(expectedSpends)) {

@@ -68,7 +68,7 @@ public class SpendingWebTest extends BaseWebTest {
 
     waitForStatComponent();
     mainPage.getStatComponent()
-      .checkBubbles(new Bubble(Color.green, "Обучение 79990 ₽"))
+      .checkBubbles(Bubble.of(Color.yellow, "Обучение 79990 ₽"))
       .checkWidgetImage(expected);
   }
 
@@ -92,7 +92,9 @@ public class SpendingWebTest extends BaseWebTest {
 
     waitForStatComponent();
     mainPage.getStatComponent()
-      .checkBubblesContain("Еда 3333 ₽")
+      .checkBubblesAnyOrder(
+        Bubble.of(Color.yellow, "Еда 3333 ₽")
+      )
       .checkWidgetImage(expected);
   }
 
@@ -118,7 +120,10 @@ public class SpendingWebTest extends BaseWebTest {
 
     waitForStatComponent();
     mainPage.getStatComponent()
-      .checkBubblesContain("Еда 4000 ₽", "Отдых 6000 ₽")
+      .checkBubblesAnyOrder(
+        Bubble.of(Color.green, "Еда 4000 ₽"),
+        Bubble.of(Color.yellow, "Отдых 6000 ₽")
+      )
       .checkWidgetImage(expected);
   }
 
@@ -147,7 +152,10 @@ public class SpendingWebTest extends BaseWebTest {
 
     waitForStatComponent();
     mainPage.getStatComponent()
-      .checkBubblesContain("Еда 3333 ₽", "Archived 6000 ₽")
+      .checkBubblesContain(
+        Bubble.of(Color.yellow, "Еда 3333 ₽"),
+        Bubble.of(Color.green, "Archived 6000 ₽")
+      )
       .checkWidgetImage(expected);
   }
 

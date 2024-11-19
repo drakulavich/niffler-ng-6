@@ -1,6 +1,7 @@
 package guru.qa.niffler.test.web;
 
 import com.codeborne.selenide.Selenide;
+import guru.qa.niffler.condition.Color;
 import guru.qa.niffler.jupiter.annotation.Category;
 import guru.qa.niffler.jupiter.annotation.ScreenShotTest;
 import guru.qa.niffler.jupiter.annotation.Spending;
@@ -67,6 +68,7 @@ public class SpendingWebTest extends BaseWebTest {
     waitForStatComponent();
     mainPage.getStatComponent()
       .checkBubblesContain("Обучение 79990 ₽")
+      .checkBubblesColors(Color.yellow)
       .checkWidgetImage(expected);
   }
 

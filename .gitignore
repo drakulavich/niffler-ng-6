@@ -43,4 +43,5 @@ out/
 allure-results/
 
 *.log
-.DS_Store
+*.DS_Store
+*.gz

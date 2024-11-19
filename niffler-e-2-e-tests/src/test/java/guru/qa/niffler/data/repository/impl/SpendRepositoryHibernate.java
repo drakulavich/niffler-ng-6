@@ -6,7 +6,6 @@ import guru.qa.niffler.data.entity.spend.SpendEntity;
 import guru.qa.niffler.data.repository.SpendRepository;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.NoResultException;
-import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -104,7 +103,7 @@ public class SpendRepositoryHibernate implements SpendRepository {
     entityManager.remove(category);
   }
 
-  @NotNull
+  @Nonnull
   @Override
   public CategoryEntity updateCategory(CategoryEntity category) {
     entityManager.joinTransaction();

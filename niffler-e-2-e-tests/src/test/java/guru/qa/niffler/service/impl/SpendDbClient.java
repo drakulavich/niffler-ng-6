@@ -9,7 +9,6 @@ import guru.qa.niffler.data.tpl.XaTransactionTemplate;
 import guru.qa.niffler.model.CategoryJson;
 import guru.qa.niffler.model.SpendJson;
 import guru.qa.niffler.service.SpendClient;
-import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -54,7 +53,7 @@ public class SpendDbClient implements SpendClient {
     ));
   }
 
-  @NotNull
+  @Nonnull
   @Override
   public CategoryJson updateCategory(CategoryJson category) {
     return Objects.requireNonNull(xaTransactionTemplate.execute(() -> {

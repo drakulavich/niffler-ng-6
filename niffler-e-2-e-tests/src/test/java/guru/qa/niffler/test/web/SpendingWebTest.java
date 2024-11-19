@@ -7,6 +7,7 @@ import guru.qa.niffler.jupiter.annotation.Category;
 import guru.qa.niffler.jupiter.annotation.ScreenShotTest;
 import guru.qa.niffler.jupiter.annotation.Spending;
 import guru.qa.niffler.jupiter.annotation.User;
+import guru.qa.niffler.model.SpendJson;
 import guru.qa.niffler.model.UserJson;
 import guru.qa.niffler.page.LoginPage;
 import guru.qa.niffler.page.MainPage;
@@ -157,6 +158,27 @@ public class SpendingWebTest extends BaseWebTest {
         Bubble.of(Color.green, "Archived 6000 ₽")
       )
       .checkWidgetImage(expected);
+  }
+
+  @User(
+    spendings = {
+      @Spending(
+        category = "Отдых",
+        description = "Кино",
+        amount = 100),
+      @Spending(
+        category = "Еда",
+        description = "Продукты",
+        amount = 200)
+    }
+  )
+  @Test
+  void userCanSeeAvailableSpendings(UserJson user) {
+    Selenide.open(CFG.frontUrl(), LoginPage.class)
+      .login(user.username(), user.testData().password());
+
+    mainPage.getSpendingTable()
+      .checkTableSpendings(user.testData().spendings().toArray(new SpendJson[0]));
   }
 
   private void waitForStatComponent() {

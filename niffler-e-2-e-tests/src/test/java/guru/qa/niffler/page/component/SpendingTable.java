@@ -2,6 +2,7 @@ package guru.qa.niffler.page.component;
 
 import com.codeborne.selenide.ElementsCollection;
 import com.codeborne.selenide.SelenideElement;
+import guru.qa.niffler.model.SpendJson;
 import guru.qa.niffler.page.EditSpendingPage;
 import io.qameta.allure.Step;
 
@@ -13,6 +14,7 @@ import static com.codeborne.selenide.Condition.text;
 import static com.codeborne.selenide.Condition.visible;
 import static com.codeborne.selenide.Selectors.byText;
 import static com.codeborne.selenide.Selenide.$;
+import static guru.qa.niffler.condition.SpendConditions.spends;
 
 public class SpendingTable extends BaseComponent<SpendingTable> {
   private final ElementsCollection rows = self.$("tbody").$$("tr");
@@ -69,6 +71,13 @@ public class SpendingTable extends BaseComponent<SpendingTable> {
   @Step("Check table size is {expectedSize}")
   public SpendingTable checkTableSize(int expectedSize) {
     rows.shouldHave(size(expectedSize));
+    return this;
+  }
+
+  @Nonnull
+  @Step("Check table spendings {expectedSpends}")
+  public SpendingTable checkTableSpendings(SpendJson... expectedSpends) {
+    rows.should(spends(expectedSpends));
     return this;
   }
 }

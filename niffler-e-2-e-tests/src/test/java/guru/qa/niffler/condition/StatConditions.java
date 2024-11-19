@@ -4,6 +4,7 @@ import com.codeborne.selenide.CheckResult;
 import com.codeborne.selenide.Driver;
 import com.codeborne.selenide.WebElementCondition;
 import com.codeborne.selenide.WebElementsCondition;
+import org.apache.commons.lang3.ArrayUtils;
 import org.jetbrains.annotations.NotNull;
 import org.openqa.selenium.WebElement;
 
@@ -46,7 +47,7 @@ public class StatConditions {
       @NotNull
       @Override
       public CheckResult check(Driver driver, List<WebElement> elements) {
-        if (expectedBubbles.length == 0) {
+        if (ArrayUtils.isEmpty(expectedBubbles)) {
           throw new IllegalArgumentException("No expected bubbles provided. The array cannot be empty.");
         }
 
@@ -103,7 +104,7 @@ public class StatConditions {
       @NotNull
       @Override
       public CheckResult check(Driver driver, List<WebElement> elements) {
-        if (expectedBubbles.length == 0) {
+        if (ArrayUtils.isEmpty(expectedBubbles)) {
           throw new IllegalArgumentException("No expected bubbles provided. The array cannot be empty.");
         }
 
@@ -155,7 +156,7 @@ public class StatConditions {
       @NotNull
       @Override
       public CheckResult check(Driver driver, List<WebElement> elements) {
-        if (expectedBubbles.length == 0) {
+        if (ArrayUtils.isEmpty(expectedBubbles)) {
           throw new IllegalArgumentException("No expected bubbles provided. The array cannot be empty.");
         }
 

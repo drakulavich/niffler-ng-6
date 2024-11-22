@@ -4,6 +4,7 @@ import com.codeborne.selenide.Selenide;
 import guru.qa.niffler.jupiter.annotation.Category;
 import guru.qa.niffler.jupiter.annotation.ScreenShotTest;
 import guru.qa.niffler.jupiter.annotation.User;
+import guru.qa.niffler.jupiter.annotation.meta.WebTest;
 import guru.qa.niffler.model.UserJson;
 import guru.qa.niffler.page.LoginPage;
 import guru.qa.niffler.page.ProfilePage;
@@ -11,6 +12,7 @@ import org.junit.jupiter.api.Test;
 
 import java.awt.image.BufferedImage;
 
+@WebTest
 public class ProfileWebTest extends BaseWebTest {
   private final ProfilePage profilePage = new ProfilePage();
 

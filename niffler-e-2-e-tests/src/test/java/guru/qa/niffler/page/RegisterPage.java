@@ -17,8 +17,6 @@ public class RegisterPage extends BasePage<RegisterPage> {
     private final SelenideElement passwordSubmitInput = $("input[name='passwordSubmit']");
     private final SelenideElement signUpButton = $("button[type='submit']");
 
-    private final SelenideElement errorMessage = $(".form__error");
-
     @Nonnull
     @Step("Set username {username}")
     public RegisterPage setUsername(String username) {
@@ -63,10 +61,5 @@ public class RegisterPage extends BasePage<RegisterPage> {
         signUpButton.click();
 
         return new LoginPage();
-    }
-
-    @Step("Error is shown")
-    public void errorIsShown() {
-        errorMessage.shouldBe(visible);
     }
 }

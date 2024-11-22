@@ -2,6 +2,7 @@ package guru.qa.niffler.test.web;
 
 import com.codeborne.selenide.Selenide;
 import guru.qa.niffler.jupiter.annotation.User;
+import guru.qa.niffler.jupiter.annotation.meta.WebTest;
 import guru.qa.niffler.model.UserJson;
 import guru.qa.niffler.page.LoginPage;
 import guru.qa.niffler.page.RegisterPage;
@@ -9,6 +10,7 @@ import org.junit.jupiter.api.Test;
 
 import static guru.qa.niffler.utils.RandomDataUtils.randomUsername;
 
+@WebTest
 public class RegisterWebTest extends BaseWebTest {
     private final LoginPage loginPage = new LoginPage();
     private final RegisterPage registerPage = new RegisterPage();
@@ -39,7 +41,7 @@ public class RegisterWebTest extends BaseWebTest {
                 .openRegisterPage()
                 .register(oldUsername, newPassword);
 
-        registerPage.errorIsShown();
+        registerPage.checkFormErrorMessage("Username `%s` already exists".formatted(oldUsername));
     }
 
     @Test
@@ -53,6 +55,6 @@ public class RegisterWebTest extends BaseWebTest {
                 .setPassword(newPassword)
                 .setPasswordSubmit(newPassword + "!!")
                 .clickSignUpButton()
-                .errorIsShown();
+                .checkFormErrorMessage("Passwords should be equal");
     }
 }

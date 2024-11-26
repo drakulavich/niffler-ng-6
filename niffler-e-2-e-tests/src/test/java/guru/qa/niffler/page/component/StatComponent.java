@@ -1,6 +1,7 @@
 package guru.qa.niffler.page.component;
 
 import com.codeborne.selenide.ElementsCollection;
+import com.codeborne.selenide.SelenideDriver;
 import com.codeborne.selenide.SelenideElement;
 import guru.qa.niffler.condition.Bubble;
 import guru.qa.niffler.condition.StatConditions;
@@ -17,11 +18,19 @@ import static com.codeborne.selenide.Selenide.$;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 
 public class StatComponent extends BaseComponent<StatComponent> {
-  private final ElementsCollection bubbles = self.$("#legend-container").$$("li");
-  private final SelenideElement widget = self.$("canvas[role='img']");
+  private final ElementsCollection bubbles;
+  private final SelenideElement widget;
 
   public StatComponent() {
     super($("#stat"));
+    this.bubbles = self.$("#legend-container").$$("li");
+    this.widget = self.$("canvas[role='img']");
+  }
+
+  public StatComponent(SelenideDriver driver) {
+    super(driver, driver.$("#stat"));
+    this.bubbles = self.$("#legend-container").$$("li");
+    this.widget = self.$("canvas[role='img']");
   }
 
   @Nonnull

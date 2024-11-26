@@ -1,6 +1,7 @@
 package guru.qa.niffler.page.component;
 
 import com.codeborne.selenide.ElementsCollection;
+import com.codeborne.selenide.SelenideDriver;
 import com.codeborne.selenide.SelenideElement;
 import guru.qa.niffler.model.SpendJson;
 import guru.qa.niffler.page.EditSpendingPage;
@@ -17,13 +18,25 @@ import static com.codeborne.selenide.Selenide.$;
 import static guru.qa.niffler.condition.SpendConditions.spends;
 
 public class SpendingTable extends BaseComponent<SpendingTable> {
-  private final ElementsCollection rows = self.$("tbody").$$("tr");
-  private final SearchField searchField = new SearchField();
-  private final SelenideElement popup = $("div[role='dialog']");
-  private final SelenideElement deleteBtn = self.$("#delete");
+  private final ElementsCollection rows;
+  private final SearchField searchField;
+  private final SelenideElement popup;
+  private final SelenideElement deleteBtn;
 
   public SpendingTable() {
     super($("#spendings"));
+    this.rows = self.$("tbody").$$("tr");
+    this.searchField = new SearchField();
+    this.popup = $("div[role='dialog']");
+    this.deleteBtn = self.$("#delete");
+  }
+
+  public SpendingTable(SelenideDriver driver) {
+    super(driver, driver.$("#spendings"));
+    this.rows = self.$("tbody").$$("tr");
+    this.searchField = new SearchField(driver);
+    this.popup = driver.$("div[role='dialog']");
+    this.deleteBtn = self.$("#delete");
   }
 
   @Nonnull

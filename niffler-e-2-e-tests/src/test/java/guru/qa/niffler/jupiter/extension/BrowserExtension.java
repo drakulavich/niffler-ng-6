@@ -15,8 +15,6 @@ import org.openqa.selenium.OutputType;
 import org.openqa.selenium.TakesScreenshot;
 
 import java.io.ByteArrayInputStream;
-import java.util.ArrayList;
-import java.util.List;
 
 public class BrowserExtension implements
     BeforeEachCallback,
@@ -24,9 +22,14 @@ public class BrowserExtension implements
     TestExecutionExceptionHandler,
     LifecycleMethodExecutionExceptionHandler {
 
-  private final List<SelenideDriver> drivers = new ArrayList<>();
-  public List<SelenideDriver> drivers() {
-    return drivers;
+  private static final ThreadLocal<SelenideDriver> driversStorage = new ThreadLocal<>();
+
+  private SelenideDriver driver() {
+    return driversStorage.get();
+  }
+
+  public static void setDriver(SelenideDriver driver) {
+    driversStorage.set(driver);
   }
 
   @Override
@@ -34,10 +37,8 @@ public class BrowserExtension implements
     if (WebDriverRunner.hasWebDriverStarted()) {
       Selenide.closeWebDriver();
     }
-    for (SelenideDriver driver : drivers) {
-      if (driver.hasWebDriverStarted()) {
-        driver.close();
-      }
+    else if (driver().hasWebDriverStarted()) {
+      driver().close();
     }
   }
 
@@ -76,16 +77,13 @@ public class BrowserExtension implements
         )
       );
     }
-
-    for (SelenideDriver driver : drivers) {
-      if (driver.hasWebDriverStarted()) {
-        Allure.addAttachment(
-          "Screen on fail for browser: " + driver.getSessionId(),
-          new ByteArrayInputStream(
-            ((TakesScreenshot) driver.getWebDriver()).getScreenshotAs(OutputType.BYTES)
-          )
-        );
-      }
+    else if (driver().hasWebDriverStarted()) {
+      Allure.addAttachment(
+        "Screen on fail",
+        new ByteArrayInputStream(
+          ((TakesScreenshot) driver().getWebDriver()).getScreenshotAs(OutputType.BYTES)
+        )
+      );
     }
   }
 }

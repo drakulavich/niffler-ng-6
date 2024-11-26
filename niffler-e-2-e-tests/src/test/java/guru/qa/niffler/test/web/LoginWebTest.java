@@ -4,20 +4,18 @@ import com.codeborne.selenide.SelenideDriver;
 import guru.qa.niffler.jupiter.annotation.Category;
 import guru.qa.niffler.jupiter.annotation.Spending;
 import guru.qa.niffler.jupiter.annotation.User;
-import guru.qa.niffler.jupiter.extension.BrowserExtension;
+import guru.qa.niffler.jupiter.annotation.meta.WebTest;
+import guru.qa.niffler.jupiter.converter.Browser;
+import guru.qa.niffler.jupiter.converter.BrowserConverter;
 import guru.qa.niffler.model.UserJson;
 import guru.qa.niffler.page.LoginPage;
-import guru.qa.niffler.utils.SelenideUtils;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.RegisterExtension;
+import guru.qa.niffler.page.MainPage;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.converter.ConvertWith;
+import org.junit.jupiter.params.provider.EnumSource;
 
-import java.util.List;
-
+@WebTest
 public class LoginWebTest extends BaseWebTest {
-
-  @RegisterExtension
-  private final BrowserExtension browserExtension = new BrowserExtension();
-  private final SelenideDriver chrome = new SelenideDriver(SelenideUtils.chromeConfig);
 
   @User(
     categories = {
@@ -28,28 +26,26 @@ public class LoginWebTest extends BaseWebTest {
       @Spending(category = "Entertainer", description = "Lunch", amount = 100),
     }
   )
-  @Test
-  void mainPageShouldBeDisplayedAfterSuccessLogin(UserJson user) {
-    browserExtension.drivers().add(chrome);
+  @ParameterizedTest
+  @EnumSource(Browser.class)
+  void mainPageShouldBeDisplayedAfterSuccessLogin(@ConvertWith(BrowserConverter.class) SelenideDriver driver, UserJson user) {
+    driver.open(CFG.frontUrl(), LoginPage.class);
 
-    chrome.open(CFG.frontUrl(), LoginPage.class);
+    new LoginPage(driver)
+      .login(user.username(), user.testData().password());
 
-    new LoginPage(chrome)
-      .login(user.username(), user.testData().password())
+    new MainPage(driver)
       .checkStatisticsVisible()
       .getSpendingTable().checkTableSize(1);
   }
 
   @User
-  @Test
-  void userShouldStayOnLoginPageAfterLoginWithBadCredentials(UserJson user) {
-    SelenideDriver firefox = new SelenideDriver(SelenideUtils.firefoxConfig);
-    browserExtension.drivers().addAll(List.of(chrome, firefox));
+  @ParameterizedTest
+  @EnumSource(Browser.class)
+  void userShouldStayOnLoginPageAfterLoginWithBadCredentials(@ConvertWith(BrowserConverter.class) SelenideDriver driver, UserJson user) {
+    driver.open(CFG.frontUrl(), LoginPage.class);
 
-    chrome.open(CFG.frontUrl(), LoginPage.class);
-    firefox.open(CFG.frontUrl(), LoginPage.class);
-
-    new LoginPage(chrome)
+    new LoginPage(driver)
       .setUsername(user.username())
       .setPassword(user.testData().password() + "_bad") // bad password
       .submit()

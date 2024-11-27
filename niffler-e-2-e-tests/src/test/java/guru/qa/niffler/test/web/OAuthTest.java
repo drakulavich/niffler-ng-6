@@ -15,11 +15,7 @@ public class OAuthTest {
   @User
   @Test
   void oauthTest(UserJson user) {
-    String codeVerifier = authApi.preRequest();
-    String code = authApi.login(user.username(), user.testData().password());
-
-    String token = authApi.token(code, codeVerifier);
+    String token = authApi.getToken(user.username(), user.testData().password());
     assertThat(token).isNotEmpty();
   }
-
 }

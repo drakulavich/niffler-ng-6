@@ -17,6 +17,12 @@ import static guru.qa.niffler.utils.OauthUtils.generateCodeVerifier;
 @ParametersAreNonnullByDefault
 public class AuthApiClient extends RestClient {
 
+  public static final String RESPONSE_TYPE = "code";
+  public static final String CLIENT_ID = "client";
+  public static final String SCOPE = "openid";
+  public static final String REDIRECT_URI = CFG.frontUrl() + "authorized";
+  public static final String CODE_CHALLENGE_METHOD = "S256";
+  public static final String GRANT_TYPE = "authorization_code";
   private final AuthApi authApi;
 
   public AuthApiClient() {
@@ -30,12 +36,12 @@ public class AuthApiClient extends RestClient {
     final Response<Void> response;
     try {
       response = authApi.authorize(
-        "code",
-        "client",
-        "openid",
-        CFG.frontUrl() + "authorized",
+        RESPONSE_TYPE,
+        CLIENT_ID,
+        SCOPE,
+        REDIRECT_URI,
         codeChallenge,
-        "S256"
+        CODE_CHALLENGE_METHOD
       ).execute();
     } catch (IOException e) {
       throw new AssertionError(e);
@@ -61,9 +67,9 @@ public class AuthApiClient extends RestClient {
     Response<JsonNode> response;
     try {
       response = authApi.token(
-        "client",
-        CFG.frontUrl() + "authorized",
-        "authorization_code",
+        CLIENT_ID,
+        REDIRECT_URI,
+        GRANT_TYPE,
         code,
         codeVerifier
       ).execute();
@@ -71,5 +77,11 @@ public class AuthApiClient extends RestClient {
       throw new AssertionError(e);
     }
     return Objects.requireNonNull(response.body()).get("id_token").asText();
+  }
+
+  public String getToken(String username, String password) {
+    String codeVerifier = preRequest();
+    String code = login(username, password);
+    return token(code, codeVerifier);
   }
 }

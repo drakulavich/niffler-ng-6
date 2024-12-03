@@ -27,27 +27,25 @@ public class UserExtension implements BeforeEachCallback, ParameterResolver {
   public void beforeEach(ExtensionContext context) throws Exception {
     AnnotationSupport.findAnnotation(context.getRequiredTestMethod(), User.class)
         .ifPresent(anno -> {
-          if ("".equals(anno.username())) {
-            final String username = RandomDataUtils.randomUsername();
-            UserJson testUser = usersClient.createUser(username, defaultPassword);
-            List<UserJson> incomeInvitations = usersClient.addIncomeInvitation(testUser, anno.income());
-            List<UserJson> outcomeInvitations = usersClient.addOutcomeInvitation(testUser, anno.outcome());
-            List<UserJson> friends = usersClient.addFriend(testUser, anno.friends());
+          final String username = "".equals(anno.username())
+            ? RandomDataUtils.randomUsername()
+            : anno.username();
+          UserJson testUser = usersClient.createUser(username, defaultPassword);
+          List<UserJson> incomeInvitations = usersClient.addIncomeInvitation(testUser, anno.income());
+          List<UserJson> outcomeInvitations = usersClient.addOutcomeInvitation(testUser, anno.outcome());
+          List<UserJson> friends = usersClient.addFriend(testUser, anno.friends());
 
-            context.getStore(NAMESPACE).put(
-              context.getUniqueId(),
-              testUser.addTestData(
-                new TestData(
-                  defaultPassword,
-                  new ArrayList<>(),
-                  new ArrayList<>(),
-                  incomeInvitations.stream().map(UserJson::username).toList(),
-                  outcomeInvitations.stream().map(UserJson::username).toList(),
-                  friends.stream().map(UserJson::username).toList()
-                )
-              )
-            );
-          }
+          testUser = testUser.addTestData(
+            new TestData(
+              defaultPassword,
+              new ArrayList<>(),
+              new ArrayList<>(),
+              incomeInvitations.stream().map(UserJson::username).toList(),
+              outcomeInvitations.stream().map(UserJson::username).toList(),
+              friends.stream().map(UserJson::username).toList()
+            )
+          );
+          setUser(testUser);
         });
   }
 
@@ -58,6 +56,18 @@ public class UserExtension implements BeforeEachCallback, ParameterResolver {
 
   @Override
   public UserJson resolveParameter(ParameterContext parameterContext, ExtensionContext extensionContext) throws ParameterResolutionException {
-    return extensionContext.getStore(NAMESPACE).get(extensionContext.getUniqueId(), UserJson .class);
+    return getUserJson();
+  }
+
+  public static void setUser(UserJson testUser) {
+    final ExtensionContext context = TestMethodContextExtension.context();
+    context.getStore(NAMESPACE).put(
+      context.getUniqueId(),
+      testUser
+    );
+  }
+  public static UserJson getUserJson() {
+    final ExtensionContext context = TestMethodContextExtension.context();
+    return context.getStore(NAMESPACE).get(context.getUniqueId(), UserJson.class);
   }
 }

@@ -1,6 +1,7 @@
 package guru.qa.niffler.test.web;
 
 import com.codeborne.selenide.Selenide;
+import guru.qa.niffler.jupiter.annotation.ApiLogin;
 import guru.qa.niffler.jupiter.annotation.Category;
 import guru.qa.niffler.jupiter.annotation.ScreenShotTest;
 import guru.qa.niffler.jupiter.annotation.User;
@@ -52,13 +53,12 @@ public class ProfileWebTest extends BaseWebTest {
   }
 
   @User
+  @ApiLogin
   @ScreenShotTest(value = "img/expected-avatar.png")
-  void shouldUpdateProfileWithAllFieldsSet(UserJson user, BufferedImage expected) throws Exception {
+  void shouldUpdateProfileWithAllFieldsSet(BufferedImage expected) throws Exception {
     final String newName = "John Snow";
 
-    Selenide.open(CFG.frontUrl(), LoginPage.class)
-      .login(user.username(), user.testData().password())
-      .getHeader().toProfilePage()
+    ProfilePage profilePage = Selenide.open(ProfilePage.URL, ProfilePage.class)
       .uploadPhotoFromClasspath("img/cat.jpeg")
       .updateName(newName)
       .checkAlert("Profile successfully updated");

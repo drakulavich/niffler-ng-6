@@ -11,11 +11,23 @@ import static com.codeborne.selenide.Selenide.$;
 
 @ParametersAreNonnullByDefault
 public class LoginPage extends BasePage<LoginPage> {
+
+  public static final String URL = CFG.authUrl() + "login";
+
   private final SelenideElement usernameInput = $("input[name='username']");
   private final SelenideElement passwordInput = $("input[name='password']");
   private final SelenideElement submitButton = $("button[type='submit']");
   private final SelenideElement registerButton = $(".form__register");
   private final SelenideElement signInButton = $(".form_sign-in");
+
+  @Step("Check that page is loaded")
+  @Override
+  @Nonnull
+  public LoginPage checkThatPageLoaded() {
+    usernameInput.should(visible);
+    passwordInput.should(visible);
+    return this;
+  }
 
   @Nonnull
   @Step("Login with username {username} and password {password}")

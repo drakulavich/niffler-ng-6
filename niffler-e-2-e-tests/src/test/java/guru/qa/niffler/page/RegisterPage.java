@@ -12,61 +12,73 @@ import static com.codeborne.selenide.Selenide.$;
 @ParametersAreNonnullByDefault
 public class RegisterPage extends BasePage<RegisterPage> {
 
-    private final SelenideElement usernameInput = $("input[name='username']");
-    private final SelenideElement passwordInput = $("input[name='password']");
-    private final SelenideElement passwordSubmitInput = $("input[name='passwordSubmit']");
-    private final SelenideElement signUpButton = $("button[type='submit']");
+  public static final String URL = CFG.authUrl() + "register";
 
-    private final SelenideElement errorMessage = $(".form__error");
+  private final SelenideElement usernameInput = $("input[name='username']");
+  private final SelenideElement passwordInput = $("input[name='password']");
+  private final SelenideElement passwordSubmitInput = $("input[name='passwordSubmit']");
+  private final SelenideElement signUpButton = $("button[type='submit']");
 
-    @Nonnull
-    @Step("Set username {username}")
-    public RegisterPage setUsername(String username) {
-        usernameInput.setValue(username);
-        return this;
-    }
+  private final SelenideElement errorMessage = $(".form__error");
 
-    @Nonnull
-    @Step("Set password")
-    public RegisterPage setPassword(String password) {
-        passwordInput.setValue(password);
-        return this;
-    }
+  @Step("Check that page is loaded")
+  @Override
+  @Nonnull
+  public RegisterPage checkThatPageLoaded() {
+    usernameInput.should(visible);
+    passwordInput.should(visible);
+    passwordSubmitInput.should(visible);
+    return this;
+  }
 
-    @Nonnull
-    @Step("Set submit password")
-    public RegisterPage setPasswordSubmit(String password) {
-        passwordSubmitInput.setValue(password);
-        return this;
-    }
+  @Nonnull
+  @Step("Set username {username}")
+  public RegisterPage setUsername(String username) {
+    usernameInput.setValue(username);
+    return this;
+  }
 
-    @Nonnull
-    @Step("Submit registration")
-    public LoginPage submitRegistration() {
-        signUpButton.click();
-        return new LoginPage();
-    }
+  @Nonnull
+  @Step("Set password")
+  public RegisterPage setPassword(String password) {
+    passwordInput.setValue(password);
+    return this;
+  }
 
-    @Nonnull
-    @Step("Click sign up button")
-    public RegisterPage clickSignUpButton() {
-        signUpButton.click();
-        return this;
-    }
+  @Nonnull
+  @Step("Set submit password")
+  public RegisterPage setPasswordSubmit(String password) {
+    passwordSubmitInput.setValue(password);
+    return this;
+  }
 
-    @Nonnull
-    @Step("Register with username {username} and password {password}")
-    public LoginPage register(String username, String password) {
-        setUsername(username);
-        setPassword(password);
-        setPasswordSubmit(password);
-        signUpButton.click();
+  @Nonnull
+  @Step("Submit registration")
+  public LoginPage submitRegistration() {
+    signUpButton.click();
+    return new LoginPage();
+  }
 
-        return new LoginPage();
-    }
+  @Nonnull
+  @Step("Click sign up button")
+  public RegisterPage clickSignUpButton() {
+    signUpButton.click();
+    return this;
+  }
 
-    @Step("Error is shown")
-    public void errorIsShown() {
-        errorMessage.shouldBe(visible);
-    }
+  @Nonnull
+  @Step("Register with username {username} and password {password}")
+  public LoginPage register(String username, String password) {
+    setUsername(username);
+    setPassword(password);
+    setPasswordSubmit(password);
+    signUpButton.click();
+
+    return new LoginPage();
+  }
+
+  @Step("Error is shown")
+  public void errorIsShown() {
+    errorMessage.shouldBe(visible);
+  }
 }

@@ -1,8 +1,9 @@
-package guru.qa.niffler.test.web;
+package guru.qa.niffler.test.fake;
 
+import guru.qa.niffler.jupiter.annotation.ApiLogin;
+import guru.qa.niffler.jupiter.annotation.Token;
 import guru.qa.niffler.jupiter.annotation.User;
 import guru.qa.niffler.model.UserJson;
-import guru.qa.niffler.service.impl.AuthApiClient;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -10,12 +11,11 @@ import static org.assertj.core.api.Assertions.assertThat;
 //@Disabled
 public class OAuthTest {
 
-  private final AuthApiClient authApi = new AuthApiClient();
-
-  @User
   @Test
-  void oauthTest(UserJson user) {
-    String token = authApi.getToken(user.username(), user.testData().password());
+  @User(username = "duck")
+  @ApiLogin
+  void oauthTest(@Token String token,  UserJson user) {
+    System.out.println(user);
     assertThat(token).isNotEmpty();
   }
 }

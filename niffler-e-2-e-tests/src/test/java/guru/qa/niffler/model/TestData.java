@@ -1,5 +1,7 @@
 package guru.qa.niffler.model;
 
+import javax.annotation.Nonnull;
+import java.util.ArrayList;
 import java.util.List;
 
 public record TestData(
@@ -10,4 +12,8 @@ public record TestData(
   List<String> outcome,
   List<String> friends
 ) {
+
+  public TestData(@Nonnull String password) {
+    this(password, new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), new ArrayList<>());
+  }
 }

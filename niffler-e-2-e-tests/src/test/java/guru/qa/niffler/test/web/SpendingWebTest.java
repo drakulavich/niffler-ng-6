@@ -64,7 +64,7 @@ public class SpendingWebTest extends BaseWebTest {
   @ScreenShotTest("img/expected-stat.png")
   void checkStatComponentTest(UserJson user, BufferedImage expected) throws IOException {
     Selenide.open(MainPage.URL, MainPage.class)
-      .waitForComponentRendering()
+      .waitForStatsDiagramRendering()
       .getStatComponent()
       .checkBubbles(Bubble.of(Color.yellow, "Обучение 79990 ₽"))
       .checkWidgetImage(expected);
@@ -89,7 +89,7 @@ public class SpendingWebTest extends BaseWebTest {
     mainPage.getSpendingTable().deleteSpending("Лыжи");
 
     mainPage
-      .waitForComponentRendering()
+      .waitForStatsDiagramRendering()
       .getStatComponent()
       .checkBubblesAnyOrder(
         Bubble.of(Color.yellow, "Еда 3333 ₽")
@@ -116,7 +116,7 @@ public class SpendingWebTest extends BaseWebTest {
       .getSpendingTable().editSpending("Ресторан")
       .setNewSpendingAmount(4000)
       .save()
-      .waitForComponentRendering()
+      .waitForStatsDiagramRendering()
       .getStatComponent()
       .checkBubblesAnyOrder(
         Bubble.of(Color.green, "Еда 4000 ₽"),
@@ -147,7 +147,7 @@ public class SpendingWebTest extends BaseWebTest {
   @ScreenShotTest(value = "img/expected-stat-archived.png")
   void userCanSeeArchivedCategoriesInPieChart(UserJson user, BufferedImage expected) throws IOException {
     Selenide.open(MainPage.URL, MainPage.class)
-      .waitForComponentRendering()
+      .waitForStatsDiagramRendering()
       .getStatComponent()
       .checkBubblesContain(
         Bubble.of(Color.yellow, "Еда 3333 ₽"),

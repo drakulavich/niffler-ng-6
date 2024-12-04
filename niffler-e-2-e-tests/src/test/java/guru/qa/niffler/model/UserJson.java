@@ -61,7 +61,7 @@ public record UserJson(
     return new UserJson(id, username, firstname, surname, fullname, currency, photo, photoSmall, friendState, testData);
   }
 
-  public static @Nonnull List<String> toUsernames(@Nonnull List<UserJson> users) {
+  public static @Nonnull List<String> parseUsernames(@Nonnull List<UserJson> users) {
     return users.stream().map(UserJson::username).toList();
   }
 }

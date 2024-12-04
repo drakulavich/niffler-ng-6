@@ -20,7 +20,7 @@ import org.junit.jupiter.api.extension.ParameterResolver;
 import org.junit.platform.commons.support.AnnotationSupport;
 import org.openqa.selenium.Cookie;
 
-import static guru.qa.niffler.model.UserJson.toUsernames;
+import static guru.qa.niffler.model.UserJson.parseUsernames;
 
 public class ApiLoginExtension implements BeforeEachCallback, ParameterResolver {
 
@@ -61,9 +61,9 @@ public class ApiLoginExtension implements BeforeEachCallback, ParameterResolver 
               apiLogin.password(),
               spendApiClient.getCategories(apiLogin.username(), true),
               spendApiClient.getSpends(apiLogin.username(), null, null, null),
-              toUsernames(usersApiClient.incomeUsers(apiLogin.username())),
-              toUsernames(usersApiClient.outcomeUsers(apiLogin.username())),
-              toUsernames(usersApiClient.friendUsers(apiLogin.username()))
+              parseUsernames(usersApiClient.incomeUsers(apiLogin.username())),
+              parseUsernames(usersApiClient.outcomeUsers(apiLogin.username())),
+              parseUsernames(usersApiClient.friendUsers(apiLogin.username()))
             )
           );
           if (userFromUserExtension != null) {

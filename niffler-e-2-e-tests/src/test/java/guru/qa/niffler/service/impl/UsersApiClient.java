@@ -5,6 +5,7 @@ import guru.qa.niffler.api.UserDataApi;
 import guru.qa.niffler.api.core.RestClient.EmptyClient;
 import guru.qa.niffler.api.core.ThreadSafeCookieStore;
 import guru.qa.niffler.config.Config;
+import guru.qa.niffler.model.FriendState;
 import guru.qa.niffler.model.UserJson;
 import guru.qa.niffler.service.UsersClient;
 import io.qameta.allure.Step;
@@ -122,12 +123,42 @@ public class UsersApiClient implements UsersClient {
     return result;
   }
 
-  @Step("Get all users")
+  @Step("Get all users for {username}")
   public @Nonnull List<UserJson> allUsers(String username, String searchQuery) {
     try {
       return requireNonNull(userDataApi.allUsers(username, searchQuery).execute().body());
     } catch (IOException e) {
       throw new RuntimeException(e);
     }
+  }
+
+  @Step("Get all friends for {username}")
+  public @Nonnull List<UserJson> friends(String username, String searchQuery) {
+    try {
+      return requireNonNull(userDataApi.friends(username, searchQuery).execute().body());
+    } catch (IOException e) {
+      throw new RuntimeException(e);
+    }
+  }
+
+  public List<UserJson> outcomeUsers(String username) {
+    return allUsers(username, null)
+      .stream()
+      .filter(user -> FriendState.INVITE_SENT.equals(user.friendState()))
+      .toList();
+  }
+
+  public List<UserJson> incomeUsers(String username) {
+    return friends(username, null)
+      .stream()
+      .filter(user -> FriendState.INVITE_RECEIVED.equals(user.friendState()))
+      .toList();
+  }
+
+  public List<UserJson> friendUsers(String username) {
+    return friends(username, null)
+      .stream()
+      .filter(user -> FriendState.FRIEND.equals(user.friendState()))
+      .toList();
   }
 }

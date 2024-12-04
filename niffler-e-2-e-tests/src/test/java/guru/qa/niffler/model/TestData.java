@@ -16,4 +16,8 @@ public record TestData(
   public TestData(@Nonnull String password) {
     this(password, new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), new ArrayList<>());
   }
+
+  public TestData(@Nonnull String password, @Nonnull List<CategoryJson> categories, @Nonnull List<SpendJson> spendings) {
+    this(password, categories, spendings, new ArrayList<>(), new ArrayList<>(), new ArrayList<>());
+  }
 }

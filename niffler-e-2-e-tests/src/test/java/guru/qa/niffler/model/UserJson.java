@@ -8,6 +8,7 @@ import guru.qa.niffler.data.entity.userdata.UdUserEntity;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.nio.charset.StandardCharsets;
+import java.util.List;
 import java.util.UUID;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
@@ -58,5 +59,9 @@ public record UserJson(
 
   public @Nonnull UserJson addTestData(TestData testData) {
     return new UserJson(id, username, firstname, surname, fullname, currency, photo, photoSmall, friendState, testData);
+  }
+
+  public static @Nonnull List<String> toUsernames(@Nonnull List<UserJson> users) {
+    return users.stream().map(UserJson::username).toList();
   }
 }

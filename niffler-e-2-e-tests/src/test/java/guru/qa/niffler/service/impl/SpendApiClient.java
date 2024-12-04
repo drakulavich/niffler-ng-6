@@ -4,6 +4,7 @@ import guru.qa.niffler.api.SpendApi;
 import guru.qa.niffler.api.core.RestClient.EmptyClient;
 import guru.qa.niffler.config.Config;
 import guru.qa.niffler.model.CategoryJson;
+import guru.qa.niffler.model.CurrencyValues;
 import guru.qa.niffler.model.SpendJson;
 import guru.qa.niffler.service.SpendClient;
 import retrofit2.Response;
@@ -11,6 +12,7 @@ import retrofit2.Response;
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.io.IOException;
+import java.util.List;
 
 import static java.util.Objects.requireNonNull;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -75,5 +77,29 @@ public class SpendApiClient implements SpendClient {
   @Override
   public void removeCategory(CategoryJson category) {
     throw new UnsupportedOperationException("Can`t remove category using API");
+  }
+
+  @Nonnull
+  public List<CategoryJson> getCategories(String username, boolean excludeArchived) {
+    final Response<List<CategoryJson>> response;
+    try {
+      response = spendApi.getAllCategories(username, excludeArchived).execute();
+    } catch (IOException e) {
+      throw new AssertionError(e);
+    }
+    assertThat(response.code()).isEqualTo(200);
+    return requireNonNull(response.body());
+  }
+
+  @Nonnull
+  public List<SpendJson> getSpends(String username, CurrencyValues currency, String from, String to) {
+    final Response<List<SpendJson>> response;
+    try {
+      response = spendApi.getAllSpends(username, currency, from, to).execute();
+    } catch (IOException e) {
+      throw new AssertionError(e);
+    }
+    assertThat(response.code()).isEqualTo(200);
+    return requireNonNull(response.body());
   }
 }

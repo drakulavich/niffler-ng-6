@@ -5,5 +5,5 @@ import guru.qa.niffler.jupiter.annotation.meta.WebTest;
 
 @WebTest
 public class BaseWebTest {
-    protected static final Config CFG = Config.getInstance();
+  protected static final Config CFG = Config.getInstance();
 }

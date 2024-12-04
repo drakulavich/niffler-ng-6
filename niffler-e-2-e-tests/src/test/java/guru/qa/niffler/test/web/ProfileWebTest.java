@@ -6,28 +6,24 @@ import guru.qa.niffler.jupiter.annotation.Category;
 import guru.qa.niffler.jupiter.annotation.ScreenShotTest;
 import guru.qa.niffler.jupiter.annotation.User;
 import guru.qa.niffler.model.UserJson;
-import guru.qa.niffler.page.LoginPage;
 import guru.qa.niffler.page.ProfilePage;
 import org.junit.jupiter.api.Test;
 
 import java.awt.image.BufferedImage;
 
 public class ProfileWebTest extends BaseWebTest {
-  private final ProfilePage profilePage = new ProfilePage();
 
   @User(
     categories = {@Category(
       archived = true
     )}
   )
+  @ApiLogin
   @Test
   void archivedCategoryShouldPresentInCategoriesList(UserJson user) {
-    Selenide.open(CFG.frontUrl(), LoginPage.class)
-      .login(user.username(), user.testData().password())
-      .getHeader().toProfilePage();
-
     String categoryName = user.testData().categories().getFirst().name();
-    profilePage
+
+    Selenide.open(ProfilePage.URL, ProfilePage.class)
       .showArchivedCategories()
       .unarchiveCategory(categoryName)
       .showArchivedCategories()
@@ -39,14 +35,12 @@ public class ProfileWebTest extends BaseWebTest {
       archived = false
     )}
   )
+  @ApiLogin
   @Test
   void activeCategoryShouldPresentInCategoriesList(UserJson user) {
-    Selenide.open(CFG.frontUrl(), LoginPage.class)
-      .login(user.username(), user.testData().password())
-      .getHeader().toProfilePage();
-
     String categoryName = user.testData().categories().getFirst().name();
-    profilePage
+
+    Selenide.open(ProfilePage.URL, ProfilePage.class)
       .checkCategoryPresent(categoryName)
       .archiveCategory(categoryName)
       .checkCategoryNotPresent(categoryName);

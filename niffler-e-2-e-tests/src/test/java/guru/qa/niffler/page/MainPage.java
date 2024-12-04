@@ -1,5 +1,6 @@
 package guru.qa.niffler.page;
 
+import com.codeborne.selenide.Selenide;
 import com.codeborne.selenide.SelenideElement;
 import guru.qa.niffler.page.component.SpendingTable;
 import guru.qa.niffler.page.component.StatComponent;
@@ -38,6 +39,12 @@ public class MainPage extends BasePage<MainPage> {
   @Step("Check that statistics is visible")
   public MainPage checkStatisticsVisible() {
     stat.shouldBe(visible);
+    return this;
+  }
+
+  @Step("Wait for stats diagram rendering")
+  public MainPage waitForStatsDiagramRendering() {
+    Selenide.sleep(3000);
     return this;
   }
 }

@@ -53,7 +53,8 @@ public class EditSpendingPage extends BasePage<EditSpendingPage> {
   }
 
   @Step("Save spending")
-  public void save() {
+  public MainPage save() {
     saveBtn.click();
+    return new MainPage();
   }
 }

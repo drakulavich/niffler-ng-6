@@ -3,13 +3,15 @@ package guru.qa.niffler.test.fake;
 import guru.qa.niffler.jupiter.annotation.ApiLogin;
 import guru.qa.niffler.jupiter.annotation.Token;
 import guru.qa.niffler.jupiter.annotation.User;
-import guru.qa.niffler.model.UserJson;
+import guru.qa.niffler.jupiter.annotation.meta.RestTest;
+import guru.qa.niffler.model.rest.UserJson;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 @Disabled
+@RestTest
 public class OAuthTest {
 
   @Test

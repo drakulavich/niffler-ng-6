@@ -8,8 +8,8 @@ import guru.qa.niffler.jupiter.annotation.Category;
 import guru.qa.niffler.jupiter.annotation.ScreenShotTest;
 import guru.qa.niffler.jupiter.annotation.Spending;
 import guru.qa.niffler.jupiter.annotation.User;
-import guru.qa.niffler.model.SpendJson;
-import guru.qa.niffler.model.UserJson;
+import guru.qa.niffler.model.rest.SpendJson;
+import guru.qa.niffler.model.rest.UserJson;
 import guru.qa.niffler.page.MainPage;
 import org.junit.jupiter.api.Test;
 

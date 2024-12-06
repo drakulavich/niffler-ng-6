@@ -6,13 +6,13 @@ import guru.qa.niffler.api.core.ThreadSafeCookieStore;
 import guru.qa.niffler.config.Config;
 import guru.qa.niffler.jupiter.annotation.ApiLogin;
 import guru.qa.niffler.jupiter.annotation.Token;
-import guru.qa.niffler.model.TestData;
-import guru.qa.niffler.model.UserJson;
+import guru.qa.niffler.model.rest.TestData;
+import guru.qa.niffler.model.rest.UserJson;
 import guru.qa.niffler.page.MainPage;
 import guru.qa.niffler.service.impl.AuthApiClient;
 import guru.qa.niffler.service.impl.SpendApiClient;
 import guru.qa.niffler.service.impl.UsersApiClient;
-import org.junit.jupiter.api.extension.BeforeEachCallback;
+import org.junit.jupiter.api.extension.BeforeTestExecutionCallback;
 import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.api.extension.ParameterContext;
 import org.junit.jupiter.api.extension.ParameterResolutionException;
@@ -20,9 +20,9 @@ import org.junit.jupiter.api.extension.ParameterResolver;
 import org.junit.platform.commons.support.AnnotationSupport;
 import org.openqa.selenium.Cookie;
 
-import static guru.qa.niffler.model.UserJson.parseUsernames;
+import static guru.qa.niffler.model.rest.UserJson.parseUsernames;
 
-public class ApiLoginExtension implements BeforeEachCallback, ParameterResolver {
+public class ApiLoginExtension implements BeforeTestExecutionCallback, ParameterResolver {
 
   private static final Config CFG = Config.getInstance();
   public static final ExtensionContext.Namespace NAMESPACE = ExtensionContext.Namespace.create(ApiLoginExtension.class);
@@ -39,12 +39,12 @@ public class ApiLoginExtension implements BeforeEachCallback, ParameterResolver 
     this.setupBrowser = true;
   }
 
-  public static ApiLoginExtension restApiLoginExtension() {
+  public static ApiLoginExtension rest() {
     return new ApiLoginExtension(false);
   }
 
   @Override
-  public void beforeEach(ExtensionContext context) throws Exception {
+  public void beforeTestExecution(ExtensionContext context) throws Exception {
     AnnotationSupport.findAnnotation(context.getRequiredTestMethod(), ApiLogin.class)
       .ifPresent(apiLogin -> {
         final UserJson userToLogin;
@@ -94,7 +94,7 @@ public class ApiLoginExtension implements BeforeEachCallback, ParameterResolver 
 
   @Override
   public String resolveParameter(ParameterContext parameterContext, ExtensionContext extensionContext) throws ParameterResolutionException {
-    return getToken();
+    return "Bearer " + getToken();
   }
 
   public static void setToken(String token) {

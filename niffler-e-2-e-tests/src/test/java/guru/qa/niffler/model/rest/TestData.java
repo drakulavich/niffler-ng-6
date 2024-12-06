@@ -1,4 +1,4 @@
-package guru.qa.niffler.model;
+package guru.qa.niffler.model.rest;
 
 import javax.annotation.Nonnull;
 import java.util.ArrayList;

@@ -12,6 +12,7 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -34,10 +35,40 @@ class UserControllerTest {
     usersRepository.save(userDataEntity);
 
     mockMvc.perform(get("/internal/users/current")
-            .contentType(MediaType.APPLICATION_JSON)
-            .param("username", "dima")
-        )
-        .andExpect(status().isOk())
-        .andExpect(jsonPath("$.username").value("dima"));
+        .contentType(MediaType.APPLICATION_JSON)
+        .param("username", "dima")
+      )
+      .andExpect(status().isOk())
+      .andExpect(jsonPath("$.username").value("dima"));
+  }
+
+  @Test
+  void allUsersEndpoint() throws Exception {
+    UserEntity userDataEntity = new UserEntity();
+    userDataEntity.setUsername("duck");
+    userDataEntity.setCurrency(CurrencyValues.RUB);
+    usersRepository.save(userDataEntity);
+
+    mockMvc.perform(get("/internal/users/all")
+        .contentType(MediaType.APPLICATION_JSON)
+        .param("username", "dima")
+      )
+      .andExpect(status().isOk())
+      .andExpect(jsonPath("$[0].username").value("duck"));
+  }
+
+  @Test
+  void updateUserInfoEndpoint() throws Exception {
+    UserEntity userDataEntity = new UserEntity();
+    userDataEntity.setUsername("bee");
+    userDataEntity.setCurrency(CurrencyValues.RUB);
+    usersRepository.save(userDataEntity);
+
+    mockMvc.perform(post("/internal/users/update")
+        .contentType(MediaType.APPLICATION_JSON)
+        .content("{\"username\": \"bee\", \"currency\": \"KZT\"}")
+      )
+      .andExpect(status().isOk())
+      .andExpect(jsonPath("$.currency").value("KZT"));
   }
 }

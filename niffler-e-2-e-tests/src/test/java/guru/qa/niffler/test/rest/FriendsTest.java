@@ -6,7 +6,7 @@ import guru.qa.niffler.jupiter.annotation.User;
 import guru.qa.niffler.jupiter.annotation.meta.RestTest;
 import guru.qa.niffler.jupiter.extension.ApiLoginExtension;
 import guru.qa.niffler.model.rest.FriendJson;
-import guru.qa.niffler.model.rest.FriendState;
+import guru.qa.niffler.model.rest.FriendshipStatus;
 import guru.qa.niffler.model.rest.UserJson;
 import guru.qa.niffler.service.impl.GatewayApiClient;
 import org.junit.jupiter.api.Test;
@@ -38,10 +38,10 @@ public class FriendsTest {
     assertThat(result.size()).isEqualTo(3);
 
     final List<UserJson> friendsFromResponse = result.stream().filter(
-      u -> u.friendState() == FriendState.FRIEND
+      u -> u.friendshipStatus() == FriendshipStatus.FRIEND
     ).toList();
     final List<UserJson> invitationsFromResponse = result.stream().filter(
-      u -> u.friendState() == FriendState.INVITE_RECEIVED
+      u -> u.friendshipStatus() == FriendshipStatus.INVITE_RECEIVED
     ).toList();
 
     assertThat(friendsFromResponse.size()).isEqualTo(2);
@@ -67,10 +67,10 @@ public class FriendsTest {
     assertThat(result.size()).isEqualTo(3);
 
     final List<UserJson> friendsFromResponse = result.stream().filter(
-      u -> u.friendState() == FriendState.FRIEND
+      u -> u.friendshipStatus() == FriendshipStatus.FRIEND
     ).toList();
     final List<UserJson> invitationsFromResponse = result.stream().filter(
-      u -> u.friendState() == FriendState.INVITE_RECEIVED
+      u -> u.friendshipStatus() == FriendshipStatus.INVITE_RECEIVED
     ).toList();
 
     assertThat(friendsFromResponse.size()).isEqualTo(1);
@@ -132,7 +132,7 @@ public class FriendsTest {
     gatewayApiClient.sendInvitation(token, new FriendJson(friendName));
 
     final List<UserJson> outgoingInvitations = gatewayApiClient.allUsers(token, null).stream()
-      .filter(u -> u.friendState() == FriendState.INVITE_SENT)
+      .filter(u -> u.friendshipStatus() == FriendshipStatus.INVITE_SENT)
       .toList();
 
     assertThat(outgoingInvitations.size()).isEqualTo(1);

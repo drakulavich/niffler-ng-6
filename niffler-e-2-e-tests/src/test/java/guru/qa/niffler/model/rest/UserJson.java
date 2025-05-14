@@ -29,12 +29,12 @@ public record UserJson(
   String photo,
   @JsonProperty("photoSmall")
   String photoSmall,
-  @JsonProperty("friendState")
-  FriendState friendState,
+  @JsonProperty("friendshipStatus")
+  FriendshipStatus friendshipStatus,
   @JsonIgnore
   TestData testData) {
 
-  public static @Nonnull UserJson fromEntity(@Nonnull UdUserEntity entity, FriendState friendState) {
+  public static @Nonnull UserJson fromEntity(@Nonnull UdUserEntity entity, FriendshipStatus friendshipStatus) {
     return new UserJson(
       entity.getId(),
       entity.getUsername(),
@@ -44,7 +44,7 @@ public record UserJson(
       entity.getCurrency(),
       entity.getPhoto() != null && entity.getPhoto().length > 0 ? new String(entity.getPhoto(), StandardCharsets.UTF_8) : null,
       entity.getPhotoSmall() != null && entity.getPhotoSmall().length > 0 ? new String(entity.getPhotoSmall(), StandardCharsets.UTF_8) : null,
-      friendState,
+      friendshipStatus,
         null
     );
   }
@@ -58,7 +58,7 @@ public record UserJson(
   }
 
   public @Nonnull UserJson addTestData(TestData testData) {
-    return new UserJson(id, username, firstname, surname, fullname, currency, photo, photoSmall, friendState, testData);
+    return new UserJson(id, username, firstname, surname, fullname, currency, photo, photoSmall, friendshipStatus, testData);
   }
 
   public static @Nonnull List<String> parseUsernames(@Nonnull List<UserJson> users) {

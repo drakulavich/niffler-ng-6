@@ -5,7 +5,7 @@ import guru.qa.niffler.api.UserDataApi;
 import guru.qa.niffler.api.core.RestClient.EmptyClient;
 import guru.qa.niffler.api.core.ThreadSafeCookieStore;
 import guru.qa.niffler.config.Config;
-import guru.qa.niffler.model.rest.FriendState;
+import guru.qa.niffler.model.rest.FriendshipStatus;
 import guru.qa.niffler.model.rest.UserJson;
 import guru.qa.niffler.service.UsersClient;
 import io.qameta.allure.Step;
@@ -144,21 +144,21 @@ public class UsersApiClient implements UsersClient {
   public List<UserJson> outcomeUsers(String username) {
     return allUsers(username, null)
       .stream()
-      .filter(user -> FriendState.INVITE_SENT.equals(user.friendState()))
+      .filter(user -> FriendshipStatus.INVITE_SENT.equals(user.friendshipStatus()))
       .toList();
   }
 
   public List<UserJson> incomeUsers(String username) {
     return friends(username, null)
       .stream()
-      .filter(user -> FriendState.INVITE_RECEIVED.equals(user.friendState()))
+      .filter(user -> FriendshipStatus.INVITE_RECEIVED.equals(user.friendshipStatus()))
       .toList();
   }
 
   public List<UserJson> friendUsers(String username) {
     return friends(username, null)
       .stream()
-      .filter(user -> FriendState.FRIEND.equals(user.friendState()))
+      .filter(user -> FriendshipStatus.FRIEND.equals(user.friendshipStatus()))
       .toList();
   }
 }

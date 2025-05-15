@@ -86,7 +86,7 @@ docker pull confluentinc/cp-kafka:7.3.2
 После `pull` вы увидите спуленный image командой `docker images`
 
 ```posh
-mitriis-MacBook-Pro ~ % docker images            
+mitriis-MacBook-Pro ~ % docker images
 REPOSITORY                 TAG              IMAGE ID       CREATED         SIZE
 postgres                   15.1             9f3ec01f884d   10 days ago     379MB
 confluentinc/cp-kafka      7.3.2            db97697f6e28   12 months ago   457MB
@@ -184,7 +184,7 @@ User-MacBook-Pro niffler % cd niffler-ng-client
 или для GraphQL **_(временно недоступно)_**:
 
 ```posh
-User-MacBook-Pro niffler % cd niffler-ng-client-gql
+User-MacBook-Pro niffler % cd niffler-ng-gql-client
 ```
 
 #### 2. Запустить фронтенд в режиме preview (сначала обновить зависимости)
@@ -288,7 +288,7 @@ WSDL сервиса niffler-userdata доступен по адресу: http://
 ```
 * What went wrong:
 Execution failed for task ':niffler-auth:jibDockerBuild'.
-> com.google.cloud.tools.jib.plugins.common.BuildStepsExecutionException: 
+> com.google.cloud.tools.jib.plugins.common.BuildStepsExecutionException:
 Build to Docker daemon failed, perhaps you should make sure your credentials for 'registry-1.docker.io...
 ```
 
@@ -332,7 +332,7 @@ chmod +x init-database.sh
 #### 1. Войти в свою УЗ на https://hub.docker.com/ и последовательно создать публичные репозитории
 
 - niffler-ng-client
-- niffler-ng-client-gql
+- niffler-ng-gql-client
 - niffler-userdata
 - niffler-spend
 - niffler-gateway
@@ -366,7 +366,7 @@ User-MacBook-Pro  niffler % bash docker-compose-dev.sh push
 для GraphQL **_(временно недоступно)_**:
 
 ```posh
-User-MacBook-Pro  niffler % bash docker-compose-dev.sh gql push 
+User-MacBook-Pro  niffler % bash docker-compose-dev.sh gql push
 ```
 
 # Запуск e-2-e тестов в Docker network изолированно Niffler в докере:

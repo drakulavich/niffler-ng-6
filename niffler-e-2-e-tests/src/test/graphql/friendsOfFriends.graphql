@@ -1,0 +1,42 @@
+query FriendsOfFriends($page:Int!, $size:Int!) {
+    user {
+        friends(page: $page, size: $size) {
+            edges {
+                node {
+                    friends(page: $page, size: $size) {
+                        edges {
+                            node {
+                                friends(page: $page, size: $size) {
+                                    edges {
+                                        node {
+                                            username
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+query ValidFriendsOfFriends($page:Int!, $size:Int!) {
+    user {
+        friends(page: $page, size: $size) {
+            edges {
+                node {
+                    friends(page: $page, size: $size) {
+                        edges {
+                            node {
+                                id
+                                username
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

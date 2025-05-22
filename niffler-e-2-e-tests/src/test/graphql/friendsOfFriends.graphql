@@ -1,4 +1,4 @@
-query FriendsOfFriends($page:Int!, $size:Int!) {
+query InvalidFriendsOfFriends($page:Int!, $size:Int!) {
     user {
         friends(page: $page, size: $size) {
             edges {
@@ -22,7 +22,7 @@ query FriendsOfFriends($page:Int!, $size:Int!) {
     }
 }
 
-query ValidFriendsOfFriends($page:Int!, $size:Int!) {
+query FriendsOfFriends($page:Int!, $size:Int!) {
     user {
         friends(page: $page, size: $size) {
             edges {

@@ -7,8 +7,12 @@ import guru.qa.niffler.grpc.Currency;
 import guru.qa.niffler.grpc.CurrencyResponse;
 import guru.qa.niffler.grpc.CurrencyValues;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 
 import java.util.List;
+import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -22,55 +26,31 @@ public class CurrencyGrpcTest extends BaseGrpclTest {
     assertThat(allCurrenciesList.size()).isEqualTo(4);
   }
 
-  @Test
-  void calculateRateShouldReturnSameAmountForSameCurrency() {
+  @ParameterizedTest
+  @MethodSource("calculateRateTestData")
+  void calculateRateShouldReturnExpectedAmount(
+    CurrencyValues fromCurrency,
+    CurrencyValues toCurrency,
+    double amount,
+    double expectedAmount
+  ) {
     final CalculateRequest request = CalculateRequest.newBuilder()
-      .setSpendCurrency(CurrencyValues.USD)
-      .setDesiredCurrency(CurrencyValues.USD)
-      .setAmount(100.0)
+      .setSpendCurrency(fromCurrency)
+      .setDesiredCurrency(toCurrency)
+      .setAmount(amount)
       .build();
 
     final CalculateResponse response = blockingStub.calculateRate(request);
 
-    assertThat(response.getCalculatedAmount()).isEqualTo(100.0);
+    assertThat(response.getCalculatedAmount()).isEqualTo(expectedAmount);
   }
 
-  @Test
-  void calculateRateShouldReturnCalculatedAmountForDifferentCurrencies() {
-    final CalculateRequest request = CalculateRequest.newBuilder()
-      .setSpendCurrency(CurrencyValues.USD)
-      .setDesiredCurrency(CurrencyValues.EUR)
-      .setAmount(100.0)
-      .build();
-
-    final CalculateResponse response = blockingStub.calculateRate(request);
-
-    assertThat(response.getCalculatedAmount()).isEqualTo(92.59);
-  }
-
-  @Test
-  void calculateRateShouldHandleZeroAmount() {
-    final CalculateRequest request = CalculateRequest.newBuilder()
-      .setSpendCurrency(CurrencyValues.USD)
-      .setDesiredCurrency(CurrencyValues.EUR)
-      .setAmount(0.0)
-      .build();
-
-    final CalculateResponse response = blockingStub.calculateRate(request);
-
-    assertThat(response.getCalculatedAmount()).isEqualTo(0.0);
-  }
-
-  @Test
-  void calculateRateShouldWorkForAllCurrencyPairs() {
-    final CalculateRequest request = CalculateRequest.newBuilder()
-      .setSpendCurrency(CurrencyValues.RUB)
-      .setDesiredCurrency(CurrencyValues.KZT)
-      .setAmount(50.0)
-      .build();
-
-    final CalculateResponse response = blockingStub.calculateRate(request);
-
-    assertThat(response.getCalculatedAmount()).isEqualTo(357.14);
+  static Stream<Arguments> calculateRateTestData() {
+    return Stream.of(
+      Arguments.of(CurrencyValues.USD, CurrencyValues.USD, 100.0, 100.0),
+      Arguments.of(CurrencyValues.USD, CurrencyValues.EUR, 100.0, 92.59),
+      Arguments.of(CurrencyValues.USD, CurrencyValues.EUR, 0.0, 0.0),
+      Arguments.of(CurrencyValues.RUB, CurrencyValues.KZT, 50.0, 357.14)
+    );
   }
 }

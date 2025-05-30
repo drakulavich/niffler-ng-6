@@ -1,0 +1,48 @@
+syntax = "proto3";
+
+import "google/protobuf/empty.proto";
+
+package guru.qa.grpc.niffler;
+
+import "niffler-currency.proto";
+
+option java_multiple_files = true;
+option java_package = "guru.qa.niffler.grpc";
+option java_outer_classname = "NifflerUserdataProto";
+
+service NifflerUserdataService {
+  rpc GetUsers (UserPageRequest) returns (UserPageResponse) {}
+}
+
+message UserPageRequest {
+  string username = 1;
+  int32 page = 2;
+  int32 size = 3;
+}
+
+message UserPageResponse {
+  int32 totalElements = 1;
+  int32 totalPages = 2;
+  bool first = 3;
+  bool last = 4;
+  int32 size = 5;
+  repeated UserResponse edges = 6;
+}
+
+message UserResponse {
+  string id = 1;
+  string username = 2;
+  string firstname = 3;
+  string surname = 4;
+  string fullname = 5;
+  guru.qa.grpc.niffler.CurrencyValues currency = 6;
+  bytes photo = 7;
+  FriendshipStatus friendshipStatus = 8;
+}
+
+enum FriendshipStatus {
+  VOID = 0;
+  INVITATION_SENT = 1;
+  INVITATION_RECEIVED = 2;
+  FRIEND = 3;
+}

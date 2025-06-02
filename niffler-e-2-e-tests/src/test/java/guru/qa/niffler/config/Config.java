@@ -45,5 +45,12 @@ public interface Config {
   }
 
   @Nonnull
+  String userdataGrpcAddress();
+
+  default int userdataGrpcPort() {
+    return 8072;
+  }
+
+  @Nonnull
   String ghUrl();
 }

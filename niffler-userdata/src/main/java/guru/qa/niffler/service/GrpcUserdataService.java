@@ -24,7 +24,8 @@ public class GrpcUserdataService extends NifflerUserdataServiceGrpc.NifflerUserd
   @Override
   public void getUsers(UserPageRequest request, StreamObserver<UserPageResponse> responseObserver) {
     Pageable pageable = PageRequest.of(request.getPage(), request.getSize());
-    Page<UserJsonBulk> users = userService.allUsers(request.getUsername(), pageable, null);
+    String searchQuery = request.getSearchQuery().isEmpty() ? null : request.getSearchQuery();
+    Page<UserJsonBulk> users = userService.allUsers(request.getUsername(), pageable, searchQuery);
 
     UserPageResponse response = enrichUsersResponse(users);
 
@@ -35,7 +36,8 @@ public class GrpcUserdataService extends NifflerUserdataServiceGrpc.NifflerUserd
   @Override
   public void getFriends(UserPageRequest request, StreamObserver<UserPageResponse> responseObserver) {
     Pageable pageable = PageRequest.of(request.getPage(), request.getSize());
-    Page<UserJsonBulk> friends = userService.friends(request.getUsername(), pageable, null);
+    String searchQuery = request.getSearchQuery().isEmpty() ? null : request.getSearchQuery();
+    Page<UserJsonBulk> friends = userService.friends(request.getUsername(), pageable, searchQuery);
 
     UserPageResponse response = enrichUsersResponse(friends);
 

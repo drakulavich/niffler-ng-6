@@ -12,6 +12,7 @@ option java_outer_classname = "NifflerUserdataProto";
 
 service NifflerUserdataService {
   rpc GetUsers (UserPageRequest) returns (UserPageResponse) {}
+  rpc GetFriends (UserPageRequest) returns (UserPageResponse) {}
 }
 
 message UserPageRequest {
@@ -42,7 +43,7 @@ message UserResponse {
 
 enum FriendshipStatus {
   VOID = 0;
-  INVITATION_SENT = 1;
-  INVITATION_RECEIVED = 2;
+  INVITE_SENT = 1;
+  INVITE_RECEIVED = 2;
   FRIEND = 3;
 }

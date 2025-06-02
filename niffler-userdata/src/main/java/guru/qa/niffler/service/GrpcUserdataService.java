@@ -1,8 +1,12 @@
 package guru.qa.niffler.service;
 
+import com.google.protobuf.Empty;
+import guru.qa.niffler.grpc.FriendshipRequest;
 import guru.qa.niffler.grpc.NifflerUserdataServiceGrpc;
 import guru.qa.niffler.grpc.UserPageRequest;
 import guru.qa.niffler.grpc.UserPageResponse;
+import guru.qa.niffler.grpc.UserResponse;
+import guru.qa.niffler.model.UserJson;
 import guru.qa.niffler.model.UserJsonBulk;
 import io.grpc.stub.StreamObserver;
 import net.devh.boot.grpc.server.service.GrpcService;
@@ -42,6 +46,34 @@ public class GrpcUserdataService extends NifflerUserdataServiceGrpc.NifflerUserd
     UserPageResponse response = enrichUsersResponse(friends);
 
     responseObserver.onNext(response);
+    responseObserver.onCompleted();
+  }
+
+  @Override
+  public void createFriendshipRequest(FriendshipRequest request, StreamObserver<UserResponse> responseObserver) {
+    UserJson result = userService.createFriendshipRequest(request.getUsername(), request.getTargetUsername());
+    responseObserver.onNext(result.toGrpcUserResponse());
+    responseObserver.onCompleted();
+  }
+
+  @Override
+  public void acceptFriendshipRequest(FriendshipRequest request, StreamObserver<UserResponse> responseObserver) {
+    UserJson result = userService.acceptFriendshipRequest(request.getUsername(), request.getTargetUsername());
+    responseObserver.onNext(result.toGrpcUserResponse());
+    responseObserver.onCompleted();
+  }
+
+  @Override
+  public void declineFriendshipRequest(FriendshipRequest request, StreamObserver<UserResponse> responseObserver) {
+    UserJson result = userService.declineFriendshipRequest(request.getUsername(), request.getTargetUsername());
+    responseObserver.onNext(result.toGrpcUserResponse());
+    responseObserver.onCompleted();
+  }
+
+  @Override
+  public void removeFriend(FriendshipRequest request, StreamObserver<Empty> responseObserver) {
+    userService.removeFriend(request.getUsername(), request.getTargetUsername());
+    responseObserver.onNext(Empty.getDefaultInstance());
     responseObserver.onCompleted();
   }
 

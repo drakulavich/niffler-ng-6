@@ -32,6 +32,17 @@ public class GrpcUserdataService extends NifflerUserdataServiceGrpc.NifflerUserd
     responseObserver.onCompleted();
   }
 
+  @Override
+  public void getFriends(UserPageRequest request, StreamObserver<UserPageResponse> responseObserver) {
+    Pageable pageable = PageRequest.of(request.getPage(), request.getSize());
+    Page<UserJsonBulk> friends = userService.friends(request.getUsername(), pageable, null);
+
+    UserPageResponse response = enrichUsersResponse(friends);
+
+    responseObserver.onNext(response);
+    responseObserver.onCompleted();
+  }
+
   private UserPageResponse enrichUsersResponse(Page<UserJsonBulk> users) {
     UserPageResponse.Builder responseBuilder = UserPageResponse.newBuilder()
         .setTotalElements((int) users.getTotalElements())

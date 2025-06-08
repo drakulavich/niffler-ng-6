@@ -1,14 +1,14 @@
 package guru.qa.niffler.service.impl;
 
-import guru.qa.jaxb.userdata.AcceptInvitationRequest;
-import guru.qa.jaxb.userdata.AllUsersRequest;
-import guru.qa.jaxb.userdata.CurrentUserRequest;
-import guru.qa.jaxb.userdata.DeclineInvitationRequest;
-import guru.qa.jaxb.userdata.FriendsPageRequest;
-import guru.qa.jaxb.userdata.RemoveFriendRequest;
-import guru.qa.jaxb.userdata.SendInvitationRequest;
-import guru.qa.jaxb.userdata.UserResponse;
-import guru.qa.jaxb.userdata.UsersResponse;
+import guru.qa.niffler.userdata.wsdl.AcceptInvitationRequest;
+import guru.qa.niffler.userdata.wsdl.AllUsersRequest;
+import guru.qa.niffler.userdata.wsdl.CurrentUserRequest;
+import guru.qa.niffler.userdata.wsdl.DeclineInvitationRequest;
+import guru.qa.niffler.userdata.wsdl.FriendsPageRequest;
+import guru.qa.niffler.userdata.wsdl.RemoveFriendRequest;
+import guru.qa.niffler.userdata.wsdl.SendInvitationRequest;
+import guru.qa.niffler.userdata.wsdl.UserResponse;
+import guru.qa.niffler.userdata.wsdl.UsersResponse;
 import guru.qa.niffler.api.UserDataSoapApi;
 import guru.qa.niffler.api.core.RestClient;
 import guru.qa.niffler.api.core.converter.SoapConverterFactory;

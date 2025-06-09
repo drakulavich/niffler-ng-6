@@ -66,4 +66,10 @@ enum DockerConfig implements Config {
   public String currencyGrpcAddress() {
     return "currency.niffler.dc";
   }
+
+  @NotNull
+  @Override
+  public String userdataGrpcAddress() {
+    return "userdata.niffler.dc";
+  }
 }

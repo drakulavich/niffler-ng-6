@@ -33,6 +33,12 @@ protobuf {
         all()*.plugins {
             grpc {}
         }
+        all().each { task ->
+            task.generateDescriptorSet = true
+            task.descriptorSetOptions.path = "${buildDir}/generated/grpc-descriptors.dsc"
+            task.descriptorSetOptions.includeImports = true
+            task.descriptorSetOptions.includeSourceInfo = true
+        }
     }
 }
 

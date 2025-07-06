@@ -72,4 +72,10 @@ enum DockerConfig implements Config {
   public String userdataGrpcAddress() {
     return "userdata.niffler.dc";
   }
+
+  @NotNull
+  @Override
+  public String kafkaAddress() {
+    return "kafka:9092";
+  }
 }
